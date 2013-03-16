@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.Client", "Distribox.Client\Distribox.Client.csproj", "{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.CommonLib", "Distribox.CommonLib\Distribox.CommonLib.csproj", "{8E47278D-A729-49F6-927C-A48BC1FF3515}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WenjieCommonLib", "..\..\..\..\study\代码库\WenjieCommonLib\WenjieCommonLib.csproj", "{3E243814-3807-4364-8005-8D79464C16CA}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 1
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://curimit-server:8080/tfs/study
+		SccProjectUniqueName0 = ..\\..\\..\\..\\study\\代码库\\WenjieCommonLib\\WenjieCommonLib.csproj
+		SccProjectName0 = $/代码库/WenjieCommonLib
+		SccAuxPath0 = http://curimit-server:8080/tfs/study
+		SccLocalPath0 = ..\\..\\..\\..\\study\\代码库\\WenjieCommonLib
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E47278D-A729-49F6-927C-A48BC1FF3515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E47278D-A729-49F6-927C-A48BC1FF3515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E47278D-A729-49F6-927C-A48BC1FF3515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E47278D-A729-49F6-927C-A48BC1FF3515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E243814-3807-4364-8005-8D79464C16CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E243814-3807-4364-8005-8D79464C16CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E243814-3807-4364-8005-8D79464C16CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E243814-3807-4364-8005-8D79464C16CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

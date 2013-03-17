@@ -28,6 +28,8 @@ namespace Distribox.CommonLib
                 try
                 {
                     oFileStream = new FileStream(pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    arrbytHashValue = oSHA1Hasher.ComputeHash(oFileStream);
+                    oFileStream.Close();
                     break;
                 }
                 catch
@@ -36,19 +38,9 @@ namespace Distribox.CommonLib
                 }
             }
 
-            try
-            {
-                arrbytHashValue = oSHA1Hasher.ComputeHash(oFileStream);
-                oFileStream.Close();
-
-                strHashData = BitConverter.ToString(arrbytHashValue);
-                strHashData = strHashData.Replace("-", "");
-                strResult = strHashData;
-            }
-            catch
-            {
-                throw new Exception("Error while caculating SHA1Hash!");
-            }
+            strHashData = BitConverter.ToString(arrbytHashValue);
+            strHashData = strHashData.Replace("-", "");
+            strResult = strHashData;
 
             return (strResult);
         }

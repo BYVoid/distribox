@@ -18,7 +18,7 @@ namespace Distribox.Client.Module
         public String OldName;
         public String SHA1;
         public String DataPath;
-        public DateTime LastModify;
+        public DateTime When;
         public Boolean IsDirectory;
     }
 
@@ -121,6 +121,8 @@ namespace Distribox.Client.Module
         {
             if (!e.FullPath.StartsWith(hidden_path))
             {
+                Console.WriteLine("Deleted: {0}", e.Name);
+
                 FileChangedEventArgs new_event = translate(e);
                 if (Deleted != null) Deleted(new_event);
             }
@@ -130,7 +132,20 @@ namespace Distribox.Client.Module
         {
             if (!e.FullPath.StartsWith(hidden_path))
             {
+                Console.WriteLine("Renamed: {0} -> {1}", e.OldName, e.Name);
+
                 FileChangedEventArgs new_event = translate(e);
+                
+                if (!new_event.IsDirectory)
+                {
+                    new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
+                    new_event.DataPath = data_path + new_event.SHA1;
+                    if (!File.Exists(new_event.DataPath))
+                    {
+                        File.Copy(new_event.FullPath, new_event.DataPath);
+                    }
+                }
+
                 if (Renamed != null) Renamed(new_event);
             }
         }
@@ -157,14 +172,7 @@ namespace Distribox.Client.Module
 
                 if (!new_event.IsDirectory)
                 {
-                    try
-                    {
-                        new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                    }
-                    catch
-                    {
-                        return;
-                    }
+                    new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
                     new_event.DataPath = data_path + new_event.SHA1;
                     if (!File.Exists(new_event.DataPath))
                     {
@@ -182,7 +190,7 @@ namespace Distribox.Client.Module
             new_event.ChangeType = e.ChangeType;
             new_event.FullPath = e.FullPath;
             new_event.Name = e.Name;
-            new_event.LastModify = DateTime.Now;
+            new_event.When = DateTime.Now;
 
             if (e.ChangeType != WatcherChangeTypes.Deleted)
             {

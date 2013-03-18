@@ -10,6 +10,7 @@ namespace Distribox.Network
     {
         static void Main(string[] args)
         {
+            Communication.Test.TestCommunication.Test();
         }
     }
 }

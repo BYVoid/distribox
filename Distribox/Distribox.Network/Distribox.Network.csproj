@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AntiEntropyProtocol.cs" />
+    <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
+    <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
     <Compile Include="Communication\AtomicMessageTunnel.cs" />
     <Compile Include="Communication\AtomicMessageTunnelFactory.cs" />
     <Compile Include="Communication\Test\TestCommunication.cs" />
@@ -52,7 +54,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Distribox.CommonLib\Distribox.CommonLib.csproj">
+      <Project>{8e47278d-a729-49f6-927c-a48bc1ff3515}</Project>
+      <Name>Distribox.CommonLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

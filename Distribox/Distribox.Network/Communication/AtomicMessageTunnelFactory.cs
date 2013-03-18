@@ -23,13 +23,12 @@ namespace Distribox.Network.Communication
             this.tunnel = tunnel;
             this.isActive = isActive;
         }
-    }    
+    }
 
     class AtomicMessageTunnelFactory 
     {
         private IPEndPoint _myEndPoint;
         private TcpListener listener = null;
-
 
         /// <summary>
         /// Return created instance of AtomicMessageTunnel. The instance is created either by 
@@ -40,7 +39,7 @@ namespace Distribox.Network.Communication
         public delegate void ConnectionEstablishedHandler(ConnectionEstablishedEventArgs args);
         public event ConnectionEstablishedHandler ConnectionEstblished;        
 
-        private void OnConnectionEstblished(ConnectionEstablishedEventArgs args)
+        private void OnConnectionEstablished(ConnectionEstablishedEventArgs args)
         {
             if (ConnectionEstblished != null)
                 ConnectionEstblished(args);
@@ -50,7 +49,7 @@ namespace Distribox.Network.Communication
         {
             TcpListener listener = (TcpListener) ar.AsyncState;
             TcpClient client = listener.EndAcceptTcpClient(ar);
-            OnConnectionEstblished(new ConnectionEstablishedEventArgs(
+            OnConnectionEstablished(new ConnectionEstablishedEventArgs(
                 /*tunnel=*/ new AtomicMessageTunnel(client), 
                 /*isActive=*/ false)
             );
@@ -62,7 +61,7 @@ namespace Distribox.Network.Communication
         {
             TcpClient client = (TcpClient)ar.AsyncState;
             client.EndConnect(ar);
-            OnConnectionEstblished(new ConnectionEstablishedEventArgs(
+            OnConnectionEstablished(new ConnectionEstablishedEventArgs(
                 /*tunnel=*/ new AtomicMessageTunnel(client), 
                 /*isActive=*/true)
             );

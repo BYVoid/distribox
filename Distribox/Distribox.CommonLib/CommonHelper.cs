@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
@@ -87,6 +87,18 @@ namespace Distribox.CommonLib
         {
             String str = Show(input);
             WriteFile(filename, str);
+        }
+
+        public static Byte[] StringToByte(String str)
+        {
+            UTF8Encoding encoding = new UTF8Encoding();
+            return encoding.GetBytes(str);
+        }
+
+        public static String ByteToString(Byte[] bytes)
+        {
+            UTF8Encoding encoding = new UTF8Encoding();
+            return encoding.GetString(bytes);
         }
     }
 }

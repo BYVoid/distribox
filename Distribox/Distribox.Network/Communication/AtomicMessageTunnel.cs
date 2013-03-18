@@ -85,8 +85,6 @@ namespace Distribox.Network.Communication
             if (_sendQueue.Count > 0)
             {
                 NetworkStream c_stream = _client.GetStream();
-                c_stream.BeginWrite(_sendQueue.Peek(), 0, _sendQueue.Peek().Length,
-                    new AsyncCallback(DoNetworkStreamFinishSend), c_stream);
             }
         }
 
@@ -105,7 +103,6 @@ namespace Distribox.Network.Communication
                 _sendQueue.Dequeue();
             }
 
-            OnReceive();
 
             NetworkStream c_stream;
 

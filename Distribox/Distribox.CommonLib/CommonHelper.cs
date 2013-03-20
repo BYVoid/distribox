@@ -56,9 +56,19 @@ namespace Distribox.CommonLib
             return JsonConvert.DeserializeObject<T>(input);
         }
 
+        public static T Read<T>(byte[] input)
+        {
+            return Read<T>(ByteToString(input));
+        }
+
         public static String Show(Object input)
         {
             return JsonConvert.SerializeObject(input, Formatting.Indented);
+        }
+
+        public static byte[] ShowAsBytes(Object input)
+        {
+            return StringToByte(Show(input));
         }
 
         public static String ReadFile(String filename)

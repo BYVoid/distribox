@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Distribox.CommonLib;
@@ -12,25 +13,47 @@ namespace Distribox.Network
     {
         static void Main(string[] args)
         {
-            client();
+            Console.WriteLine("server/client?");
+            string s = Console.ReadLine();
+
+            if (s == "client")
+                client();
+            else if (s == "server")
+                server();
+            else
+            {
+                Console.WriteLine("What damn is this? {0}", s);
+            }
         }
 
-        static void server()
+        private static void client()
         {
-            var listener = new AtomicMessageListener(5000);
-            listener.OnReceive += listener_OnReceive;
+            Console.WriteLine("I am a client...");
+
+            Console.WriteLine("What is my port?");
+            int port = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("What's the name of my PeerList?");
+            string peerListName = Console.ReadLine();
+            AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName);
+        }
+        
+        private static void server() 
+        {
+            Console.WriteLine("I am a server...");
+            Console.WriteLine("What is my port?");
+            int port = int.Parse(Console.ReadLine());
+            AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, "server.json");
+
+            while (true)
+            {
+                Console.WriteLine("Whom should I invite?");
+                int i_port = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Sending invitation...");
+                protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));           
+            }            
         }
 
-        static void client()
-        {
-            var sender = new AtomicMessageSender("127.0.0.1", 5000);
-            sender.SendBytes(CommonHelper.StringToByte("Hello World!"));
-        }
-
-        static void listener_OnReceive(byte[] data, string address)
-        {
-            Console.WriteLine(address);
-            Console.WriteLine("\t{0}", CommonHelper.ByteToString(data));
-        }
     }
 }

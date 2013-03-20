@@ -44,9 +44,12 @@
     <Compile Include="AntiEntropyProtocol.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
-    <Compile Include="Communication\AtomicMessageTunnel.cs" />
-    <Compile Include="Communication\AtomicMessageTunnelFactory.cs" />
-    <Compile Include="Communication\Test\TestCommunication.cs" />
+    <Compile Include="Message\AcceptConnect.cs" />
+    <Compile Include="Message\AcceptInvivation.cs" />
+    <Compile Include="Message\ConnectRequest.cs" />
+    <Compile Include="Message\Invitation.cs" />
+    <Compile Include="Message\PeerListMessage.cs" />
+    <Compile Include="Message\ProtocolMessage.cs" />
     <Compile Include="PeerList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +58,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distribox.Client\Distribox.Client.csproj">
+      <Project>{421bcbb8-0550-4f0a-8e68-2e7afbe1f268}</Project>
+      <Name>Distribox.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distribox.CommonLib\Distribox.CommonLib.csproj">
       <Project>{8e47278d-a729-49f6-927c-a48bc1ff3515}</Project>
       <Name>Distribox.CommonLib</Name>

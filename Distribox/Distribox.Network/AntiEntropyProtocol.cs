@@ -4,49 +4,146 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace Distribox.Network
 {
+    using Distribox.CommonLib;
+
+    class Session
+    {
+        public VersionList List;
+    }
+
     class AntiEntropyProtocol
     {
-        /*
-        #region Private Member Variables
-        private LocalDataManager _manager;
+        private const int CONNECT_PERIOD_MS = 1000;
+
+        //private const string peerFileName = "peerlist.json";
         private PeerList _peers;
-        private AtomicMessageTunnel _messageService;
-        #endregion
+        private AtomicMessageListener _listener;
+        private int _myPort;
+        //private Dictionary<Peer, Session> sessions;
 
-        #region Private Methods
-        private void PushThread();
-        private void PullThread();
-        #endregion
-
-        #region Constructors
-        public AntiEntropyProtocol()
+        private void ReceiveHandler(byte[] data, String address)
         {
-            _manager = new LocalDataManager();
-            _peers = new PeerList();
-            _messageService = new AtomicMessageService();
-        }
-        // This class do not need any destruction functions
-        // Because the application might terminate unexpectedly
-        // because of power failure. We can not expect anything done at
-        // destruction.
-        // public ~AntiEntropyProtocol();
-        #endregion
+            // Parse it, and convert to the right derived class
+            ProtocolMessage message = CommonLib.CommonHelper.Read<ProtocolMessage>(data).ParseToDerivedClass(data);            
 
-        #region Public Methods
-        public void StartAllServices()
-        {
-            Thread pushThread = new Thread(this.PushThread);
-            pushThread.Start();
+            // Parse IP and Port
+            string[] ipAndPort = address.Split(':');
+            string ip = ipAndPort[0];
+            // ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
+            int port = message.MyListenPort;
+            Peer peer = new Peer(IPAddress.Parse(ip), port);
 
-            Thread pullThread = new Thread(this.PullThread);
-            pullThread.Start();
+            // Process message
+            if (message is Invitation) ProcessInvitation(peer);
+            else if (message is AcceptInvitation) ProcessAcceptInvitation(peer);
+            else if (message is ConnectRequest) ProcessConnectRequest(peer);
+            else if (message is AcceptConnect) ProcessAcceptConnect(peer);
+            else if (message is PeerListMessage) ProcessPeerList(peer, (PeerListMessage)message);
+            else
+            {
+                throw new Exception("Receiver: Unseen message type!");
+            }
         }
 
-        public void InviteNewPeer(PeerLocater locater);
-        #endregion
-         * */
+        private static void SendMessage(Peer peer, ProtocolMessage message)
+        {
+            AtomicMessageSender sender = new Network.AtomicMessageSender(peer.IP, peer.Port);
+            byte[] bMessage = CommonLib.CommonHelper.ShowAsBytes(message);
+            //Console.WriteLine(CommonLib.CommonHelper.ByteToString(bMessage));
+            sender.SendBytes(bMessage);
+        }
+
+        private void ProcessInvitation(Peer peer)
+        {
+            /*
+             * 1. Send AcceptInvivation back
+             */
+            SendMessage(peer, new AcceptInvitation(_myPort));
+        }
+
+        private void ProcessAcceptInvitation(Peer peer)
+        {
+            /*
+             * 1. Try to Connect to that user
+             */
+            SendMessage(peer, new ConnectRequest(_myPort));
+        }
+
+        private void ProcessConnectRequest(Peer peer)
+        {
+            /*
+             * Accept the Connect
+             * Send MetaData
+             * ...
+             */
+            SendMessage(peer, new AcceptConnect(_myPort));
+            SendMetaData(peer);
+        }
+
+        private void ProcessAcceptConnect(Peer peer)
+        {
+            SendMetaData(peer);
+        }
+
+        private void ProcessPeerList(Peer peer, PeerListMessage peerListMessage)
+        {
+            lock (_peers)
+            {
+                _peers.AddPeerAndFlush(peer);
+                _peers.MergeWith(peerListMessage.List);
+            }
+        }
+
+        private void SendMetaData(Peer peer)
+        {
+            /*
+             * 1. Send PeerList
+             * 2. (TODO) Send VersionList             
+             */
+            SendMessage(peer, new PeerListMessage(_peers, _myPort));
+        }
+
+        private void ConnectRandomPeer()
+        {
+            Peer peer;
+            lock (_peers)
+            {
+                peer = _peers.SelectRandomPeer();
+            }
+            if (peer!=null)
+                SendMessage(peer, new ConnectRequest(_myPort));
+        }
+
+        private void OnTimerEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            ConnectRandomPeer();
+        }  
+
+        public AntiEntropyProtocol(int myPort, string peerFileName)
+        {
+            // Initialize peer list
+            _peers = PeerList.GetPeerList(peerFileName);
+            _myPort = myPort;
+
+            // Initialize listener
+            _listener = new AtomicMessageListener(myPort);
+            _listener.OnReceive += new AtomicMessageListener.OnReceiveHandler(ReceiveHandler);
+
+            // Initialize timer to connect other peers periodically
+            System.Timers.Timer timer = new System.Timers.Timer(CONNECT_PERIOD_MS);
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimerEvent);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+        }
+
+        public void InvitePeer(Peer peer)
+        {
+            SendMessage(peer, new Invitation(_myPort));
+        }
+        
     }
 }

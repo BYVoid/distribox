@@ -47,9 +47,12 @@
     <Compile Include="Message\AcceptConnect.cs" />
     <Compile Include="Message\AcceptInvivation.cs" />
     <Compile Include="Message\ConnectRequest.cs" />
+    <Compile Include="Message\FileDataResponse.cs" />
+    <Compile Include="Message\FileRequest.cs" />
     <Compile Include="Message\Invitation.cs" />
     <Compile Include="Message\PeerListMessage.cs" />
     <Compile Include="Message\ProtocolMessage.cs" />
+    <Compile Include="Message\VersionListMessage.cs" />
     <Compile Include="PeerList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

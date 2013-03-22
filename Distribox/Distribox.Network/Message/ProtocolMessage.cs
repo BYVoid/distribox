@@ -15,7 +15,10 @@ namespace Distribox.Network
             AcceptInvitation,
             ConnectRequest,
             AcceptConnect,
-            PeerListMessage
+            PeerListMessage,
+            VersionListMessage,
+            FileRequest,
+            FileResponse
         }
         public int MyListenPort;
         public MessageType _type;
@@ -39,6 +42,12 @@ namespace Distribox.Network
                     return CommonLib.CommonHelper.Read<AcceptConnect>(data);
                 case MessageType.PeerListMessage:
                     return CommonLib.CommonHelper.Read<PeerListMessage>(data);
+                case MessageType.VersionListMessage:
+                    return CommonLib.CommonHelper.Read<VersionListMessage>(data);
+                case MessageType.FileRequest:
+                    return CommonLib.CommonHelper.Read<FileRequest>(data);
+                case MessageType.FileResponse:
+                    return CommonLib.CommonHelper.Read<FileDataResponse>(data);
             }
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }

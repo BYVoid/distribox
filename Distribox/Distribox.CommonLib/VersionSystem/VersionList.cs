@@ -8,7 +8,14 @@ namespace Distribox.CommonLib
 {
     public class VersionList
     {
-        private List<FileItem> AllFiles = new List<FileItem>();
+        private List<FileItem> _AllFiles = new List<FileItem>();
+        public List<FileItem> AllFiles
+        {
+            get
+            {
+                return _AllFiles;
+            }
+        }
         private Dictionary<String, FileItem> PathToFile = new Dictionary<String, FileItem>();
 
         private String root;
@@ -17,8 +24,8 @@ namespace Distribox.CommonLib
         {
             this.root = root;
 
-            AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox\\VersionList.txt");
-            foreach (var file in AllFiles.Where(x => x.IsAlive))
+            _AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox\\VersionList.txt");
+            foreach (var file in _AllFiles.Where(x => x.IsAlive))
             {
                 PathToFile[file.CurrentName] = file;
             }
@@ -47,7 +54,7 @@ namespace Distribox.CommonLib
             if (PathToFile.ContainsKey(Name)) return null;
 
             FileItem item = new FileItem(Name, IsDirectory, When);
-            AllFiles.Add(item);
+            _AllFiles.Add(item);
 
             PathToFile[Name] = item;
 
@@ -94,7 +101,22 @@ namespace Distribox.CommonLib
 
         public void Flush()
         {
-            CommonHelper.WriteObject(root + ".Distribox\\VersionList.txt", AllFiles);
+            CommonHelper.WriteObject(root + ".Distribox\\VersionList.txt", _AllFiles);
+        }
+
+        public byte[] CreateFileBundle(List<FileItem> list)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AcceptFileBundle(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<FileItem> GetLessThan(VersionList list)
+        {
+            throw new NotImplementedException();
         }
     }
 }

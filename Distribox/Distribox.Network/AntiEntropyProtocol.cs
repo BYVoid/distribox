@@ -23,6 +23,7 @@ namespace Distribox.Network
         private PeerList _peers;
         private AtomicMessageListener _listener;
         private int _myPort;
+        private VersionList _versionList;
         //private Dictionary<Peer, Session> sessions;
 
         private void ReceiveHandler(byte[] data, String address)
@@ -43,6 +44,9 @@ namespace Distribox.Network
             else if (message is ConnectRequest) ProcessConnectRequest(peer);
             else if (message is AcceptConnect) ProcessAcceptConnect(peer);
             else if (message is PeerListMessage) ProcessPeerList(peer, (PeerListMessage)message);
+            else if (message is VersionListMessage) ProcessVersionList(peer, (VersionListMessage)message);
+            else if (message is FileRequest) ProcessFileRequest(peer, (FileRequest)message);
+            else if (message is FileDataResponse) ProcessFileResponse(peer, (FileDataResponse)message);
             else
             {
                 throw new Exception("Receiver: Unseen message type!");
@@ -98,13 +102,42 @@ namespace Distribox.Network
             }
         }
 
+        private void ProcessVersionList(Peer peer, VersionListMessage versionListMessage)
+        {            
+            List<FileItem> versionRequest;
+            lock (_versionList)
+            {
+                versionRequest = _versionList.GetLessThan(versionListMessage.List);
+            }            
+            SendMessage(peer, new FileRequest(versionRequest, _myPort));
+        }
+
+        private void ProcessFileRequest(Peer peer, FileRequest request)
+        {
+            byte[] data;
+            lock (_versionList)
+            {
+                 data = _versionList.CreateFileBundle(request._request);
+            }            
+            SendMessage(peer, new FileDataResponse(data, _myPort));
+        }
+
+        private void ProcessFileResponse(Peer peer, FileDataResponse response)
+        {
+            lock(_versionList)
+            {
+                _versionList.AcceptFileBundle(response._data);
+            }
+        }
+
         private void SendMetaData(Peer peer)
         {
             /*
              * 1. Send PeerList
-             * 2. (TODO) Send VersionList             
+             * 2. Send VersionList             
              */
             SendMessage(peer, new PeerListMessage(_peers, _myPort));
+            SendMessage(peer, new VersionListMessage(_versionList, _myPort));
         }
 
         private void ConnectRandomPeer()

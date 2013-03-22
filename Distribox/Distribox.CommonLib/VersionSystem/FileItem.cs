@@ -15,6 +15,8 @@ namespace Distribox.CommonLib
         public String CurrentSHA1;
         public List<FileSubversion> History = new List<FileSubversion>();
 
+        public FileItem() { }
+
         public FileItem(String Name, Boolean IsDirectory, DateTime When)
         {
             this.IsAlive = true;
@@ -23,6 +25,17 @@ namespace Distribox.CommonLib
             this.CurrentName = Name;
             this.CurrentSHA1 = null;
             if (IsDirectory) NewVersion(Name, null, When);
+        }
+
+        public static FileItem CreateEmpty(FileItem B)
+        {
+            FileItem A = new FileItem();
+            A.IsAlive = B.IsAlive;
+            A.Id = B.Id;
+            A.IsDirectory = B.IsDirectory;
+            A.CurrentName = B.CurrentName;
+            A.CurrentSHA1 = null;
+            return A;
         }
 
         public void NewVersion(String Name, String SHA1, DateTime When)

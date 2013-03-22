@@ -9,6 +9,7 @@ using System.Net;
 namespace Distribox.Network
 {
     using Distribox.CommonLib;
+    using System.IO;
 
     class Session
     {
@@ -23,7 +24,8 @@ namespace Distribox.Network
         private PeerList _peers;
         private AtomicMessageListener _listener;
         private int _myPort;
-        private VersionList _versionList;
+
+        public VersionList Versions { get; set; }
         //private Dictionary<Peer, Session> sessions;
 
         private void ReceiveHandler(byte[] data, String address)
@@ -53,9 +55,13 @@ namespace Distribox.Network
             }
         }
 
-        private static void SendMessage(Peer peer, ProtocolMessage message)
+        private static void SendMessage(Peer peer, ProtocolMessage message, Distribox.Network.AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
         {
             AtomicMessageSender sender = new Network.AtomicMessageSender(peer.IP, peer.Port);
+            if (onCompleteHandler != null)
+            {
+                sender.OnComplete += onCompleteHandler;
+            }
             byte[] bMessage = CommonLib.CommonHelper.ShowAsBytes(message);
             //Console.WriteLine(CommonLib.CommonHelper.ByteToString(bMessage));
             sender.SendBytes(bMessage);
@@ -105,28 +111,35 @@ namespace Distribox.Network
         private void ProcessVersionList(Peer peer, VersionListMessage versionListMessage)
         {            
             List<FileItem> versionRequest;
-            lock (_versionList)
+            lock (Versions)
             {
-                versionRequest = _versionList.GetLessThan(versionListMessage.List);
+                versionRequest = Versions.GetLessThan(versionListMessage.List);
+                Console.WriteLine("Received version list from {1}\n{0}", versionListMessage.List.Show(), peer.Show());
             }            
             SendMessage(peer, new FileRequest(versionRequest, _myPort));
+
+            Console.WriteLine("Sent file request\n{0}", versionRequest.Show());
         }
 
         private void ProcessFileRequest(Peer peer, FileRequest request)
         {
-            byte[] data;
-            lock (_versionList)
+            Console.WriteLine("Receive file request\n{0}", request._request.Show());
+
+            String filename = null;
+            lock (Versions)
             {
-                 data = _versionList.CreateFileBundle(request._request);
-            }            
-            SendMessage(peer, new FileDataResponse(data, _myPort));
+                filename = Versions.CreateFileBundle(request._request);
+            }
+
+            byte[] data = File.ReadAllBytes(filename);
+            SendMessage(peer, new FileDataResponse(data, _myPort), () => File.Delete(filename));
         }
 
         private void ProcessFileResponse(Peer peer, FileDataResponse response)
         {
-            lock(_versionList)
+            lock(Versions)
             {
-                _versionList.AcceptFileBundle(response._data);
+                Versions.AcceptFileBundle(response._data);
             }
         }
 
@@ -137,7 +150,10 @@ namespace Distribox.Network
              * 2. Send VersionList             
              */
             SendMessage(peer, new PeerListMessage(_peers, _myPort));
-            SendMessage(peer, new VersionListMessage(_versionList, _myPort));
+            SendMessage(peer, new VersionListMessage(Versions, _myPort));
+
+            Console.WriteLine("Send version list to {0}", peer.Show());
+            Console.WriteLine(Versions.Show());
         }
 
         private void ConnectRandomPeer()
@@ -145,7 +161,12 @@ namespace Distribox.Network
             Peer peer;
             lock (_peers)
             {
-                peer = _peers.SelectRandomPeer();
+                // FIXME remove this
+                do
+                {
+                    peer = _peers.SelectRandomPeer();
+                }
+                while (peer.Port == _myPort);
             }
             if (peer!=null)
                 SendMessage(peer, new ConnectRequest(_myPort));

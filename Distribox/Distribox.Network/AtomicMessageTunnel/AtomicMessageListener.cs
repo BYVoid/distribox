@@ -19,6 +19,7 @@ namespace Distribox.Network
 
         public AtomicMessageListener(int port)
         {
+            Console.WriteLine("==============AtomicMessageListener: {0}===============", port);
             _listener = new TcpListener(IPAddress.Any, port);
             _port = port;
 

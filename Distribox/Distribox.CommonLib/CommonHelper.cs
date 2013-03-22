@@ -6,10 +6,11 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading;
+using SevenZip;
 
 namespace Distribox.CommonLib
 {
-    public class CommonHelper
+    public static class CommonHelper
     {
         private static Random rd = new Random();
 
@@ -61,7 +62,7 @@ namespace Distribox.CommonLib
             return Read<T>(ByteToString(input));
         }
 
-        public static String Show(Object input)
+        public static String Show(this Object input)
         {
             return JsonConvert.SerializeObject(input, Formatting.Indented);
         }
@@ -109,6 +110,18 @@ namespace Distribox.CommonLib
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetString(bytes);
+        }
+
+        public static void Zip(String dir, String output)
+        {
+            var zip_compressor = new SevenZipCompressor();
+            zip_compressor.CompressDirectory(dir, output);
+        }
+
+        public static void UnZip(String file, String dir)
+        {
+            var zip_extrator = new SevenZipExtractor(file);
+            zip_extrator.ExtractArchive(dir);
         }
     }
 }

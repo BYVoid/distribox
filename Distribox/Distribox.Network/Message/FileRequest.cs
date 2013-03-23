@@ -15,6 +15,11 @@ namespace Distribox.Network
         {
             _request = request;
             _type = MessageType.FileRequest;
-        }
+		}
+		
+		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+		{
+			visitor.Process(this, peer);
+		}
     }
 }

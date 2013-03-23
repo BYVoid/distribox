@@ -15,5 +15,10 @@ namespace Distribox.Network
             List = list;
             _type = MessageType.PeerListMessage;
         }
+
+		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+		{
+			visitor.Process(this, peer);
+		}
     }
 }

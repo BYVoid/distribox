@@ -6,17 +6,14 @@ using System.Threading.Tasks;
 
 namespace Distribox.Network
 {
-    class VersionListMessage : ProtocolMessage
+    class SyncRequest : ProtocolMessage
     {
-        public CommonLib.VersionList List;
-
-        public VersionListMessage(CommonLib.VersionList list, int myPort)
-            : base(myPort)
+        public SyncRequest(int myListenPort)
+            : base(myListenPort)
         {
-            List = list;
-            _type = MessageType.VersionListMessage;
-        }
-
+            _type = MessageType.SyncRequest;
+		}
+		
 		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
 		{
 			visitor.Process(this, peer);

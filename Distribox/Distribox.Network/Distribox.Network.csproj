@@ -9,23 +9,25 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Distribox.Network</RootNamespace>
     <AssemblyName>Distribox.Network</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Externalconsole>True</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -44,29 +46,30 @@
     <Compile Include="AntiEntropyProtocol.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
-    <Compile Include="Message\AcceptConnect.cs" />
-    <Compile Include="Message\AcceptInvivation.cs" />
-    <Compile Include="Message\ConnectRequest.cs" />
     <Compile Include="Message\FileDataResponse.cs" />
     <Compile Include="Message\FileRequest.cs" />
-    <Compile Include="Message\Invitation.cs" />
     <Compile Include="Message\PeerListMessage.cs" />
     <Compile Include="Message\ProtocolMessage.cs" />
     <Compile Include="Message\VersionListMessage.cs" />
     <Compile Include="PeerList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Peer.cs" />
+    <Compile Include="Message\SyncRequest.cs" />
+    <Compile Include="Message\InvitationAck.cs" />
+    <Compile Include="Message\SyncAck.cs" />
+    <Compile Include="Message\InvitationRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Distribox.Client\Distribox.Client.csproj">
-      <Project>{421bcbb8-0550-4f0a-8e68-2e7afbe1f268}</Project>
+      <Project>{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}</Project>
       <Name>Distribox.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\Distribox.CommonLib\Distribox.CommonLib.csproj">
-      <Project>{8e47278d-a729-49f6-927c-a48bc1ff3515}</Project>
+      <Project>{8E47278D-A729-49F6-927C-A48BC1FF3515}</Project>
       <Name>Distribox.CommonLib</Name>
     </ProjectReference>
   </ItemGroup>

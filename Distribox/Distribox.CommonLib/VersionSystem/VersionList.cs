@@ -22,11 +22,13 @@ namespace Distribox.CommonLib
         {
             this.root = root;
 
-            AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox\\VersionList.txt");
+            AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox/VersionList.txt");
+			// TODO empty version list
             foreach (var file in AllFiles.Where(x => x.IsAlive))
             {
                 PathToFile[file.CurrentName] = file;
             }
+			// TODO make folders .Distribox data tmp
         }
 
         public FileItem this[String Name]
@@ -94,29 +96,24 @@ namespace Distribox.CommonLib
 
         public String GetFileBySHA1(String SHA1)
         {
-            return root + ".Distribox\\data\\" + SHA1;
+            return root + ".Distribox/data/" + SHA1;
         }
 
         public void Flush()
         {
-            CommonHelper.WriteObject(root + ".Distribox\\VersionList.txt", AllFiles);
+            CommonHelper.WriteObject(root + ".Distribox/VersionList.txt", AllFiles);
         }
 
         public String CreateFileBundle(List<FileItem> list)
         {
-            if (list.Count() != 0)
-            {
-                int k = 123;
-                int sum = k * k;
-            }
-            String data_path = root + ".Distribox\\data\\";
-            String tmp_path = root + ".Distribox\\tmp\\" + CommonHelper.GetRandomHash();
+            String data_path = root + ".Distribox/data/";
+            String tmp_path = root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmp_path);
-            CommonHelper.WriteObject(tmp_path + "\\Delta.txt", list);
+            CommonHelper.WriteObject(tmp_path + "/Delta.txt", list);
             foreach (var item in list)
                 foreach (var history in item.History)
                 {
-                    File.Copy(data_path + history.SHA1, tmp_path + "\\" + history.SHA1);
+                    File.Copy(data_path + history.SHA1, tmp_path + "/" + history.SHA1);
                 }
             CommonHelper.Zip(tmp_path, tmp_path + ".7z");
             Directory.Delete(tmp_path, true);
@@ -125,8 +122,8 @@ namespace Distribox.CommonLib
        
         public void AcceptFileBundle(byte[] data)
         {
-            String data_path = root + ".Distribox\\data\\";
-            String tmp_path = root + ".Distribox\\tmp\\" + CommonHelper.GetRandomHash();
+            String data_path = root + ".Distribox/data/";
+            String tmp_path = root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmp_path);
             File.WriteAllBytes(tmp_path + ".7z", data);
             CommonHelper.UnZip(tmp_path + ".7z", tmp_path);
@@ -137,7 +134,7 @@ namespace Distribox.CommonLib
                 FileInfo info = new FileInfo(file);
                 if (info.Name == "Delta.txt") continue;
                 if (File.Exists(data_path + info.Name)) continue;
-                File.Copy(tmp_path + "\\" + info.Name, data_path + info.Name);
+                File.Copy(tmp_path + "/" + info.Name, data_path + info.Name);
             }
 
             // append versions
@@ -145,7 +142,7 @@ namespace Distribox.CommonLib
             foreach (var item in AllFiles)
                 myFileList[item.Id] = item;
 
-            var list = CommonHelper.ReadObject<List<FileItem>>(tmp_path + "\\Delta.txt");
+            var list = CommonHelper.ReadObject<List<FileItem>>(tmp_path + "/Delta.txt");
             foreach (var item in list)
             {
                 if (!myFileList.ContainsKey(item.Id))

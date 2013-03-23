@@ -44,7 +44,7 @@ namespace Distribox.Client.Module
 
         private String data_path
         {
-            get { return root + ".Distribox\\data\\"; }
+            get { return root + ".Distribox/data/"; }
         }
 
         public FileWatcher(String root)

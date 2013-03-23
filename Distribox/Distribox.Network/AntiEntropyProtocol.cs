@@ -25,29 +25,25 @@ namespace Distribox.Network
 		/// Handle receive message event.
 		/// </summary>
 		/// <param name="data">Data.</param>
-		/// <param name="address">Address.</param>
-        private void OnReceiveMessage(byte[] data, string address)
+		/// <param name="peerFrom">peer from.</param>
+        private void OnReceiveMessage(byte[] data, Peer peerFrom)
 		{
-			ParseAndDispatchMessage(data, address);
+			ParseAndDispatchMessage(data, peerFrom);
 		}
 
 		/// <summary>
 		/// Parses and dispatch message from peer.
 		/// </summary>
 		/// <param name="data">Data.</param>
-		/// <param name="address">Address.</param>
-		private void ParseAndDispatchMessage(byte[] data, string address)
+		/// <param name="peerFrom">Address.</param>
+		private void ParseAndDispatchMessage(byte[] data, Peer peerFrom)
 		{
 			// Parse it, and convert to the right derived class
 			ProtocolMessage message = CommonHelper.Read<ProtocolMessage>(data).ParseToDerivedClass(data);            
-			
-			// TODO use a more specific expression to present message source rather than a string of address
-			// Parse IP and Port
-			string[] ipAndPort = address.Split(':');
-			string ip = ipAndPort[0];
+
 			// ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
 			int port = message.MyListenPort;
-			Peer peer = new Peer(IPAddress.Parse(ip), port);
+			Peer peer = new Peer(peerFrom.IP, port);
 			
 			// Process message (visitor design pattern)
 			message.Accept(this, peer);
@@ -61,7 +57,7 @@ namespace Distribox.Network
 		/// <param name="onCompleteHandler">On complete handler.</param>
         private static void SendMessage(Peer peer, ProtocolMessage message, AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
         {
-            AtomicMessageSender sender = new Network.AtomicMessageSender(peer.IP, peer.Port);
+            AtomicMessageSender sender = new Network.AtomicMessageSender(peer);
             if (onCompleteHandler != null)
             {
                 sender.OnComplete += onCompleteHandler;

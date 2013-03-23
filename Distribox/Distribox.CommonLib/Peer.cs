@@ -6,20 +6,25 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace Distribox.Network
+namespace Distribox.CommonLib
 {
-
-    class Peer
+    public class Peer
     {
         private IPAddress _address;
         private int _port;
 		// TODO add a hash member
-
-        public Peer(IPAddress _address, int _port)
-        {
-            this._address = _address;
-            this._port = _port;
-        }
+		
+		public Peer(IPAddress address, int port)
+		{
+			this._address = address;
+			this._port = port;
+		}
+		
+		public Peer(string address, int port)
+		{
+			this._address = IPAddress.Parse(address);
+			this._port = port;
+		}
 
         public String IP
         {

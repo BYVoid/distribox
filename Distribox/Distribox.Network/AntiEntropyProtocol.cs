@@ -123,7 +123,7 @@ namespace Distribox.Network
         {
             lock (_peers)
             {
-                _peers.AddPeerAndFlush(peer);
+                _peers.AddPeer(peer);
                 _peers.MergeWith(message.List);
             }
         }

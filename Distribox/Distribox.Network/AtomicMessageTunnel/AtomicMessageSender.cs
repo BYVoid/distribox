@@ -12,8 +12,9 @@ namespace Distribox.Network
 {
     public class AtomicMessageSender
     {
-        public delegate void OnCompleteHandler();
-        public event OnCompleteHandler OnComplete;
+		public delegate void OnCompleteHandler();
+		public event OnCompleteHandler OnComplete;
+		public event OnCompleteHandler OnError; // TODO implement on error
 
         private byte[] _buffer = new byte[10000];
         private TcpClient _client = null;
@@ -22,6 +23,7 @@ namespace Distribox.Network
 
         public AtomicMessageSender(String ip, int port)
         {
+			// logger
             Console.WriteLine("==============AtomicMessageSender: {0}===============", port);
             this.ip = ip;
             this.port = port;

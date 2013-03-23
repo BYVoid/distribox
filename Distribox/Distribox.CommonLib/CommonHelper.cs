@@ -114,6 +114,7 @@ namespace Distribox.CommonLib
 
         public static void Zip(String dir, String output)
         {
+			// TODO use zip instead of 7z.dll
             var zip_compressor = new SevenZipCompressor();
             zip_compressor.CompressDirectory(dir, output);
         }
@@ -123,5 +124,7 @@ namespace Distribox.CommonLib
             var zip_extrator = new SevenZipExtractor(file);
             zip_extrator.ExtractArchive(dir);
         }
+
+		// TODO logger class
     }
 }

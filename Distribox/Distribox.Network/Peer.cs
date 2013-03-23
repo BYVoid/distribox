@@ -13,6 +13,7 @@ namespace Distribox.Network
     {
         private IPAddress _address;
         private int _port;
+		// TODO add a hash member
 
         public Peer(IPAddress _address, int _port)
         {

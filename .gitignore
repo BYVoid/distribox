@@ -1,2 +1,6 @@
+*.userprefs
+
 Distribox/Distribox.Client/bin
 Distribox/Distribox.CommonLib/bin
+Distribox/Distribox.Network/bin
+

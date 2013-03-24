@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Distribox.FileSystem</RootNamespace>
-    <AssemblyName>Distribox.Client</AssemblyName>
+    <AssemblyName>Distribox.FileSystem</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>

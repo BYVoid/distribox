@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.Network", "Distribox.Network\Distribox.Network.csproj", "{7CF1C8EE-1FAB-4AD7-BA8F-5A65AB0255C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.FileSystem", "Distribox.Client\Distribox.FileSystem.csproj", "{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.CommonLib", "Distribox.CommonLib\Distribox.CommonLib.csproj", "{8E47278D-A729-49F6-927C-A48BC1FF3515}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.CLI", "Distribox.CLI\Distribox.CLI.csproj", "{AB828299-4CDD-4D38-9C63-251EF0FB3DC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distribox.FileSystem", "Distribox.FileSystem\Distribox.FileSystem.csproj", "{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

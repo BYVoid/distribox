@@ -45,7 +45,7 @@
       <Project>{7CF1C8EE-1FAB-4AD7-BA8F-5A65AB0255C1}</Project>
       <Name>Distribox.Network</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Distribox.Client\Distribox.FileSystem.csproj">
+    <ProjectReference Include="..\Distribox.FileSystem\Distribox.FileSystem.csproj">
       <Project>{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}</Project>
       <Name>Distribox.FileSystem</Name>
     </ProjectReference>

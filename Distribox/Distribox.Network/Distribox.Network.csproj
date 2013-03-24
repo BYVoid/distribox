@@ -67,7 +67,7 @@
       <Project>{8E47278D-A729-49F6-927C-A48BC1FF3515}</Project>
       <Name>Distribox.CommonLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Distribox.Client\Distribox.FileSystem.csproj">
+    <ProjectReference Include="..\Distribox.FileSystem\Distribox.FileSystem.csproj">
       <Project>{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}</Project>
       <Name>Distribox.FileSystem</Name>
     </ProjectReference>

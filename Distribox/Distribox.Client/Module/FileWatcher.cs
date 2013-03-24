@@ -9,67 +9,112 @@ using System.Diagnostics;
 
 namespace Distribox.Client.Module
 {
-
+	/// <summary>
+	/// File watcher.
+	/// </summary>
     public class FileWatcher
     {
+		/// <summary>
+		/// Occurs when file system event occurs.
+		/// </summary>
         public delegate void FileSystemChangedHandler(FileChangedEventArgs e);
+
+		/// <summary>
+		/// Occurs when file changed.
+		/// </summary>
         public event FileSystemChangedHandler Changed;
+
+		/// <summary>
+		/// Occurs when file created.
+		/// </summary>
         public event FileSystemChangedHandler Created;
+
+		/// <summary>
+		/// Occurs when file renamed.
+		/// </summary>
         public event FileSystemChangedHandler Renamed;
+
+		/// <summary>
+		/// Occurs when file deleted.
+		/// </summary>
         public event FileSystemChangedHandler Deleted;
 
+		/// <summary>
+		/// Occurs when firstly idle from busy.
+		/// </summary>
         public delegate void IdleHandler();
+
+		/// <summary>
+		/// Occurs when firstly idle from busy.
+		/// </summary>
         public event IdleHandler Idle;
 
+		// TODO config file
         private const int TIME_INTERVAL = 1000;
 
-        private Queue<FileSystemEventArgs> _event_queue = new Queue<FileSystemEventArgs>();
-        private System.Timers.Timer timer = new System.Timers.Timer(TIME_INTERVAL);
-        private String _root;
-        private String _hidden_path
-        {
-            get { return _root + ".Distribox"; }
-        }
+		/// <summary>
+		/// The event queue.
+		/// </summary>
+        private Queue<FileSystemEventArgs> _eventQueue = new Queue<FileSystemEventArgs>();
 
-        private String _data_path
+		/// <summary>
+		/// The timer for polling.
+		/// </summary>
+        private System.Timers.Timer timer = new System.Timers.Timer(TIME_INTERVAL);
+
+		// TODO config
+        private string _root;
+
+        private string _dataPath
         {
             get { return _root + ".Distribox/data/"; }
         }
 
-        public FileWatcher(String root)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.Client.Module.FileWatcher"/> class.
+		/// </summary>
+		/// <param name="root">Root.</param>
+        public FileWatcher(string root)
         {
             this._root = root;
 
-            FileSystemWatcher wather = new FileSystemWatcher();
-            wather.Path = root;
-            wather.Changed += OnWatcherEvent;
-            wather.Created += OnWatcherEvent;
-            wather.Renamed += OnWatcherEvent;
-            wather.Deleted += OnWatcherEvent;
-            wather.Filter = "*.*";
-            wather.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            wather.EnableRaisingEvents = true;
-            wather.IncludeSubdirectories = true;
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = root;
+            watcher.Changed += OnWatcherEvent;
+            watcher.Created += OnWatcherEvent;
+            watcher.Renamed += OnWatcherEvent;
+            watcher.Deleted += OnWatcherEvent;
+            watcher.Filter = "*.*";
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            watcher.EnableRaisingEvents = true;
+            watcher.IncludeSubdirectories = true;
 
             timer.Elapsed += OnTimerEvent;
             timer.AutoReset = true;
             timer.Start();
         }
 
-        void OnTimerEvent(object sender, System.Timers.ElapsedEventArgs e)
+		/// <summary>
+		/// Handle the timer event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnTimerEvent(object sender, System.Timers.ElapsedEventArgs e)
         {
-            lock (_event_queue)
+            lock (_eventQueue)
             {
-                if (_event_queue.Count() == 0) return;
+                if (_eventQueue.Count() == 0)
+					return;
             }
             timer.Stop();
             while (true)
             {
                 FileSystemEventArgs args = null;
-                lock (_event_queue)
+                lock (_eventQueue)
                 {
-                    if (_event_queue.Count() == 0) break;
-                    args = _event_queue.Dequeue();
+                    if (_eventQueue.Count() == 0)
+						break;
+                    args = _eventQueue.Dequeue();
                 }
                 switch (args.ChangeType)
                 {
@@ -86,148 +131,135 @@ namespace Distribox.Client.Module
                         OnRenamedEvent(null, args as RenamedEventArgs);
                         break;
                     default:
-                        throw new NotImplementedException();
+						Logger.Error("Unknown type of file watcher event: {0}.", args.Serialize());
+						break;
                 }
             }
             Idle();
             timer.Start();
         }
 
-        void OnWatcherEvent(object sender, FileSystemEventArgs e)
+		/// <summary>
+		/// Handle the watcher event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnWatcherEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.Name.StartsWith(".Distribox"))
+			// Exclude .Distribox folder
+            if (e.Name.StartsWith(".Distribox"))
+				return;
+			lock (_eventQueue)
+			{
+				_eventQueue.Enqueue(e);
+			}
+        }
+
+		/// <summary>
+		/// Handle delete event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnDeletedEvent(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine("Deleted: {0}", e.Name);
+
+            FileChangedEventArgs newEvent = TranslateEvent(e);
+            if (Deleted != null)
+				Deleted(newEvent);
+        }
+
+		/// <summary>
+		/// Handle rename event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnRenamedEvent(object sender, RenamedEventArgs e)
+        {
+            Console.WriteLine("Renamed: {0} -> {1}", e.OldName, e.Name);
+
+            FileChangedEventArgs newEvent = TranslateEvent(e);
+            
+            if (!newEvent.IsDirectory)
             {
-                lock (_event_queue)
+				// TODO remove sha1
+                newEvent.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
+                newEvent.DataPath = _dataPath + newEvent.SHA1;
+                if (!File.Exists(newEvent.DataPath))
                 {
-                    _event_queue.Enqueue(e);
+                    File.Copy(newEvent.FullPath, newEvent.DataPath);
                 }
             }
+
+            if (Renamed != null)
+				Renamed(newEvent);
         }
 
-        public void OnTimerEvent()
-        {
-            Boolean changed = false;
-                while (true)
-                {
-                    FileSystemEventArgs e = null;
-                    lock (_event_queue)
-                    {
-                        if (_event_queue.Count() == 0) break;
-                        e = _event_queue.Dequeue();
-                    }
-                    switch (e.ChangeType)
-                    {
-                        case WatcherChangeTypes.Changed:
-                            OnChangedEvent(null, e);
-                            break;
-                        case WatcherChangeTypes.Created:
-                            OnCreatedEvent(null, e);
-                            break;
-                        case WatcherChangeTypes.Deleted:
-                            OnDeletedEvent(null, e);
-                            break;
-                        case WatcherChangeTypes.Renamed:
-                            OnRenamedEvent(null, e as RenamedEventArgs);
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
-                    changed = true; 
-                }
-
-                if (changed && Idle != null)
-                {
-                    Idle();
-                    changed = false;
-                }
-        }
-
-        void OnDeletedEvent(object sender, FileSystemEventArgs e)
-        {
-            if (!e.FullPath.StartsWith(_hidden_path))
-            {
-                Console.WriteLine("Deleted: {0}", e.Name);
-
-                FileChangedEventArgs new_event = TranslateEvent(e);
-                if (Deleted != null) Deleted(new_event);
-            }
-        }
-
-        void OnRenamedEvent(object sender, RenamedEventArgs e)
-        {
-            if (!e.FullPath.StartsWith(_hidden_path))
-            {
-                Console.WriteLine("Renamed: {0} -> {1}", e.OldName, e.Name);
-
-                FileChangedEventArgs new_event = TranslateEvent(e);
-                
-                if (!new_event.IsDirectory)
-                {
-                    new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                    new_event.DataPath = _data_path + new_event.SHA1;
-                    if (!File.Exists(new_event.DataPath))
-                    {
-                        File.Copy(new_event.FullPath, new_event.DataPath);
-                    }
-                }
-
-                if (Renamed != null) Renamed(new_event);
-            }
-        }
-
+		// TODO remove count
         int count = 0;
-        void OnCreatedEvent(object sender, FileSystemEventArgs e)
+		/// <summary>
+		/// Handle create event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnCreatedEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.StartsWith(_hidden_path))
-            {
-                Console.WriteLine("Create: {0}  {1}", e.Name, count++);
+            Console.WriteLine("Create: {0}  {1}", e.Name, count++);
 
-                FileChangedEventArgs new_event = TranslateEvent(e);
+            FileChangedEventArgs newEvent = TranslateEvent(e);
 
-                if (Created != null) Created(new_event);
-            }
+            if (Created != null)
+				Created(newEvent);
         }
 
-        void OnChangedEvent(object sender, FileSystemEventArgs e)
+		/// <summary>
+		/// Handle the changed event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void OnChangedEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.StartsWith(_hidden_path))
-            {
-                Console.WriteLine("Changed: {0}", e.Name);
-                FileChangedEventArgs new_event = TranslateEvent(e);
+            Console.WriteLine("Changed: {0}", e.Name);
+            FileChangedEventArgs newEvent = TranslateEvent(e);
 
-                if (!new_event.IsDirectory)
+            if (!newEvent.IsDirectory)
+            {
+                newEvent.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
+                newEvent.DataPath = _dataPath + newEvent.SHA1;
+                if (!File.Exists(newEvent.DataPath))
                 {
-                    new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                    new_event.DataPath = _data_path + new_event.SHA1;
-                    if (!File.Exists(new_event.DataPath))
-                    {
-                        File.Copy(new_event.FullPath, new_event.DataPath);
-                    }
+                    File.Copy(newEvent.FullPath, newEvent.DataPath);
                 }
-
-                if (Changed != null) Changed(new_event);
             }
+
+            if (Changed != null)
+				Changed(newEvent);
         }
 
+		/// <summary>
+		/// Translates the system event to FileChangedEvent.
+		/// </summary>
+		/// <returns>The event.</returns>
+		/// <param name="e">E.</param>
         private FileChangedEventArgs TranslateEvent(FileSystemEventArgs e)
         {
-            FileChangedEventArgs new_event = new FileChangedEventArgs();
-            new_event.ChangeType = e.ChangeType;
-            new_event.FullPath = e.FullPath;
-            new_event.Name = e.Name;
-            new_event.When = DateTime.Now;
+            FileChangedEventArgs newEvent = new FileChangedEventArgs();
+            newEvent.ChangeType = e.ChangeType;
+            newEvent.FullPath = e.FullPath;
+            newEvent.Name = e.Name;
+            newEvent.When = DateTime.Now;
 
             if (e.ChangeType != WatcherChangeTypes.Deleted)
             {
-                FileInfo info = new FileInfo(new_event.FullPath);
-                new_event.IsDirectory = (info.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
+                FileInfo info = new FileInfo(newEvent.FullPath);
+                newEvent.IsDirectory = (info.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
             }
             if (e.ChangeType == WatcherChangeTypes.Renamed)
             {
-                new_event.OldName = ((RenamedEventArgs)e).OldName;
-                new_event.FullPath = ((RenamedEventArgs)e).OldFullPath;
+                newEvent.OldName = ((RenamedEventArgs)e).OldName;
+                newEvent.FullPath = ((RenamedEventArgs)e).OldFullPath;
             }
-            return new_event;
+            return newEvent;
         }
     }
 }

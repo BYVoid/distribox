@@ -26,9 +26,9 @@ namespace Distribox.CommonLib
         private Dictionary<string, FileItem> _pathToFile = new Dictionary<string, FileItem>();
 
 		/// <summary>
-		/// The sync root of Distribox.
+		/// The path of version list.
 		/// </summary>
-        private string _root;
+        private string _path;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
@@ -39,43 +39,16 @@ namespace Distribox.CommonLib
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
 		/// </summary>
-		/// <param name="root">Root.</param>
-        public VersionList(string root)
+		/// <param name="path">Path of version list.</param>
+        public VersionList(string path)
         {
-            this._root = root;
-
-            Initialize();
+			this._path = path;
 
 			// Deserialize version list
-            AllFiles = CommonHelper.ReadObject<List<FileItem>>(_root + ".Distribox/VersionList.txt");
+            AllFiles = CommonHelper.ReadObject<List<FileItem>>(_path);
             foreach (var file in AllFiles.Where(x => x.IsAlive))
             {
                 _pathToFile[file.CurrentName] = file;
-            }
-        }
-
-		// TODO move this to other place
-        private void Initialize()
-        {
-            if (!Directory.Exists(_root))
-            {
-                Directory.CreateDirectory(_root);
-            }
-            if (!Directory.Exists(_root + ".Distribox"))
-            {
-                Directory.CreateDirectory(_root + ".Distribox");
-            }
-            if (!Directory.Exists(_root + ".Distribox/tmp"))
-            {
-                Directory.CreateDirectory(_root + ".Distribox/tmp");
-            }
-            if (!Directory.Exists(_root + ".Distribox/data"))
-            {
-                Directory.CreateDirectory(_root + ".Distribox/data");
-            }
-            if (!File.Exists(_root + ".Distribox/VersionList.txt"))
-            {
-                File.WriteAllText(_root + ".Distribox/VersionList.txt", "[]");
             }
         }
 
@@ -149,81 +122,6 @@ namespace Distribox.CommonLib
             _pathToFile.Remove(name);
         }
 
-		/// <summary>
-		/// Creates a bundle containing version list delta and all data of files.
-		/// </summary>
-		/// <returns>The path of bundle.</returns>
-		/// <param name="list">List needed to transfered.</param>
-        public string CreateFileBundle(List<FileItem> list)
-        {
-            string dataPath = _root + ".Distribox/data/";
-            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
-            Directory.CreateDirectory(tmpPath);
-			list.WriteObject(tmpPath + "/Delta.txt");
-            foreach (var item in list)
-			{
-				foreach (var history in item.History)
-				{
-					if (history.SHA1 == null)
-						continue;
-					File.Copy(dataPath + history.SHA1, tmpPath + "/" + history.SHA1);
-				}
-			}
-            CommonHelper.Zip(tmpPath + ".zip", tmpPath);
-            Directory.Delete(tmpPath, true);
-            return tmpPath + ".zip";
-        }
-
-		/// <summary>
-		/// Accepts a file bundle containing version list delta and all data of files.
-		/// </summary>
-		/// <param name="data">Binary data.</param>
-        public void AcceptFileBundle(byte[] data)
-        {
-            string dataPath = _root + ".Distribox/data/";
-            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
-            Directory.CreateDirectory(tmpPath);
-            File.WriteAllBytes(tmpPath + ".zip", data);
-            CommonHelper.UnZip(tmpPath + ".zip", tmpPath);
-
-            // Copy all files
-            foreach (var file in Directory.GetFiles(tmpPath))
-            {
-                FileInfo info = new FileInfo(file);
-                if (info.Name == "Delta.txt")
-					continue;
-                if (File.Exists(dataPath + info.Name))
-					continue;
-                File.Copy(tmpPath + "/" + info.Name, dataPath + info.Name);
-            }
-
-            // Append versions
-            Dictionary<string, FileItem> myFileList = new Dictionary<string, FileItem>();
-            foreach (var item in AllFiles)
-			{
-				myFileList[item.Id] = item;
-			}
-            var list = CommonHelper.ReadObject<List<FileItem>>(tmpPath + "/Delta.txt");
-            foreach (var item in list)
-            {
-                if (!myFileList.ContainsKey(item.Id))
-                {
-                    myFileList[item.Id] = new FileItem(item.Id);
-                    AllFiles.Add(myFileList[item.Id]);
-                    _pathToFile[myFileList[item.Id].CurrentName] = myFileList[item.Id];
-                }
-                foreach (var history in item.History)
-                {
-                    myFileList[item.Id].NewVersion(history);
-                }
-            }
-
-			// Clean up
-            File.Delete(tmpPath + ".zip");
-            Directory.Delete(tmpPath, true);
-            Flush();
-        }
-
 		// TODO use version
 		/// <summary>
 		/// Gets all version that exist in <paramref name="list"/> but not exist in this
@@ -262,7 +160,27 @@ namespace Distribox.CommonLib
 		/// </summary>
         public void Flush()
         {
-			AllFiles.WriteObject(_root + ".Distribox/VersionList.txt");
+			AllFiles.WriteObject(_path);
         }
+
+		/// <summary>
+		/// Gets file by name.
+		/// </summary>
+		/// <returns>The file.</returns>
+		/// <param name="name">Name.</param>
+		public FileItem GetFileByName(string name)
+		{
+			return _pathToFile[name];
+		}
+
+		/// <summary>
+		/// Sets file by name.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="fileItem">File item.</param>
+		public void SetFileByName(string name, FileItem fileItem)
+		{
+			_pathToFile[name] = fileItem;
+		}
     }
 }

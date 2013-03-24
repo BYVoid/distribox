@@ -9,18 +9,6 @@ using System.Diagnostics;
 
 namespace Distribox.Client.Module
 {
-    public class FileChangedEventArgs
-    {
-        public WatcherChangeTypes ChangeType { get; set; }
-        public String FullPath { get; set; }
-        public String Name { get; set; }
-        public String OldFullPath { get; set; }
-        public String OldName { get; set; }
-        public String SHA1 { get; set; }
-        public String DataPath { get; set; }
-        public DateTime When { get; set; }
-        public Boolean IsDirectory { get; set; }
-    }
 
     public class FileWatcher
     {

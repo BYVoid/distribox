@@ -19,7 +19,7 @@ namespace Distribox.Network
         private AtomicMessageListener _listener;
         private int _listeningPort;
 
-        public VersionList Versions { get; set; }
+		private VersionControl _versionControl;
 
 		/// <summary>
 		/// Handle receive message event.
@@ -136,9 +136,9 @@ namespace Distribox.Network
 		public void Process(VersionListMessage message, Peer peer)
         {            
             List<FileItem> versionRequest;
-            lock (Versions)
+            lock (_versionControl.VersionList)
             {
-                versionRequest = Versions.GetLessThan(message.List);
+                versionRequest = _versionControl.VersionList.GetLessThan(message.List);
                 Logger.Info("Received version list from {1}\n{0}", message.List.Serialize(), peer.Serialize());
             }            
             SendMessage(peer, new FileRequest(versionRequest, _listeningPort));
@@ -156,9 +156,9 @@ namespace Distribox.Network
             Logger.Info("Receive file request\n{0}", message._request.Serialize());
 
 			string filename = null;
-            lock (Versions)
+            lock (_versionControl.VersionList)
             {
-                filename = Versions.CreateFileBundle(message._request);
+                filename = _versionControl.CreateFileBundle(message._request);
             }
 
             byte[] data = File.ReadAllBytes(filename);
@@ -172,9 +172,9 @@ namespace Distribox.Network
 		/// <param name="peer">Peer.</param>
 		public void Process(FileDataResponse message, Peer peer)
         {
-            lock(Versions)
+            lock(_versionControl.VersionList)
             {
-                Versions.AcceptFileBundle(message._data);
+                _versionControl.AcceptFileBundle(message._data);
             }
         }
 
@@ -188,11 +188,11 @@ namespace Distribox.Network
 			SendMessage(peer, new PeerListMessage(_peers, _listeningPort));
 
 			// Send VersionList
-            SendMessage(peer, new VersionListMessage(Versions, _listeningPort));
+            SendMessage(peer, new VersionListMessage(_versionControl.VersionList, _listeningPort));
 
 			// TODO logger
             Console.WriteLine("Send version list to {0}", peer.Serialize());
-            Console.WriteLine(Versions.Serialize());
+            Console.WriteLine(_versionControl.VersionList.Serialize());
         }
 
 		/// <summary>
@@ -234,8 +234,11 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="listeningPort">Listening port.</param>
 		/// <param name="peerFileName">File name of peer list.</param>
-		public AntiEntropyProtocol(int listeningPort, string peerFileName)
+		public AntiEntropyProtocol(int listeningPort, string peerFileName, VersionControl versionControl)
         {
+			// Initialize version control
+			_versionControl = versionControl;
+
             // Initialize peer list
             _peers = PeerList.GetPeerList(peerFileName);
 			_listeningPort = listeningPort;

@@ -27,10 +27,9 @@ namespace Distribox.Network
             string root = Console.ReadLine() + "/";
             string peerListName = root + ".Distribox/PeerList.json";
 
-            // Initialize anti entropy protocol
-            AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName);
-            var vs = new VersionControl(root);
-            protocol.Versions = vs.VersionList;
+			// Initialize anti entropy protocol
+			var vs = new VersionControl(root);
+            AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName, vs);
 
             // Initialize file watcher
             FileWatcher watcher = new FileWatcher(root);

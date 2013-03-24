@@ -58,6 +58,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VersionSystem\VersionList.cs" />
     <Compile Include="Peer.cs" />
+    <Compile Include="VersionSystem\VersionControl.cs" />
+    <Compile Include="VersionSystem\FileChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

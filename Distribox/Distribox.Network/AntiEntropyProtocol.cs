@@ -63,7 +63,7 @@ namespace Distribox.Network
                 sender.OnComplete += onCompleteHandler;
             }
             byte[] bMessage = CommonLib.CommonHelper.ShowAsBytes(message);
-            //Console.WriteLine(CommonLib.CommonHelper.ByteToString(bMessage)); TODO use logger
+            Console.WriteLine(message);
             sender.SendBytes(bMessage);
 			// TODO on error
         }
@@ -139,8 +139,7 @@ namespace Distribox.Network
             lock (Versions)
             {
                 versionRequest = Versions.GetLessThan(message.List);
-				// TODO logger
-                Console.WriteLine("Received version list from {1}\n{0}", message.List.Show(), peer.Show());
+                Logger.Info("Received version list from {1}\n{0}", message.List.Show(), peer.Show());
             }            
             SendMessage(peer, new FileRequest(versionRequest, _listeningPort));
 
@@ -154,8 +153,7 @@ namespace Distribox.Network
 		/// <param name="peer">Peer.</param>
 		public void Process(FileRequest message, Peer peer)
         {
-			// TODO logger
-            Console.WriteLine("Receive file request\n{0}", message._request.Show());
+            Logger.Info("Receive file request\n{0}", message._request.Show());
 
 			string filename = null;
             lock (Versions)
@@ -164,7 +162,7 @@ namespace Distribox.Network
             }
 
             byte[] data = File.ReadAllBytes(filename);
-            SendMessage(peer, new FileDataResponse(data, _listeningPort), () => File.Delete(filename));
+            SendMessage(peer, new FileDataResponse(data, _listeningPort), (err) => File.Delete(filename));
         }
 
 		/// <summary>
@@ -202,6 +200,7 @@ namespace Distribox.Network
 		/// </summary>
         private void ConnectRandomPeer()
         {
+            if (_peers.Peers.Count() == 0) return;
             Peer peer;
 			// Lock peers to support thread-safety
             lock (_peers)

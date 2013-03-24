@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading;
-using SevenZip;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Distribox.CommonLib
 {
@@ -112,19 +112,16 @@ namespace Distribox.CommonLib
             return encoding.GetString(bytes);
         }
 
-        public static void Zip(String dir, String output)
+        public static void Zip(String zipFileName, String sourceDirectory)
         {
-			// TODO use zip instead of 7z.dll
-            var zip_compressor = new SevenZipCompressor();
-            zip_compressor.CompressDirectory(dir, output);
+            FastZip zip = new FastZip();
+            zip.CreateZip(zipFileName, sourceDirectory, true, null);
         }
 
-        public static void UnZip(String file, String dir)
+        public static void UnZip(String zipFileName, String sourceDirectory)
         {
-            var zip_extrator = new SevenZipExtractor(file);
-            zip_extrator.ExtractArchive(dir);
+            FastZip zip = new FastZip();
+            zip.ExtractZip(zipFileName, sourceDirectory, null);
         }
-
-		// TODO logger class
     }
 }

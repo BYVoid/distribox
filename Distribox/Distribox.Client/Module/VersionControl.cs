@@ -9,13 +9,13 @@ namespace Distribox.Client.Module
 {
     public class VersionControl
     {
-        private String root;
+        private String _root;
 
         public VersionList VersionList { get; set; }
 
         public VersionControl(String root)
         {
-            this.root = root;
+            this._root = root;
             VersionList = new VersionList(root);
         }
 

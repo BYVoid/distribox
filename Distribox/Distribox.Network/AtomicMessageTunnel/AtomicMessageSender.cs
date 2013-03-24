@@ -13,18 +13,16 @@ namespace Distribox.Network
 {
     class AtomicMessageSender
     {
-		public delegate void OnCompleteHandler();
+        public delegate void OnCompleteHandler(Exception err);
 		public event OnCompleteHandler OnComplete;
-		public event OnCompleteHandler OnError; // TODO implement on error
 
         private TcpClient _client = null;
 		private Peer _peer;
 
         public AtomicMessageSender(Peer peer)
         {
-			// TODO logger
-            Console.WriteLine("==============AtomicMessageSender: {0}===============", _peer.Port);
 			this._peer = peer;
+            Logger.Info("==============AtomicMessageSender: {0}===============", _peer.Port);
         }
 
         public void SendBytes(byte[] bytes)
@@ -35,19 +33,29 @@ namespace Distribox.Network
 
         private void SendBytes(object _bytes)
         {
-            var bytes = (byte[])_bytes;
-            _client = new TcpClient();
-            _client.Connect(_peer.IP, _peer.Port);
-
-            Stream stmeam = _client.GetStream();
-            stmeam.Write(bytes, 0, bytes.Length);
-            stmeam.Flush();
-
-            _client.Close();
-
-            if (OnComplete != null)
+            try
             {
-                OnComplete();
+                var bytes = (byte[])_bytes;
+                _client = new TcpClient();
+                _client.Connect(_peer.IP, _peer.Port);
+
+                Stream stmeam = _client.GetStream();
+                stmeam.Write(bytes, 0, bytes.Length);
+                stmeam.Flush();
+
+                _client.Close();
+
+                if (OnComplete != null)
+                {
+                    OnComplete(null);
+                }
+            }
+            catch (Exception err)
+            {
+                if (OnComplete != null)
+                {
+                    OnComplete(err);
+                }
             }
         }
 

@@ -13,7 +13,9 @@ namespace Distribox.CommonLib
         private IPAddress _address;
         private int _port;
 		// TODO add a hash member
-		
+
+        public Peer() { }
+
 		public Peer(IPAddress address, int port)
 		{
 			this._address = address;

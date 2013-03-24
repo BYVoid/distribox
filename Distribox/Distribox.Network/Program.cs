@@ -16,23 +16,23 @@ namespace Distribox.Network
         {
             StartPeer();
         }
-        
+
         private static void StartPeer()
         {
-			// TODO use a config file to store port and root
+            // TODO use a config file to store port and root
             Console.WriteLine("What is my port?");
-			int port = int.Parse(Console.ReadLine());
+            int port = int.Parse(Console.ReadLine());
 
-			Console.WriteLine("What is root?");
-			string root = Console.ReadLine() + "/";
-			string peerListName = root + ".Distribox/PeerList.json";
+            Console.WriteLine("What is root?");
+            string root = Console.ReadLine() + "/";
+            string peerListName = root + ".Distribox/PeerList.json";
 
-			// Initialize anti entropy protocol
+            // Initialize anti entropy protocol
             AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName);
             var vs = new VersionControl(root);
             protocol.Versions = vs.VersionList;
 
-			// Initialize file watcher
+            // Initialize file watcher
             FileWatcher watcher = new FileWatcher(root);
             watcher.Created += x => { lock (vs) vs.Created(x); };
             watcher.Changed += x => { lock (vs) vs.Changed(x); };
@@ -40,19 +40,12 @@ namespace Distribox.Network
             watcher.Renamed += x => { lock (vs) vs.Renamed(x); };
             watcher.Idle += vs.Flush;
 
-			// Create a console for user to invite peer
-            Thread thread = new Thread(() =>
-            {
-                Console.WriteLine("Whom should I invite?");
-                int i_port = int.Parse(Console.ReadLine());
+            // Create a console for user to invite peer
+            Console.WriteLine("Whom should I invite?");
+            int i_port = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("Sending invitation...");
-                protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));
-            });
-            thread.Start();
-
-			// Main event loop
-            watcher.WaitForEvent();
+            Console.WriteLine("Sending invitation...");
+            protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));
         }
     }
 }

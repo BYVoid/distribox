@@ -14,33 +14,44 @@ namespace Distribox.CommonLib
 
         private Dictionary<String, FileItem> PathToFile = new Dictionary<String, FileItem>();
 
-        private String root;
+        private String _root;
 
         public VersionList() { }
 
         public VersionList(String root)
         {
-            this.root = root;
+            this._root = root;
+
+            Initialize();
 
             AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox/VersionList.txt");
-			// TODO empty version list
             foreach (var file in AllFiles.Where(x => x.IsAlive))
             {
                 PathToFile[file.CurrentName] = file;
             }
-			// TODO make folders .Distribox data tmp
         }
 
-        public FileItem this[String Name]
+        private void Initialize()
         {
-            get
+            if (!Directory.Exists(_root))
             {
-                return PathToFile[Name];
+                Directory.CreateDirectory(_root);
             }
-
-            set
+            if (!Directory.Exists(_root + ".Distribox"))
             {
-                PathToFile[Name] = value;
+                Directory.CreateDirectory(_root + ".Distribox");
+            }
+            if (!Directory.Exists(_root + ".Distribox/tmp"))
+            {
+                Directory.CreateDirectory(_root + ".Distribox/tmp");
+            }
+            if (!Directory.Exists(_root + ".Distribox/data"))
+            {
+                Directory.CreateDirectory(_root + ".Distribox/data");
+            }
+            if (!File.Exists(_root + ".Distribox/VersionList.txt"))
+            {
+                File.WriteAllText(_root + ".Distribox/VersionList.txt", "[]");
             }
         }
 
@@ -53,7 +64,9 @@ namespace Distribox.CommonLib
         {
             if (PathToFile.ContainsKey(Name)) return null;
 
-            FileItem item = new FileItem(Name, IsDirectory, When);
+            FileItem item = new FileItem(Name, IsDirectory);
+            item.Created(When);
+
             AllFiles.Add(item);
 
             PathToFile[Name] = item;
@@ -71,16 +84,14 @@ namespace Distribox.CommonLib
             if (IsDirectory) return;
 
             FileItem item = PathToFile[Name];
-            if (item.CurrentSHA1 == SHA1) return;
-
-            item.NewVersion(Name, SHA1, When);
+            item.Changed(Name, SHA1, When);
         }
 
         public void Renamed(String Name, String OldName, String SHA1, DateTime When)
         {
             FileItem item = PathToFile[OldName];
 
-            item.NewVersion(Name, SHA1, When);
+            item.Renamed(Name, When);
 
             PathToFile.Remove(OldName);
             PathToFile[Name] = item;
@@ -89,44 +100,39 @@ namespace Distribox.CommonLib
         public void Delete(String Name, DateTime When)
         {
             FileItem item = PathToFile[Name];
-            item.DeadTime = When;
-            item.IsAlive = false;
+            item.Deleted(When);
             PathToFile.Remove(Name);
         }
 
         public String GetFileBySHA1(String SHA1)
         {
-            return root + ".Distribox/data/" + SHA1;
-        }
-
-        public void Flush()
-        {
-            CommonHelper.WriteObject(root + ".Distribox/VersionList.txt", AllFiles);
+            return _root + ".Distribox/data/" + SHA1;
         }
 
         public String CreateFileBundle(List<FileItem> list)
         {
-            String data_path = root + ".Distribox/data/";
-            String tmp_path = root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            String data_path = _root + ".Distribox/data/";
+            String tmp_path = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmp_path);
             CommonHelper.WriteObject(tmp_path + "/Delta.txt", list);
             foreach (var item in list)
                 foreach (var history in item.History)
                 {
+                    if (history.SHA1 == null) continue;
                     File.Copy(data_path + history.SHA1, tmp_path + "/" + history.SHA1);
                 }
-            CommonHelper.Zip(tmp_path, tmp_path + ".7z");
+            CommonHelper.Zip(tmp_path + ".zip", tmp_path);
             Directory.Delete(tmp_path, true);
-            return tmp_path + ".7z";
+            return tmp_path + ".zip";
         }
        
         public void AcceptFileBundle(byte[] data)
         {
-            String data_path = root + ".Distribox/data/";
-            String tmp_path = root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            String data_path = _root + ".Distribox/data/";
+            String tmp_path = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmp_path);
-            File.WriteAllBytes(tmp_path + ".7z", data);
-            CommonHelper.UnZip(tmp_path + ".7z", tmp_path);
+            File.WriteAllBytes(tmp_path + ".zip", data);
+            CommonHelper.UnZip(tmp_path + ".zip", tmp_path);
 
             // copy all files
             foreach (var file in Directory.GetFiles(tmp_path))
@@ -147,17 +153,17 @@ namespace Distribox.CommonLib
             {
                 if (!myFileList.ContainsKey(item.Id))
                 {
-                    myFileList[item.Id] = FileItem.CreateEmpty(item);
+                    myFileList[item.Id] = new FileItem(item.Id);
                     AllFiles.Add(myFileList[item.Id]);
                     PathToFile[myFileList[item.Id].CurrentName] = myFileList[item.Id];
                 }
                 foreach (var history in item.History)
                 {
-                    myFileList[item.Id].NewVersion(history.Name, history.SHA1, history.LastModify);
+                    myFileList[item.Id].NewVersion(history);
                 }
             }
 
-            File.Delete(tmp_path + ".7z");
+            File.Delete(tmp_path + ".zip");
             Directory.Delete(tmp_path, true);
             Flush();
         }
@@ -177,10 +183,15 @@ namespace Distribox.CommonLib
                 {
                     String guid = item.Id + "@" + history.SHA1;
                     if (myFileList.Contains(guid)) continue;
-                    if (!dict.ContainsKey(item.Id)) dict[item.Id] = FileItem.CreateEmpty(item);
-                    dict[item.Id].NewVersion(history.Name, history.SHA1, history.LastModify);
+                    if (!dict.ContainsKey(item.Id)) dict[item.Id] = new FileItem(item.Id);
+                    dict[item.Id].NewVersion(history);
                 }
             return dict.Values.ToList();
+        }
+
+        public void Flush()
+        {
+            CommonHelper.WriteObject(_root + ".Distribox/VersionList.txt", AllFiles);
         }
     }
 }

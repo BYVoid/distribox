@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\DLL\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\DLL\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\DLL\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -49,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonHelper.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="VersionSystem\FileItem.cs" />
     <Compile Include="VersionSystem\FileSubversion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

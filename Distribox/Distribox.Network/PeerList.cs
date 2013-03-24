@@ -65,8 +65,7 @@ namespace Distribox.Network
             if (!(Peers.Contains(peer)))
             {
                 Peers.Add(peer);
-				// TODO logger
-                System.Console.WriteLine("New peer: {0}!", peer.IP);
+                Logger.Info("New peer: {0}!", peer.IP);
             }
         }
 

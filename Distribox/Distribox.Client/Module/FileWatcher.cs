@@ -11,15 +11,15 @@ namespace Distribox.Client.Module
 {
     public class FileChangedEventArgs
     {
-        public WatcherChangeTypes ChangeType;
-        public String FullPath;
-        public String Name;
-        public String OldFullPath;
-        public String OldName;
-        public String SHA1;
-        public String DataPath;
-        public DateTime When;
-        public Boolean IsDirectory;
+        public WatcherChangeTypes ChangeType { get; set; }
+        public String FullPath { get; set; }
+        public String Name { get; set; }
+        public String OldFullPath { get; set; }
+        public String OldName { get; set; }
+        public String SHA1 { get; set; }
+        public String DataPath { get; set; }
+        public DateTime When { get; set; }
+        public Boolean IsDirectory { get; set; }
     }
 
     public class FileWatcher
@@ -33,73 +33,113 @@ namespace Distribox.Client.Module
         public delegate void IdleHandler();
         public event IdleHandler Idle;
 
-        public Queue<FileSystemEventArgs> EventQueue = new Queue<FileSystemEventArgs>();
+        private const int TIME_INTERVAL = 1000;
 
-        private String root;
-
-        private String hidden_path
+        private Queue<FileSystemEventArgs> _event_queue = new Queue<FileSystemEventArgs>();
+        private System.Timers.Timer timer = new System.Timers.Timer(TIME_INTERVAL);
+        private String _root;
+        private String _hidden_path
         {
-            get { return root + ".Distribox"; }
+            get { return _root + ".Distribox"; }
         }
 
-        private String data_path
+        private String _data_path
         {
-            get { return root + ".Distribox\\data\\"; }
+            get { return _root + ".Distribox/data/"; }
         }
 
         public FileWatcher(String root)
         {
-            this.root = root;
+            this._root = root;
 
             FileSystemWatcher wather = new FileSystemWatcher();
             wather.Path = root;
-            wather.Changed += watcher_event;
-            wather.Created += watcher_event;
-            wather.Renamed += watcher_event;
-            wather.Deleted += watcher_event;
+            wather.Changed += OnWatcherEvent;
+            wather.Created += OnWatcherEvent;
+            wather.Renamed += OnWatcherEvent;
+            wather.Deleted += OnWatcherEvent;
             wather.Filter = "*.*";
             wather.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             wather.EnableRaisingEvents = true;
             wather.IncludeSubdirectories = true;
+
+            timer.Elapsed += OnTimerEvent;
+            timer.AutoReset = true;
+            timer.Start();
         }
 
-        void watcher_event(object sender, FileSystemEventArgs e)
+        void OnTimerEvent(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (!e.FullPath.StartsWith(hidden_path))
+            lock (_event_queue)
             {
-                lock (EventQueue)
+                if (_event_queue.Count() == 0) return;
+            }
+            timer.Stop();
+            while (true)
+            {
+                FileSystemEventArgs args = null;
+                lock (_event_queue)
                 {
-                    EventQueue.Enqueue(e);
+                    if (_event_queue.Count() == 0) break;
+                    args = _event_queue.Dequeue();
+                }
+                switch (args.ChangeType)
+                {
+                    case WatcherChangeTypes.Changed:
+                        OnChangedEvent(null, args);
+                        break;
+                    case WatcherChangeTypes.Created:
+                        OnCreatedEvent(null, args);
+                        break;
+                    case WatcherChangeTypes.Deleted:
+                        OnDeletedEvent(null, args);
+                        break;
+                    case WatcherChangeTypes.Renamed:
+                        OnRenamedEvent(null, args as RenamedEventArgs);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+            Idle();
+            timer.Start();
+        }
+
+        void OnWatcherEvent(object sender, FileSystemEventArgs e)
+        {
+            if (!e.Name.StartsWith(".Distribox"))
+            {
+                lock (_event_queue)
+                {
+                    _event_queue.Enqueue(e);
                 }
             }
         }
 
-        public void WaitForEvent()
+        public void OnTimerEvent()
         {
             Boolean changed = false;
-            while (true)
-            {
                 while (true)
                 {
                     FileSystemEventArgs e = null;
-                    lock (EventQueue)
+                    lock (_event_queue)
                     {
-                        if (EventQueue.Count() == 0) break;
-                        e = EventQueue.Dequeue();
+                        if (_event_queue.Count() == 0) break;
+                        e = _event_queue.Dequeue();
                     }
                     switch (e.ChangeType)
                     {
                         case WatcherChangeTypes.Changed:
-                            watcher_Changed(null, e);
+                            OnChangedEvent(null, e);
                             break;
                         case WatcherChangeTypes.Created:
-                            watcher_Created(null, e);
+                            OnCreatedEvent(null, e);
                             break;
                         case WatcherChangeTypes.Deleted:
-                            watcher_Deleted(null, e);
+                            OnDeletedEvent(null, e);
                             break;
                         case WatcherChangeTypes.Renamed:
-                            watcher_Renamed(null, e as RenamedEventArgs);
+                            OnRenamedEvent(null, e as RenamedEventArgs);
                             break;
                         default:
                             throw new NotImplementedException();
@@ -112,34 +152,31 @@ namespace Distribox.Client.Module
                     Idle();
                     changed = false;
                 }
-
-                Thread.Sleep(100);
-            }
         }
 
-        void watcher_Deleted(object sender, FileSystemEventArgs e)
+        void OnDeletedEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.StartsWith(hidden_path))
+            if (!e.FullPath.StartsWith(_hidden_path))
             {
                 Console.WriteLine("Deleted: {0}", e.Name);
 
-                FileChangedEventArgs new_event = translate(e);
+                FileChangedEventArgs new_event = TranslateEvent(e);
                 if (Deleted != null) Deleted(new_event);
             }
         }
 
-        void watcher_Renamed(object sender, RenamedEventArgs e)
+        void OnRenamedEvent(object sender, RenamedEventArgs e)
         {
-            if (!e.FullPath.StartsWith(hidden_path))
+            if (!e.FullPath.StartsWith(_hidden_path))
             {
                 Console.WriteLine("Renamed: {0} -> {1}", e.OldName, e.Name);
 
-                FileChangedEventArgs new_event = translate(e);
+                FileChangedEventArgs new_event = TranslateEvent(e);
                 
                 if (!new_event.IsDirectory)
                 {
                     new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                    new_event.DataPath = data_path + new_event.SHA1;
+                    new_event.DataPath = _data_path + new_event.SHA1;
                     if (!File.Exists(new_event.DataPath))
                     {
                         File.Copy(new_event.FullPath, new_event.DataPath);
@@ -151,29 +188,29 @@ namespace Distribox.Client.Module
         }
 
         int count = 0;
-        void watcher_Created(object sender, FileSystemEventArgs e)
+        void OnCreatedEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.StartsWith(hidden_path))
+            if (!e.FullPath.StartsWith(_hidden_path))
             {
                 Console.WriteLine("Create: {0}  {1}", e.Name, count++);
 
-                FileChangedEventArgs new_event = translate(e);
+                FileChangedEventArgs new_event = TranslateEvent(e);
 
                 if (Created != null) Created(new_event);
             }
         }
 
-        void watcher_Changed(object sender, FileSystemEventArgs e)
+        void OnChangedEvent(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.StartsWith(hidden_path))
+            if (!e.FullPath.StartsWith(_hidden_path))
             {
                 Console.WriteLine("Changed: {0}", e.Name);
-                FileChangedEventArgs new_event = translate(e);
+                FileChangedEventArgs new_event = TranslateEvent(e);
 
                 if (!new_event.IsDirectory)
                 {
                     new_event.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                    new_event.DataPath = data_path + new_event.SHA1;
+                    new_event.DataPath = _data_path + new_event.SHA1;
                     if (!File.Exists(new_event.DataPath))
                     {
                         File.Copy(new_event.FullPath, new_event.DataPath);
@@ -184,7 +221,7 @@ namespace Distribox.Client.Module
             }
         }
 
-        private FileChangedEventArgs translate(FileSystemEventArgs e)
+        private FileChangedEventArgs TranslateEvent(FileSystemEventArgs e)
         {
             FileChangedEventArgs new_event = new FileChangedEventArgs();
             new_event.ChangeType = e.ChangeType;

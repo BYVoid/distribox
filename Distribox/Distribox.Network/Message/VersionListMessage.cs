@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Distribox.CommonLib;
 
 namespace Distribox.Network
 {
@@ -17,5 +18,9 @@ namespace Distribox.Network
             _type = MessageType.VersionListMessage;
         }
 
+		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+		{
+			visitor.Process(this, peer);
+		}
     }
 }

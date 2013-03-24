@@ -5,199 +5,259 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using Distribox.CommonLib;
+using System.IO;
 
 namespace Distribox.Network
 {
-    using Distribox.CommonLib;
-    using System.IO;
-
-    class Session
+	class AntiEntropyProtocol
     {
-        public VersionList List;
-    }
-
-    class AntiEntropyProtocol
-    {
+		// TODO use config file
         private const int CONNECT_PERIOD_MS = 1000;
 
-        //private const string peerFileName = "peerlist.json";
         private PeerList _peers;
         private AtomicMessageListener _listener;
-        private int _myPort;
+        private int _listeningPort;
 
         public VersionList Versions { get; set; }
-        //private Dictionary<Peer, Session> sessions;
 
-        private void ReceiveHandler(byte[] data, String address)
+		/// <summary>
+		/// Handle receive message event.
+		/// </summary>
+		/// <param name="data">Data.</param>
+		/// <param name="peerFrom">peer from.</param>
+        private void OnReceiveMessage(byte[] data, Peer peerFrom)
+		{
+			ParseAndDispatchMessage(data, peerFrom);
+		}
+
+		/// <summary>
+		/// Parses and dispatch message from peer.
+		/// </summary>
+		/// <param name="data">Data.</param>
+		/// <param name="peerFrom">Address.</param>
+		private void ParseAndDispatchMessage(byte[] data, Peer peerFrom)
+		{
+			// Parse it, and convert to the right derived class
+			ProtocolMessage message = CommonHelper.Read<ProtocolMessage>(data).ParseToDerivedClass(data);            
+
+			// ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
+			int port = message.MyListenPort;
+			Peer peer = new Peer(peerFrom.IP, port);
+			
+			// Process message (visitor design pattern)
+			message.Accept(this, peer);
+		}
+
+		/// <summary>
+		/// Sends a message to peer.
+		/// </summary>
+		/// <param name="peer">Peer.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="onCompleteHandler">On complete handler.</param>
+        private static void SendMessage(Peer peer, ProtocolMessage message, AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
         {
-            // Parse it, and convert to the right derived class
-            ProtocolMessage message = CommonLib.CommonHelper.Read<ProtocolMessage>(data).ParseToDerivedClass(data);            
-
-            // Parse IP and Port
-            string[] ipAndPort = address.Split(':');
-            string ip = ipAndPort[0];
-            // ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
-            int port = message.MyListenPort;
-            Peer peer = new Peer(IPAddress.Parse(ip), port);
-
-            // Process message
-            if (message is Invitation) ProcessInvitation(peer);
-            else if (message is AcceptInvitation) ProcessAcceptInvitation(peer);
-            else if (message is ConnectRequest) ProcessConnectRequest(peer);
-            else if (message is AcceptConnect) ProcessAcceptConnect(peer);
-            else if (message is PeerListMessage) ProcessPeerList(peer, (PeerListMessage)message);
-            else if (message is VersionListMessage) ProcessVersionList(peer, (VersionListMessage)message);
-            else if (message is FileRequest) ProcessFileRequest(peer, (FileRequest)message);
-            else if (message is FileDataResponse) ProcessFileResponse(peer, (FileDataResponse)message);
-            else
-            {
-                throw new Exception("Receiver: Unseen message type!");
-            }
-        }
-
-        private static void SendMessage(Peer peer, ProtocolMessage message, Distribox.Network.AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
-        {
-            AtomicMessageSender sender = new Network.AtomicMessageSender(peer.IP, peer.Port);
+            AtomicMessageSender sender = new Network.AtomicMessageSender(peer);
             if (onCompleteHandler != null)
             {
                 sender.OnComplete += onCompleteHandler;
             }
             byte[] bMessage = CommonLib.CommonHelper.ShowAsBytes(message);
-            //Console.WriteLine(CommonLib.CommonHelper.ByteToString(bMessage));
+            Console.WriteLine(message);
             sender.SendBytes(bMessage);
+			// TODO on error
         }
 
-        private void ProcessInvitation(Peer peer)
+		/// <summary>
+		/// Process the invitation message.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(InvitationRequest message, Peer peer)
         {
-            /*
-             * 1. Send AcceptInvivation back
-             */
-            SendMessage(peer, new AcceptInvitation(_myPort));
+            // Send AcceptInvivation back
+            SendMessage(peer, new InvitationAck(_listeningPort));
         }
 
-        private void ProcessAcceptInvitation(Peer peer)
+		/// <summary>
+		/// Process the accept message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(InvitationAck message, Peer peer)
         {
-            /*
-             * 1. Try to Connect to that user
-             */
-            SendMessage(peer, new ConnectRequest(_myPort));
+            // Try to sync with the newly accepted peer
+            SendMessage(peer, new SyncRequest(_listeningPort));
         }
 
-        private void ProcessConnectRequest(Peer peer)
+		/// <summary>
+		/// Process the sync message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(SyncRequest message, Peer peer)
         {
-            /*
-             * Accept the Connect
-             * Send MetaData
-             * ...
-             */
-            SendMessage(peer, new AcceptConnect(_myPort));
+            // Accept the sync request
+			SendMessage(peer, new SyncAck(_listeningPort));
+
+			// Send MetaData
             SendMetaData(peer);
         }
 
-        private void ProcessAcceptConnect(Peer peer)
+		/// <summary>
+		/// Process the sync ack message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(SyncAck message, Peer peer)
         {
             SendMetaData(peer);
         }
 
-        private void ProcessPeerList(Peer peer, PeerListMessage peerListMessage)
+		/// <summary>
+		/// Process the peer list message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(PeerListMessage message, Peer peer)
         {
             lock (_peers)
             {
-                _peers.AddPeerAndFlush(peer);
-                _peers.MergeWith(peerListMessage.List);
+                _peers.AddPeer(peer);
+                _peers.MergeWith(message.List);
             }
         }
 
-        private void ProcessVersionList(Peer peer, VersionListMessage versionListMessage)
+		/// <summary>
+		/// Process the version list message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(VersionListMessage message, Peer peer)
         {            
             List<FileItem> versionRequest;
             lock (Versions)
             {
-                versionRequest = Versions.GetLessThan(versionListMessage.List);
-                Console.WriteLine("Received version list from {1}\n{0}", versionListMessage.List.Show(), peer.Show());
+                versionRequest = Versions.GetLessThan(message.List);
+                Logger.Info("Received version list from {1}\n{0}", message.List.Show(), peer.Show());
             }            
-            SendMessage(peer, new FileRequest(versionRequest, _myPort));
+            SendMessage(peer, new FileRequest(versionRequest, _listeningPort));
 
             Console.WriteLine("Sent file request\n{0}", versionRequest.Show());
         }
 
-        private void ProcessFileRequest(Peer peer, FileRequest request)
+		/// <summary>
+		/// Process the file request message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(FileRequest message, Peer peer)
         {
-            Console.WriteLine("Receive file request\n{0}", request._request.Show());
+            Logger.Info("Receive file request\n{0}", message._request.Show());
 
-            String filename = null;
+			string filename = null;
             lock (Versions)
             {
-                filename = Versions.CreateFileBundle(request._request);
+                filename = Versions.CreateFileBundle(message._request);
             }
 
             byte[] data = File.ReadAllBytes(filename);
-            SendMessage(peer, new FileDataResponse(data, _myPort), () => File.Delete(filename));
+            SendMessage(peer, new FileDataResponse(data, _listeningPort), (err) => File.Delete(filename));
         }
 
-        private void ProcessFileResponse(Peer peer, FileDataResponse response)
+		/// <summary>
+		/// Process the specified message and peer.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="peer">Peer.</param>
+		public void Process(FileDataResponse message, Peer peer)
         {
             lock(Versions)
             {
-                Versions.AcceptFileBundle(response._data);
+                Versions.AcceptFileBundle(message._data);
             }
         }
 
+		/// <summary>
+		/// Sends the meta data.
+		/// </summary>
+		/// <param name="peer">Peer.</param>
         private void SendMetaData(Peer peer)
         {
-            /*
-             * 1. Send PeerList
-             * 2. Send VersionList             
-             */
-            SendMessage(peer, new PeerListMessage(_peers, _myPort));
-            SendMessage(peer, new VersionListMessage(Versions, _myPort));
+            // Send PeerList
+			SendMessage(peer, new PeerListMessage(_peers, _listeningPort));
 
+			// Send VersionList
+            SendMessage(peer, new VersionListMessage(Versions, _listeningPort));
+
+			// TODO logger
             Console.WriteLine("Send version list to {0}", peer.Show());
             Console.WriteLine(Versions.Show());
         }
 
+		/// <summary>
+		/// Connects a random peer to send a connection request.
+		/// </summary>
         private void ConnectRandomPeer()
         {
+            if (_peers.Peers.Count() == 0) return;
             Peer peer;
+			// Lock peers to support thread-safety
             lock (_peers)
             {
-                // FIXME remove this
+                // FIXME Judge if the randomly picked peer is itself using hash
+				// caution: dead loop
                 do
                 {
                     peer = _peers.SelectRandomPeer();
                 }
-                while (peer.Port == _myPort);
+                while (peer.Port == _listeningPort);
             }
-            if (peer!=null)
-                SendMessage(peer, new ConnectRequest(_myPort));
+            if (peer != null)
+			{
+                SendMessage(peer, new SyncRequest(_listeningPort));
+			}
         }
 
+		/// <summary>
+		/// Handle timer event.
+		/// </summary>
+		/// <param name="source">Source of event.</param>
+		/// <param name="e">Event.</param>
         private void OnTimerEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             ConnectRandomPeer();
         }  
 
-        public AntiEntropyProtocol(int myPort, string peerFileName)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.Network.AntiEntropyProtocol"/> class.
+		/// </summary>
+		/// <param name="listeningPort">Listening port.</param>
+		/// <param name="peerFileName">File name of peer list.</param>
+		public AntiEntropyProtocol(int listeningPort, string peerFileName)
         {
             // Initialize peer list
             _peers = PeerList.GetPeerList(peerFileName);
-            _myPort = myPort;
+			_listeningPort = listeningPort;
 
             // Initialize listener
-            _listener = new AtomicMessageListener(myPort);
-            _listener.OnReceive += new AtomicMessageListener.OnReceiveHandler(ReceiveHandler);
+			_listener = new AtomicMessageListener(listeningPort);
+            _listener.OnReceive += OnReceiveMessage;
 
             // Initialize timer to connect other peers periodically
             System.Timers.Timer timer = new System.Timers.Timer(CONNECT_PERIOD_MS);
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimerEvent);
+            timer.Elapsed += this.OnTimerEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
         }
 
+		/// <summary>
+		/// Invites a peer into P2P network.
+		/// </summary>
+		/// <param name="peer">The peer to be invited.</param>
         public void InvitePeer(Peer peer)
         {
-            SendMessage(peer, new Invitation(_myPort));
+            SendMessage(peer, new InvitationRequest(_listeningPort));
         }
-        
     }
 }

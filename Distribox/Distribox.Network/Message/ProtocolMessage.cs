@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Distribox.CommonLib;
 
 namespace Distribox.Network
 {
@@ -11,10 +12,10 @@ namespace Distribox.Network
         // FIXME: I set all of these public for JSON serialize
         public enum MessageType
         {
-            Invitation,
-            AcceptInvitation,
-            ConnectRequest,
-            AcceptConnect,
+            InvitationRequest,
+            InvitationAck,
+            SyncRequest,
+            SyncAck,
             PeerListMessage,
             VersionListMessage,
             FileRequest,
@@ -32,14 +33,14 @@ namespace Distribox.Network
         {
             switch (_type)
             {
-                case MessageType.Invitation:
-                    return CommonLib.CommonHelper.Read<Invitation>(data);
-                case MessageType.AcceptInvitation:
-                    return CommonLib.CommonHelper.Read<AcceptInvitation>(data);
-                case MessageType.ConnectRequest:
-                    return CommonLib.CommonHelper.Read<ConnectRequest>(data);
-                case MessageType.AcceptConnect:
-                    return CommonLib.CommonHelper.Read<AcceptConnect>(data);
+                case MessageType.InvitationRequest:
+                    return CommonLib.CommonHelper.Read<InvitationRequest>(data);
+                case MessageType.InvitationAck:
+                    return CommonLib.CommonHelper.Read<InvitationAck>(data);
+                case MessageType.SyncRequest:
+                    return CommonLib.CommonHelper.Read<SyncRequest>(data);
+                case MessageType.SyncAck:
+                    return CommonLib.CommonHelper.Read<SyncAck>(data);
                 case MessageType.PeerListMessage:
                     return CommonLib.CommonHelper.Read<PeerListMessage>(data);
                 case MessageType.VersionListMessage:
@@ -51,5 +52,11 @@ namespace Distribox.Network
             }
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }
+
+		public virtual void Accept(AntiEntropyProtocol visitor, Peer peer)
+		{
+			// TODO avoid instaniate this class. use factory
+			throw new NotImplementedException();
+		}
     }
 }

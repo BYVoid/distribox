@@ -21,7 +21,6 @@ namespace DBox.Client
             watcher.Deleted += vs.Deleted;
             watcher.Renamed += vs.Renamed;
             watcher.Idle += vs.Flush;
-            watcher.WaitForEvent();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace Distribox.CommonLib
+namespace Distribox.Network
 {
     public class Peer
     {

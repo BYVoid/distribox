@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Distribox.CommonLib
+namespace Distribox.FileSystem
 {
 	// TODO this class would be serialized for deserialized
 	/// <summary>

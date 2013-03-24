@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
-using Distribox.CommonLib;
 using System.IO;
+using Distribox.CommonLib;
+using Distribox.FileSystem;
 
 namespace Distribox.Network
 {
-	class AntiEntropyProtocol
+	public class AntiEntropyProtocol
     {
 		// TODO use config file
         private const int CONNECT_PERIOD_MS = 1000;
@@ -73,7 +74,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(InvitationRequest message, Peer peer)
+		internal void Process(InvitationRequest message, Peer peer)
         {
             // Send AcceptInvivation back
             SendMessage(peer, new InvitationAck(_listeningPort));
@@ -84,7 +85,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(InvitationAck message, Peer peer)
+		internal void Process(InvitationAck message, Peer peer)
         {
             // Try to sync with the newly accepted peer
             SendMessage(peer, new SyncRequest(_listeningPort));
@@ -95,7 +96,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(SyncRequest message, Peer peer)
+		internal void Process(SyncRequest message, Peer peer)
         {
             // Accept the sync request
 			SendMessage(peer, new SyncAck(_listeningPort));
@@ -109,7 +110,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(SyncAck message, Peer peer)
+		internal void Process(SyncAck message, Peer peer)
         {
             SendMetaData(peer);
         }
@@ -119,7 +120,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(PeerListMessage message, Peer peer)
+		internal void Process(PeerListMessage message, Peer peer)
         {
             lock (_peers)
             {
@@ -133,7 +134,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(VersionListMessage message, Peer peer)
+		internal void Process(VersionListMessage message, Peer peer)
         {            
             List<FileItem> versionRequest;
             lock (_versionControl.VersionList)
@@ -151,14 +152,14 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(FileRequest message, Peer peer)
+		internal void Process(FileRequest message, Peer peer)
         {
-            Logger.Info("Receive file request\n{0}", message._request.Serialize());
+            Logger.Info("Receive file request\n{0}", message.Request.Serialize());
 
 			string filename = null;
             lock (_versionControl.VersionList)
             {
-                filename = _versionControl.CreateFileBundle(message._request);
+                filename = _versionControl.CreateFileBundle(message.Request);
             }
 
             byte[] data = File.ReadAllBytes(filename);
@@ -170,7 +171,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		public void Process(FileDataResponse message, Peer peer)
+		internal void Process(FileDataResponse message, Peer peer)
         {
             lock(_versionControl.VersionList)
             {

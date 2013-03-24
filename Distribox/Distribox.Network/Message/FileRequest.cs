@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Distribox.CommonLib;
+using Distribox.FileSystem;
 
 namespace Distribox.Network
 {
     class FileRequest : ProtocolMessage
     {
-        public List<CommonLib.FileItem> _request;
+		public List<FileItem> Request { get; set; }
 
-        public FileRequest(List<CommonLib.FileItem> request, int myPort)
+        public FileRequest(List<FileItem> request, int myPort)
             : base(myPort)
         {
-            _request = request;
+            Request = request;
             _type = MessageType.FileRequest;
 		}
 		

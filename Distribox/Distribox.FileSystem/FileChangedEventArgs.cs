@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Distribox.CommonLib
+namespace Distribox.FileSystem
 {
     public class FileChangedEventArgs
     {

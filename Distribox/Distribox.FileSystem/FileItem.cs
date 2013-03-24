@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Distribox.CommonLib;
 
-namespace Distribox.CommonLib
+namespace Distribox.FileSystem
 {
 	// TODO create a new class indicating version delta
 	/// <summary>

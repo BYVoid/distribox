@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Distribox.CommonLib;
+using Distribox.FileSystem;
 
 namespace Distribox.Network
 {
     class VersionListMessage : ProtocolMessage
     {
-        public CommonLib.VersionList List;
+		public VersionList List { get; set;}
 
-        public VersionListMessage(CommonLib.VersionList list, int myPort)
+        public VersionListMessage(VersionList list, int myPort)
             : base(myPort)
         {
             List = list;

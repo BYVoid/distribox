@@ -7,7 +7,7 @@ using System.Threading;
 using Distribox.CommonLib;
 using System.Diagnostics;
 
-namespace Distribox.Client.Module
+namespace Distribox.FileSystem
 {
 	/// <summary>
 	/// File watcher.
@@ -71,7 +71,7 @@ namespace Distribox.Client.Module
         }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Distribox.Client.Module.FileWatcher"/> class.
+		/// Initializes a new instance of the <see cref="Distribox.FileSystem.FileWatcher"/> class.
 		/// </summary>
 		/// <param name="root">Root.</param>
         public FileWatcher(string root)

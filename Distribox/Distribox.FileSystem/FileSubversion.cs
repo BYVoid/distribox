@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Distribox.CommonLib
+namespace Distribox.FileSystem
 {
 	/// <summary>
 	/// File subversion type.

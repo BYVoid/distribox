@@ -7,7 +7,7 @@
     <ProjectGuid>{421BCBB8-0550-4F0A-8E68-2E7AFBE1F268}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Distribox.Client</RootNamespace>
+    <RootNamespace>Distribox.FileSystem</RootNamespace>
     <AssemblyName>Distribox.Client</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>
@@ -42,8 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Module\FileWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FileWatcher.cs" />
+    <Compile Include="FileChangedEventArgs.cs" />
+    <Compile Include="VersionList.cs" />
+    <Compile Include="VersionControl.cs" />
+    <Compile Include="FileSubversion.cs" />
+    <Compile Include="FileItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

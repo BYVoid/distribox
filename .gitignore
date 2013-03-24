@@ -1,6 +1,7 @@
 *.userprefs
 
-Distribox/Distribox.Client/bin
+Distribox/Distribox.FileSystem/bin
 Distribox/Distribox.CommonLib/bin
 Distribox/Distribox.Network/bin
+Distribox/Distribox.CLI/bin
 

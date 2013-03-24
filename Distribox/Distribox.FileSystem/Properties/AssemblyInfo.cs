@@ -2,18 +2,18 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Distribox.CommonLib")]
+[assembly: AssemblyTitle("Distribox.FileSystem")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Distribox.CommonLib")]
+[assembly: AssemblyProduct("Distribox.FileSystem")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("1df1d7c4-b957-4b6e-80d8-7d60b0670890")]
+[assembly: Guid("57488282-4a2a-4527-99fa-3e55fba54d7a")]
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

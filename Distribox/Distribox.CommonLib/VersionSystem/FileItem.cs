@@ -5,28 +5,72 @@ using System.Text;
 
 namespace Distribox.CommonLib
 {
+	/// <summary>
+	/// Stores all versions of a file.
+	/// </summary>
     public class FileItem
     {
-        public Boolean IsAlive { get; set; }
-        public String Id { get; set; }
-        public Boolean IsDirectory { get; set; }
-        public DateTime DeadTime { get; set; }
-        public String CurrentName { get; set; }
-        public String CurrentSHA1 { get; set; }
+		/// <summary>
+		/// Gets or sets a value indicating whether this file is alive (not deleted).
+		/// </summary>
+		/// <value><c>true</c> if this file is alive; otherwise, <c>false</c>.</value>
+        public bool IsAlive { get; set; }
+
+		/// <summary>
+		/// Gets or sets the identifier of file.
+		/// </summary>
+		/// <value>The identifier of this file.</value>
+        public string Id { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this file is a directory.
+		/// </summary>
+		/// <value><c>true</c> if this file is a directory; otherwise, <c>false</c>.</value>
+        public bool IsDirectory { get; set; }
+
+		/// <summary>
+		/// Gets or sets current name of the file.
+		/// </summary>
+		/// <value>The current name of the file.</value>
+        public string CurrentName { get; set; }
+
+		/// <summary>
+		/// Gets or sets SHA1 checksum.
+		/// </summary>
+		/// <value>SHA1 chcksum.</value>
+        public string CurrentSHA1 { get; set; }
+
+		/// <summary>
+		/// Gets or sets history of the file.
+		/// </summary>
+		/// <value>The history of the file.</value>
         public List<FileSubversion> History { get; set; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.FileItem"/> class.
+		/// This constructor is only used for serialization
+		/// </summary>
         public FileItem()
         {
             this.History = new List<FileSubversion>();
         }
 
-        public FileItem(String Id)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.FileItem"/> class.
+		/// </summary>
+		/// <param name="Id">Identifier.</param>
+        public FileItem(string Id)
         {
             this.History = new List<FileSubversion>();
             this.Id = Id;
         }
 
-        public FileItem(String Name, Boolean IsDirectory)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.FileItem"/> class.
+		/// </summary>
+		/// <param name="Name">Name.</param>
+		/// <param name="IsDirectory">If set to <c>true</c> is directory.</param>
+        public FileItem(string Name, bool IsDirectory)
         {
             this.History = new List<FileSubversion>();
             this.IsAlive = true;
@@ -36,7 +80,11 @@ namespace Distribox.CommonLib
             this.CurrentSHA1 = null;
         }
 
-        public void Created(DateTime When)
+		/// <summary>
+		/// Create the initial version.
+		/// </summary>
+		/// <param name="When">When.</param>
+        public void Create(DateTime When)
         {
             FileSubversion vs = new FileSubversion();
             vs.Type = FileSubversionType.Created;
@@ -48,9 +96,15 @@ namespace Distribox.CommonLib
             History.Add(vs);
         }
 
-        public void Renamed(String Name, DateTime When)
+		/// <summary>
+		/// Create a version of renaming
+		/// </summary>
+		/// <param name="Name">Name.</param>
+		/// <param name="When">When.</param>
+        public void Rename(string Name, DateTime When)
         {
-            if (Name == CurrentName) return;
+            if (Name == CurrentName)
+				return;
 
             FileSubversion vs = new FileSubversion();
             vs.Type = FileSubversionType.Renamed;
@@ -62,7 +116,11 @@ namespace Distribox.CommonLib
             History.Add(vs);
         }
 
-        public void Deleted(DateTime When)
+		/// <summary>
+		/// Create a version of deleting
+		/// </summary>
+		/// <param name="When">When.</param>
+        public void Delete(DateTime When)
         {
             FileSubversion vs = new FileSubversion();
             vs.Type = FileSubversionType.Deleted;
@@ -71,13 +129,19 @@ namespace Distribox.CommonLib
             vs.SHA1 = CurrentSHA1;
 
             IsAlive = false;
-            DeadTime = When;
             History.Add(vs);
         }
 
-        public void Changed(String Name, String SHA1, DateTime When)
+		/// <summary>
+		/// Create a version of changing
+		/// </summary>
+		/// <param name="Name">Name.</param>
+		/// <param name="SHA1">SH a1.</param>
+		/// <param name="When">When.</param>
+        public void Change(string Name, string SHA1, DateTime When)
         {
-            if (SHA1 == CurrentSHA1) return;
+            if (SHA1 == CurrentSHA1)
+				return;
 
             FileSubversion vs = new FileSubversion();
             vs.Type = FileSubversionType.Changed;
@@ -89,8 +153,13 @@ namespace Distribox.CommonLib
             History.Add(vs);
         }
 
+		/// <summary>
+		/// Insert a new version into history
+		/// </summary>
+		/// <param name="vs">Vs.</param>
         public void NewVersion(FileSubversion vs)
         {
+			// TODO insert the version to correct position
             History.Add(vs);
         }
     }

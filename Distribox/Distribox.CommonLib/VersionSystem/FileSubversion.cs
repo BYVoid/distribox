@@ -12,8 +12,8 @@ namespace Distribox.CommonLib
 
     public class FileSubversion
     {
-        public String Name { get; set; }
-        public String SHA1 { get; set; }
+        public string Name { get; set; }
+		public string SHA1 { get; set; }
         public DateTime LastModify { get; set; }
         public FileSubversionType Type { get; set; }
     }

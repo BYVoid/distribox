@@ -1,4 +1,4 @@
-﻿using Distribox.CommonLib;
+using Distribox.CommonLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -65,7 +65,7 @@ namespace Distribox.CommonLib
             if (PathToFile.ContainsKey(Name)) return null;
 
             FileItem item = new FileItem(Name, IsDirectory);
-            item.Created(When);
+            item.Create(When);
 
             AllFiles.Add(item);
 
@@ -84,14 +84,14 @@ namespace Distribox.CommonLib
             if (IsDirectory) return;
 
             FileItem item = PathToFile[Name];
-            item.Changed(Name, SHA1, When);
+            item.Change(Name, SHA1, When);
         }
 
         public void Renamed(String Name, String OldName, String SHA1, DateTime When)
         {
             FileItem item = PathToFile[OldName];
 
-            item.Renamed(Name, When);
+            item.Rename(Name, When);
 
             PathToFile.Remove(OldName);
             PathToFile[Name] = item;
@@ -100,7 +100,7 @@ namespace Distribox.CommonLib
         public void Delete(String Name, DateTime When)
         {
             FileItem item = PathToFile[Name];
-            item.Deleted(When);
+            item.Delete(When);
             PathToFile.Remove(Name);
         }
 

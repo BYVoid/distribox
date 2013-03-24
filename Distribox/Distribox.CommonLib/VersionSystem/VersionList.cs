@@ -8,29 +8,53 @@ using System.Text;
 
 namespace Distribox.CommonLib
 {
+	// TODO this class would be serialized for deserialized
+	/// <summary>
+	/// Version list.
+	/// </summary>
     public class VersionList
     {
+		/// <summary>
+		/// Gets or sets all files that ever existed.
+		/// </summary>
+		/// <value>All files.</value>
         public List<FileItem> AllFiles { get; set; }
 
-        private Dictionary<String, FileItem> PathToFile = new Dictionary<String, FileItem>();
+		/// <summary>
+		/// Maps relative path to file item object
+		/// </summary>
+        private Dictionary<string, FileItem> _pathToFile = new Dictionary<string, FileItem>();
 
-        private String _root;
+		/// <summary>
+		/// The sync root of Distribox.
+		/// </summary>
+        private string _root;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
+		/// Only for serialization
+		/// </summary>
         public VersionList() { }
 
-        public VersionList(String root)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
+		/// </summary>
+		/// <param name="root">Root.</param>
+        public VersionList(string root)
         {
             this._root = root;
 
             Initialize();
 
-            AllFiles = CommonHelper.ReadObject<List<FileItem>>(root + ".Distribox/VersionList.txt");
+			// Deserialize version list
+            AllFiles = CommonHelper.ReadObject<List<FileItem>>(_root + ".Distribox/VersionList.txt");
             foreach (var file in AllFiles.Where(x => x.IsAlive))
             {
-                PathToFile[file.CurrentName] = file;
+                _pathToFile[file.CurrentName] = file;
             }
         }
 
+		// TODO move this to other place
         private void Initialize()
         {
             if (!Directory.Exists(_root))
@@ -55,107 +79,138 @@ namespace Distribox.CommonLib
             }
         }
 
-        public Boolean ContainsName(String Name)
+		/// <summary>
+		/// Create a file item
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="isDirectory">If set to <c>true</c> is directory.</param>
+		/// <param name="when">When.</param>
+        public FileItem Create(string name, bool isDirectory, DateTime when)
         {
-            return PathToFile.ContainsKey(Name);
-        }
+            if (_pathToFile.ContainsKey(name))
+				return null;
 
-        public FileItem Create(String Name, Boolean IsDirectory, DateTime When)
-        {
-            if (PathToFile.ContainsKey(Name)) return null;
-
-            FileItem item = new FileItem(Name, IsDirectory);
-            item.Create(When);
+            FileItem item = new FileItem(name, isDirectory);
+            item.Create(when);
 
             AllFiles.Add(item);
 
-            PathToFile[Name] = item;
+            _pathToFile[name] = item;
 
             return item;
         }
 
-        public void Changed(String Name, Boolean IsDirectory, String SHA1, DateTime When)
+		/// <summary>
+		/// Change a file item.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="isDirectory">If set to <c>true</c> is directory.</param>
+		/// <param name="SHA1">SH a1.</param>
+		/// <param name="when">When.</param>
+		public void Change(string name, bool isDirectory, string SHA1, DateTime when)
         {
-            if (!PathToFile.ContainsKey(Name))
+            if (!_pathToFile.ContainsKey(name))
             {
-                Create(Name, IsDirectory, When);
+                Create(name, isDirectory, when);
             }
 
-            if (IsDirectory) return;
+            if (isDirectory) return;
 
-            FileItem item = PathToFile[Name];
-            item.Change(Name, SHA1, When);
+            FileItem item = _pathToFile[name];
+            item.Change(name, SHA1, when);
         }
 
-        public void Renamed(String Name, String OldName, String SHA1, DateTime When)
+		/// <summary>
+		/// Rename a file item.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="oldName">Old name.</param>
+		/// <param name="SHA1">SH a1.</param>
+		/// <param name="when">When.</param>
+        public void Rename(string name, string oldName, string SHA1, DateTime when)
         {
-            FileItem item = PathToFile[OldName];
+            FileItem item = _pathToFile[oldName];
 
-            item.Rename(Name, When);
+            item.Rename(name, when);
 
-            PathToFile.Remove(OldName);
-            PathToFile[Name] = item;
+            _pathToFile.Remove(oldName);
+            _pathToFile[name] = item;
         }
 
-        public void Delete(String Name, DateTime When)
+		/// <summary>
+		/// Delete a file item.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="when">When.</param>
+        public void Delete(string name, DateTime when)
         {
-            FileItem item = PathToFile[Name];
-            item.Delete(When);
-            PathToFile.Remove(Name);
+            FileItem item = _pathToFile[name];
+            item.Delete(when);
+            _pathToFile.Remove(name);
         }
 
-        public String GetFileBySHA1(String SHA1)
+		/// <summary>
+		/// Creates a bundle containing version list delta and all data of files.
+		/// </summary>
+		/// <returns>The path of bundle.</returns>
+		/// <param name="list">List needed to transfered.</param>
+        public string CreateFileBundle(List<FileItem> list)
         {
-            return _root + ".Distribox/data/" + SHA1;
-        }
-
-        public String CreateFileBundle(List<FileItem> list)
-        {
-            String data_path = _root + ".Distribox/data/";
-            String tmp_path = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
-            Directory.CreateDirectory(tmp_path);
-            CommonHelper.WriteObject(tmp_path + "/Delta.txt", list);
+            string dataPath = _root + ".Distribox/data/";
+            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            Directory.CreateDirectory(tmpPath);
+            CommonHelper.WriteObject(tmpPath + "/Delta.txt", list);
             foreach (var item in list)
-                foreach (var history in item.History)
-                {
-                    if (history.SHA1 == null) continue;
-                    File.Copy(data_path + history.SHA1, tmp_path + "/" + history.SHA1);
-                }
-            CommonHelper.Zip(tmp_path + ".zip", tmp_path);
-            Directory.Delete(tmp_path, true);
-            return tmp_path + ".zip";
+			{
+				foreach (var history in item.History)
+				{
+					if (history.SHA1 == null)
+						continue;
+					File.Copy(dataPath + history.SHA1, tmpPath + "/" + history.SHA1);
+				}
+			}
+            CommonHelper.Zip(tmpPath + ".zip", tmpPath);
+            Directory.Delete(tmpPath, true);
+            return tmpPath + ".zip";
         }
-       
+
+		/// <summary>
+		/// Accepts a file bundle containing version list delta and all data of files.
+		/// </summary>
+		/// <param name="data">Binary data.</param>
         public void AcceptFileBundle(byte[] data)
         {
-            String data_path = _root + ".Distribox/data/";
-            String tmp_path = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
-            Directory.CreateDirectory(tmp_path);
-            File.WriteAllBytes(tmp_path + ".zip", data);
-            CommonHelper.UnZip(tmp_path + ".zip", tmp_path);
+            string dataPath = _root + ".Distribox/data/";
+            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            Directory.CreateDirectory(tmpPath);
+            File.WriteAllBytes(tmpPath + ".zip", data);
+            CommonHelper.UnZip(tmpPath + ".zip", tmpPath);
 
-            // copy all files
-            foreach (var file in Directory.GetFiles(tmp_path))
+            // Copy all files
+            foreach (var file in Directory.GetFiles(tmpPath))
             {
                 FileInfo info = new FileInfo(file);
-                if (info.Name == "Delta.txt") continue;
-                if (File.Exists(data_path + info.Name)) continue;
-                File.Copy(tmp_path + "/" + info.Name, data_path + info.Name);
+                if (info.Name == "Delta.txt")
+					continue;
+                if (File.Exists(dataPath + info.Name))
+					continue;
+                File.Copy(tmpPath + "/" + info.Name, dataPath + info.Name);
             }
 
-            // append versions
-            Dictionary<String, FileItem> myFileList = new Dictionary<String, FileItem>();
+            // Append versions
+            Dictionary<string, FileItem> myFileList = new Dictionary<string, FileItem>();
             foreach (var item in AllFiles)
-                myFileList[item.Id] = item;
-
-            var list = CommonHelper.ReadObject<List<FileItem>>(tmp_path + "/Delta.txt");
+			{
+				myFileList[item.Id] = item;
+			}
+            var list = CommonHelper.ReadObject<List<FileItem>>(tmpPath + "/Delta.txt");
             foreach (var item in list)
             {
                 if (!myFileList.ContainsKey(item.Id))
                 {
                     myFileList[item.Id] = new FileItem(item.Id);
                     AllFiles.Add(myFileList[item.Id]);
-                    PathToFile[myFileList[item.Id].CurrentName] = myFileList[item.Id];
+                    _pathToFile[myFileList[item.Id].CurrentName] = myFileList[item.Id];
                 }
                 foreach (var history in item.History)
                 {
@@ -163,32 +218,48 @@ namespace Distribox.CommonLib
                 }
             }
 
-            File.Delete(tmp_path + ".zip");
-            Directory.Delete(tmp_path, true);
+			// Clean up
+            File.Delete(tmpPath + ".zip");
+            Directory.Delete(tmpPath, true);
             Flush();
         }
 
+		// TODO use version
+		/// <summary>
+		/// Gets all version that exist in <paramref name="list"/> but not exist in this
+		/// </summary>
+		/// <returns>The less than.</returns>
+		/// <param name="list">List.</param>
         public List<FileItem> GetLessThan(VersionList list)
         {
-            HashSet<String> myFileList = new HashSet<String>();
+            HashSet<string> myFileList = new HashSet<string>();
             foreach (var item in AllFiles)
-                foreach (var history in item.History)
-                {
-                    myFileList.Add(item.Id + "@" + history.SHA1);
-                }
+			{
+				foreach (var history in item.History)
+				{
+					myFileList.Add(item.Id + "@" + history.SHA1);
+				}
+			}
 
-            Dictionary<String, FileItem> dict = new Dictionary<String, FileItem>();
+            Dictionary<string, FileItem> dict = new Dictionary<string, FileItem>();
             foreach (var item in list.AllFiles)
-                foreach (var history in item.History)
-                {
-                    String guid = item.Id + "@" + history.SHA1;
-                    if (myFileList.Contains(guid)) continue;
-                    if (!dict.ContainsKey(item.Id)) dict[item.Id] = new FileItem(item.Id);
-                    dict[item.Id].NewVersion(history);
-                }
+			{
+				foreach (var history in item.History)
+				{
+					string guid = item.Id + "@" + history.SHA1;
+					if (myFileList.Contains(guid))
+						continue;
+					if (!dict.ContainsKey(item.Id))
+						dict[item.Id] = new FileItem(item.Id);
+					dict[item.Id].NewVersion(history);
+				}
+			}
             return dict.Values.ToList();
         }
 
+		/// <summary>
+		/// Flush version list into disk
+		/// </summary>
         public void Flush()
         {
             CommonHelper.WriteObject(_root + ".Distribox/VersionList.txt", AllFiles);

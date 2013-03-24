@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Distribox.CommonLib
 {
+	// TODO create a new class indicating version delta
 	/// <summary>
 	/// Stores all versions of a file.
 	/// </summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,13 +28,13 @@ namespace Distribox.Client.Module
         public void Changed(FileChangedEventArgs e)
         {
             Console.WriteLine("Changed");
-            VersionList.Changed(e.Name, e.IsDirectory, e.SHA1, e.When);
+            VersionList.Change(e.Name, e.IsDirectory, e.SHA1, e.When);
         }
 
         public void Renamed(FileChangedEventArgs e)
         {
             Console.WriteLine("Renamed");
-            VersionList.Renamed(e.Name, e.OldName, e.SHA1, e.When);
+            VersionList.Rename(e.Name, e.OldName, e.SHA1, e.When);
         }
 
         public void Deleted(FileChangedEventArgs e)

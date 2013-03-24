@@ -75,7 +75,7 @@ namespace Distribox.CLI
 			}
 			if (!File.Exists(root + ".Distribox/PeerList.json"))
 			{
-				File.WriteAllText(root + ".Distribox/PeerList.json", "[]");
+				File.WriteAllText(root + ".Distribox/PeerList.json", "{}");
 			}
 		}
 	}

@@ -34,6 +34,13 @@ namespace Distribox.Network
         }
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
+		/// </summary>
+		public PeerList()
+		{
+		}
+
+		/// <summary>
 		/// Gets a peer list.
 		/// </summary>
 		/// <returns>The peer list.</returns>
@@ -41,7 +48,7 @@ namespace Distribox.Network
         static public PeerList GetPeerList(string peerFileName)
         {
             if (File.Exists(peerFileName))
-                return CommonLib.CommonHelper.ReadObject<PeerList>(peerFileName);
+                return CommonHelper.ReadObject<PeerList>(peerFileName);
             else
                 return new PeerList(peerFileName);
         }

@@ -5,11 +5,17 @@ using System.Text;
 
 namespace Distribox.CommonLib
 {
+	/// <summary>
+	/// File subversion type.
+	/// </summary>
     public enum FileSubversionType
     {
         Created, Changed, Renamed, Deleted
     }
 
+	/// <summary>
+	/// File subversion.
+	/// </summary>
     public class FileSubversion
     {
         public string Name { get; set; }

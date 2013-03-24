@@ -20,7 +20,7 @@ namespace Distribox.Network
 		/// </summary>
         private void FlushToDisk()
         {
-            CommonLib.CommonHelper.WriteObject(PeerFileName, this);
+			this.WriteObject(PeerFileName);
         }
 
 		/// <summary>

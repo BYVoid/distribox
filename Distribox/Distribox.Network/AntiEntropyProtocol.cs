@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,7 +39,7 @@ namespace Distribox.Network
 		private void ParseAndDispatchMessage(byte[] data, Peer peerFrom)
 		{
 			// Parse it, and convert to the right derived class
-			ProtocolMessage message = CommonHelper.Read<ProtocolMessage>(data).ParseToDerivedClass(data);            
+			ProtocolMessage message = CommonHelper.Deserialize<ProtocolMessage>(data).ParseToDerivedClass(data);            
 
 			// ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
 			int port = message.MyListenPort;
@@ -62,7 +62,7 @@ namespace Distribox.Network
             {
                 sender.OnComplete += onCompleteHandler;
             }
-            byte[] bMessage = CommonLib.CommonHelper.ShowAsBytes(message);
+            byte[] bMessage = CommonLib.CommonHelper.SerializeAsBytes(message);
             Console.WriteLine(message);
             sender.SendBytes(bMessage);
 			// TODO on error
@@ -139,11 +139,11 @@ namespace Distribox.Network
             lock (Versions)
             {
                 versionRequest = Versions.GetLessThan(message.List);
-                Logger.Info("Received version list from {1}\n{0}", message.List.Show(), peer.Show());
+                Logger.Info("Received version list from {1}\n{0}", message.List.Serialize(), peer.Serialize());
             }            
             SendMessage(peer, new FileRequest(versionRequest, _listeningPort));
 
-            Console.WriteLine("Sent file request\n{0}", versionRequest.Show());
+            Console.WriteLine("Sent file request\n{0}", versionRequest.Serialize());
         }
 
 		/// <summary>
@@ -153,7 +153,7 @@ namespace Distribox.Network
 		/// <param name="peer">Peer.</param>
 		public void Process(FileRequest message, Peer peer)
         {
-            Logger.Info("Receive file request\n{0}", message._request.Show());
+            Logger.Info("Receive file request\n{0}", message._request.Serialize());
 
 			string filename = null;
             lock (Versions)
@@ -191,8 +191,8 @@ namespace Distribox.Network
             SendMessage(peer, new VersionListMessage(Versions, _listeningPort));
 
 			// TODO logger
-            Console.WriteLine("Send version list to {0}", peer.Show());
-            Console.WriteLine(Versions.Show());
+            Console.WriteLine("Send version list to {0}", peer.Serialize());
+            Console.WriteLine(Versions.Serialize());
         }
 
 		/// <summary>

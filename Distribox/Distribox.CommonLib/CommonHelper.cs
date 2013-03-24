@@ -10,11 +10,22 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Distribox.CommonLib
 {
+	/// <summary>
+	/// Common helpers.
+	/// </summary>
     public static class CommonHelper
     {
-        private static Random rd = new Random();
+		/// <summary>
+		/// Ramdom Generator
+		/// </summary>
+        private static Random _rd = new Random();
 
-        public static String GetSHA1Hash(string pathName)
+		/// <summary>
+		/// Gets the SHA1 hash of a file.
+		/// </summary>
+		/// <returns>The SHA1 hash.</returns>
+		/// <param name="pathName">Path name.</param>
+        public static string GetSHA1Hash(string pathName)
         {
             string strResult = "";
             string strHashData = "";
@@ -24,6 +35,7 @@ namespace Distribox.CommonLib
 
             SHA1CryptoServiceProvider oSHA1Hasher = new SHA1CryptoServiceProvider();
 
+			// TODO comment for find another solution
             while (true)
             {
                 try
@@ -46,82 +58,120 @@ namespace Distribox.CommonLib
             return (strResult);
         }
 
-        public static String GetRandomHash()
+		/// <summary>
+		/// Gets a random hash.
+		/// </summary>
+		/// <returns>The random hash.</returns>
+        public static string GetRandomHash()
         {
             DateTime now = DateTime.Now;
-            return now.ToString("yyyyMMddHHmmss") + now.Millisecond.ToString() + rd.Next(10000).ToString();
+            return now.ToString("yyyyMMddHHmmss") + now.Millisecond.ToString() + _rd.Next(10000).ToString();
         }
 
-        public static T Read<T>(String input)
+		/// <summary>
+		/// Deserialize the specified input.
+		/// </summary>
+		/// <param name="input">Input.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static T Deserialize<T>(this string input)
         {
             return JsonConvert.DeserializeObject<T>(input);
         }
 
-        public static T Read<T>(byte[] input)
+		/// <summary>
+		/// Deserialize the specified input.
+		/// </summary>
+		/// <param name="input">Input.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static T Deserialize<T>(this byte[] input)
         {
-            return Read<T>(ByteToString(input));
+            return Deserialize<T>(ByteToString(input));
         }
 
-        public static String Show(this Object input)
+		/// <summary>
+		/// Serialize the specified input.
+		/// </summary>
+		/// <param name="input">Input.</param>
+        public static string Serialize(this Object input)
         {
             return JsonConvert.SerializeObject(input, Formatting.Indented);
         }
 
-        public static byte[] ShowAsBytes(Object input)
+		/// <summary>
+		/// Serializes as bytes.
+		/// </summary>
+		/// <returns>The as bytes.</returns>
+		/// <param name="input">Input.</param>
+        public static byte[] SerializeAsBytes(this Object input)
         {
-            return StringToByte(Show(input));
+            return StringToByte(Serialize(input));
         }
 
-        public static String ReadFile(String filename)
+		/// <summary>
+		/// Reads the object from file.
+		/// </summary>
+		/// <returns>The object.</returns>
+		/// <param name="filename">Filename.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static T ReadObject<T>(string filename)
         {
-            StreamReader fin = new StreamReader(filename);
-            String ret = fin.ReadToEnd();
-            fin.Close();
-            return ret;
+            string str = File.ReadAllText(filename);
+            return Deserialize<T>(str);
         }
 
-        public static void WriteFile(String filename, String text)
+		/// <summary>
+		/// Writes the object to file.
+		/// </summary>
+		/// <param name="input">Input.</param>
+		/// <param name="filename">Filename.</param>
+		public static void WriteObject(this Object input, string filename)
         {
-            StreamWriter fout = new StreamWriter(filename);
-            fout.Write(text);
-            fout.Flush();
-            fout.Close();
+			string str = input.Serialize();
+			File.WriteAllText(filename, str);
         }
 
-        public static T ReadObject<T>(String filename)
-        {
-            String str = ReadFile(filename);
-            return Read<T>(str);
-        }
-
-        public static void WriteObject(String filename, Object input)
-        {
-            String str = Show(input);
-            WriteFile(filename, str);
-        }
-
-        public static Byte[] StringToByte(String str)
+		/// <summary>
+		/// Converts string to bytes.
+		/// </summary>
+		/// <returns>The to byte.</returns>
+		/// <param name="str">String.</param>
+        public static byte[] StringToByte(string str)
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetBytes(str);
         }
 
-        public static String ByteToString(Byte[] bytes)
+		/// <summary>
+		/// Converts bytes to string.
+		/// </summary>
+		/// <returns>The to string.</returns>
+		/// <param name="bytes">Bytes.</param>
+        public static string ByteToString(byte[] bytes)
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetString(bytes);
         }
 
-        public static void Zip(String zipFileName, String sourceDirectory)
+		/// <summary>
+		/// Compress the specified <paramref name="sourceDirectory"/> into <paramref name="zipFileName"/>.
+		/// </summary>
+		/// <param name="zipFileName">Zip file name.</param>
+		/// <param name="sourceDirectory">Source directory.</param>
+        public static void Zip(string zipFileName, string sourceDirectory)
         {
             FastZip zip = new FastZip();
             zip.CreateZip(zipFileName, sourceDirectory, true, null);
         }
 
-        public static void UnZip(String zipFileName, String sourceDirectory)
+		/// <summary>
+		/// Decompress the <paramref name="zipFileName"/> into <paramref name="targetDirectory"/>.
+		/// </summary>
+		/// <param name="zipFileName">Zip file name.</param>
+		/// <param name="targetDirectory">Target directory.</param>
+        public static void UnZip(string zipFileName, string targetDirectory)
         {
             FastZip zip = new FastZip();
-            zip.ExtractZip(zipFileName, sourceDirectory, null);
+            zip.ExtractZip(zipFileName, targetDirectory, null);
         }
     }
 }

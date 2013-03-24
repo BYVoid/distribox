@@ -159,7 +159,7 @@ namespace Distribox.CommonLib
             string dataPath = _root + ".Distribox/data/";
             string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmpPath);
-            CommonHelper.WriteObject(tmpPath + "/Delta.txt", list);
+			list.WriteObject(tmpPath + "/Delta.txt");
             foreach (var item in list)
 			{
 				foreach (var history in item.History)
@@ -262,7 +262,7 @@ namespace Distribox.CommonLib
 		/// </summary>
         public void Flush()
         {
-            CommonHelper.WriteObject(_root + ".Distribox/VersionList.txt", AllFiles);
+			AllFiles.WriteObject(_root + ".Distribox/VersionList.txt");
         }
     }
 }

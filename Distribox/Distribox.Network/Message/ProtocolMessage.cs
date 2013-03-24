@@ -34,21 +34,21 @@ namespace Distribox.Network
             switch (_type)
             {
                 case MessageType.InvitationRequest:
-                    return CommonLib.CommonHelper.Read<InvitationRequest>(data);
+                    return CommonLib.CommonHelper.Deserialize<InvitationRequest>(data);
                 case MessageType.InvitationAck:
-                    return CommonLib.CommonHelper.Read<InvitationAck>(data);
+                    return CommonLib.CommonHelper.Deserialize<InvitationAck>(data);
                 case MessageType.SyncRequest:
-                    return CommonLib.CommonHelper.Read<SyncRequest>(data);
+                    return CommonLib.CommonHelper.Deserialize<SyncRequest>(data);
                 case MessageType.SyncAck:
-                    return CommonLib.CommonHelper.Read<SyncAck>(data);
+                    return CommonLib.CommonHelper.Deserialize<SyncAck>(data);
                 case MessageType.PeerListMessage:
-                    return CommonLib.CommonHelper.Read<PeerListMessage>(data);
+                    return CommonLib.CommonHelper.Deserialize<PeerListMessage>(data);
                 case MessageType.VersionListMessage:
-                    return CommonLib.CommonHelper.Read<VersionListMessage>(data);
+                    return CommonLib.CommonHelper.Deserialize<VersionListMessage>(data);
                 case MessageType.FileRequest:
-                    return CommonLib.CommonHelper.Read<FileRequest>(data);
+                    return CommonLib.CommonHelper.Deserialize<FileRequest>(data);
                 case MessageType.FileResponse:
-                    return CommonLib.CommonHelper.Read<FileDataResponse>(data);
+                    return CommonLib.CommonHelper.Deserialize<FileDataResponse>(data);
             }
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }

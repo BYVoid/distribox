@@ -7,24 +7,29 @@ using Distribox.CommonLib;
 using Distribox.Network;
 using Distribox.Client.Module;
 using System.Threading;
+using System.IO;
 
 namespace Distribox.Network
 {
     class Program
     {
+		static int port;
+		static string root;
+
         static void Main(string[] args)
-        {
+		{
+			// TODO use a config file to store port and root
+			Console.WriteLine("What is my port?");
+			port = int.Parse(Console.ReadLine());
+			
+			Console.WriteLine("What is root?");
+			root = Console.ReadLine() + "/";
+			Initialize();
             StartPeer();
         }
 
         private static void StartPeer()
         {
-            // TODO use a config file to store port and root
-            Console.WriteLine("What is my port?");
-            int port = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("What is root?");
-            string root = Console.ReadLine() + "/";
             string peerListName = root + ".Distribox/PeerList.json";
 
 			// Initialize anti entropy protocol
@@ -46,5 +51,36 @@ namespace Distribox.Network
             Console.WriteLine("Sending invitation...");
             protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));
         }
+
+		/// <summary>
+		/// Initialize the folders and version list.
+		/// </summary>
+		private static void Initialize()
+		{
+			if (!Directory.Exists(root))
+			{
+				Directory.CreateDirectory(root);
+			}
+			if (!Directory.Exists(root + ".Distribox"))
+			{
+				Directory.CreateDirectory(root + ".Distribox");
+			}
+			if (!Directory.Exists(root + ".Distribox/tmp"))
+			{
+				Directory.CreateDirectory(root + ".Distribox/tmp");
+			}
+			if (!Directory.Exists(root + ".Distribox/data"))
+			{
+				Directory.CreateDirectory(root + ".Distribox/data");
+			}
+			if (!File.Exists(root + ".Distribox/VersionList.txt"))
+			{
+				File.WriteAllText(root + ".Distribox/VersionList.txt", "[]");
+			}
+			if (!File.Exists(root + ".Distribox/PeerList.json"))
+			{
+				File.WriteAllText(root + ".Distribox/PeerList.json", "[]");
+			}
+		}
     }
 }

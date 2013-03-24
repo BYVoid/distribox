@@ -11,65 +11,68 @@ namespace Distribox.CommonLib
 		/// <summary>
 		/// The sync root of Distribox.
 		/// </summary>
-        private String _root;
+        private string _root;
 
+		/// <summary>
+		/// Gets or sets the version list.
+		/// </summary>
+		/// <value>The version list.</value>
         public VersionList VersionList { get; set; }
 
-        public VersionControl(String root)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionControl"/> class.
+		/// </summary>
+		/// <param name="root">Root.</param>
+        public VersionControl(string root)
         {
 			this._root = root;
-			Initialize();
 			VersionList = new VersionList(root + ".Distribox/VersionList.txt");
         }
 
-		private void Initialize()
-		{
-			if (!Directory.Exists(_root))
-			{
-				Directory.CreateDirectory(_root);
-			}
-			if (!Directory.Exists(_root + ".Distribox"))
-			{
-				Directory.CreateDirectory(_root + ".Distribox");
-			}
-			if (!Directory.Exists(_root + ".Distribox/tmp"))
-			{
-				Directory.CreateDirectory(_root + ".Distribox/tmp");
-			}
-			if (!Directory.Exists(_root + ".Distribox/data"))
-			{
-				Directory.CreateDirectory(_root + ".Distribox/data");
-			}
-			if (!File.Exists(_root + ".Distribox/VersionList.txt"))
-			{
-				File.WriteAllText(_root + ".Distribox/VersionList.txt", "[]");
-			}
-		}
-
+		/// <summary>
+		/// File created.
+		/// </summary>
+		/// <param name="e">E.</param>
         public void Created(FileChangedEventArgs e)
         {
+			// TODO comments
             Console.WriteLine("Created");
             VersionList.Create(e.Name, e.IsDirectory, e.When);
         }
 
+		/// <summary>
+		/// File changed.
+		/// </summary>
+		/// <param name="e">E.</param>
         public void Changed(FileChangedEventArgs e)
         {
             Console.WriteLine("Changed");
             VersionList.Change(e.Name, e.IsDirectory, e.SHA1, e.When);
         }
 
+		/// <summary>
+		/// File renamed.
+		/// </summary>
+		/// <param name="e">E.</param>
         public void Renamed(FileChangedEventArgs e)
         {
             Console.WriteLine("Renamed");
             VersionList.Rename(e.Name, e.OldName, e.SHA1, e.When);
         }
 
+		/// <summary>
+		/// File deleted.
+		/// </summary>
+		/// <param name="e">E.</param>
         public void Deleted(FileChangedEventArgs e)
         {
             Console.WriteLine("Deleted");
             VersionList.Delete(e.Name, e.When);
         }
 
+		/// <summary>
+		/// Flush version list to disk.
+		/// </summary>
         public void Flush()
         {
             Console.WriteLine("Flush");

@@ -2,7 +2,7 @@ using System;
 
 namespace Distribox.CommonLib
 {
-	public class Properties
+	public static class Properties
 	{
 		public const string PathSep = "/";
 		public const string MetaFolder = ".Distribox";

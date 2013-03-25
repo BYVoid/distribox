@@ -173,5 +173,37 @@ namespace Distribox.CommonLib
             FastZip zip = new FastZip();
             zip.ExtractZip(zipFileName, targetDirectory, null);
         }
+
+		/// <summary>
+		/// Initialize all the folders and files in monitered file.
+		/// </summary>
+		/// <param name="root">Path of root folder.</param>
+		public static void InitializeFolder(string root)
+		{
+			if (!Directory.Exists(root))
+			{
+				Directory.CreateDirectory(root);
+			}
+			if (!Directory.Exists(root + Properties.MetaFolder))
+			{
+				Directory.CreateDirectory(root + Properties.MetaFolder);
+			}
+			if (!Directory.Exists(root + Properties.MetaFolderTmp))
+			{
+				Directory.CreateDirectory(root + Properties.MetaFolderTmp);
+			}
+			if (!Directory.Exists(root + Properties.MetaFolderData))
+			{
+				Directory.CreateDirectory(root + Properties.MetaFolderData);
+			}
+			if (!File.Exists(root + Properties.VersionListFilePath))
+			{
+				File.WriteAllText(root + Properties.VersionListFilePath, "[]");
+			}
+			if (!File.Exists(root + Properties.PeerListFilePath))
+			{
+				File.WriteAllText(root + Properties.PeerListFilePath, "{}");
+			}
+		}
     }
 }

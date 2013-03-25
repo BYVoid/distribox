@@ -20,7 +20,7 @@ namespace Distribox.CLI
 			
 			Console.WriteLine("What is root?");
 			root = Console.ReadLine() + Properties.PathSep;
-			Initialize();
+			CommonHelper.InitializeFolder(root);
 			StartPeer();
 		}
 		
@@ -46,37 +46,6 @@ namespace Distribox.CLI
 			
 			Console.WriteLine("Sending invitation...");
 			protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));
-		}
-		
-		/// <summary>
-		/// Initialize the folders and version list.
-		/// </summary>
-		private static void Initialize()
-		{
-			if (!Directory.Exists(root))
-			{
-				Directory.CreateDirectory(root);
-			}
-			if (!Directory.Exists(root + Properties.MetaFolder))
-			{
-				Directory.CreateDirectory(root + Properties.MetaFolder);
-			}
-			if (!Directory.Exists(root + Properties.MetaFolderTmp))
-			{
-				Directory.CreateDirectory(root + Properties.MetaFolderTmp);
-			}
-			if (!Directory.Exists(root + Properties.MetaFolderData))
-			{
-				Directory.CreateDirectory(root + Properties.MetaFolderData);
-			}
-			if (!File.Exists(root + Properties.VersionListFilePath))
-			{
-				File.WriteAllText(root + Properties.VersionListFilePath, "[]");
-			}
-			if (!File.Exists(root + Properties.PeerListFilePath))
-			{
-				File.WriteAllText(root + Properties.PeerListFilePath, "{}");
-			}
 		}
 	}
 }

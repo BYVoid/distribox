@@ -67,7 +67,7 @@ namespace Distribox.FileSystem
 
         private string _dataPath
         {
-            get { return _root + ".Distribox/data/"; }
+			get { return _root + Properties.MetaFolderData + Properties.PathSep; }
         }
 
 		/// <summary>
@@ -147,7 +147,7 @@ namespace Distribox.FileSystem
 		private void OnWatcherEvent(object sender, FileSystemEventArgs e)
         {
 			// Exclude .Distribox folder
-            if (e.Name.StartsWith(".Distribox"))
+			if (e.Name.StartsWith(Properties.MetaFolder))
 				return;
 			lock (_eventQueue)
 			{

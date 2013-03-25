@@ -19,14 +19,14 @@ namespace Distribox.CLI
 			port = int.Parse(Console.ReadLine());
 			
 			Console.WriteLine("What is root?");
-			root = Console.ReadLine() + "/";
+			root = Console.ReadLine() + Properties.PathSep;
 			Initialize();
 			StartPeer();
 		}
 		
 		private static void StartPeer()
 		{
-			string peerListName = root + ".Distribox/PeerList.json";
+			string peerListName = root + Properties.PeerListFilePath;
 			
 			// Initialize anti entropy protocol
 			var vs = new VersionControl(root);
@@ -57,25 +57,25 @@ namespace Distribox.CLI
 			{
 				Directory.CreateDirectory(root);
 			}
-			if (!Directory.Exists(root + ".Distribox"))
+			if (!Directory.Exists(root + Properties.MetaFolder))
 			{
-				Directory.CreateDirectory(root + ".Distribox");
+				Directory.CreateDirectory(root + Properties.MetaFolder);
 			}
-			if (!Directory.Exists(root + ".Distribox/tmp"))
+			if (!Directory.Exists(root + Properties.MetaFolderTmp))
 			{
-				Directory.CreateDirectory(root + ".Distribox/tmp");
+				Directory.CreateDirectory(root + Properties.MetaFolderTmp);
 			}
-			if (!Directory.Exists(root + ".Distribox/data"))
+			if (!Directory.Exists(root + Properties.MetaFolderData))
 			{
-				Directory.CreateDirectory(root + ".Distribox/data");
+				Directory.CreateDirectory(root + Properties.MetaFolderData);
 			}
-			if (!File.Exists(root + ".Distribox/VersionList.txt"))
+			if (!File.Exists(root + Properties.VersionListFilePath))
 			{
-				File.WriteAllText(root + ".Distribox/VersionList.txt", "[]");
+				File.WriteAllText(root + Properties.VersionListFilePath, "[]");
 			}
-			if (!File.Exists(root + ".Distribox/PeerList.json"))
+			if (!File.Exists(root + Properties.PeerListFilePath))
 			{
-				File.WriteAllText(root + ".Distribox/PeerList.json", "{}");
+				File.WriteAllText(root + Properties.PeerListFilePath, "{}");
 			}
 		}
 	}

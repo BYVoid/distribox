@@ -9,22 +9,16 @@ namespace Distribox.CLI
 {
 	class Program
 	{
-		static int port;
-		static string root;
-		
 		public static void Main(string[] args)
 		{
-			// TODO use a config file to store port and root
-			Console.WriteLine("What is my port?");
-			port = int.Parse(Console.ReadLine());
-			
-			Console.WriteLine("What is root?");
-			root = Console.ReadLine() + Properties.PathSep;
+            int port = Config.GetConfig().ListenPort;
+            string root = Config.GetConfig().RootFolder;
+
 			CommonHelper.InitializeFolder(root);
-			StartPeer();
+			StartPeer(port, root);
 		}
 		
-		private static void StartPeer()
+		private static void StartPeer(int port, string root)
 		{
 			string peerListName = root + Properties.PeerListFilePath;
 			
@@ -33,7 +27,7 @@ namespace Distribox.CLI
 			AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName, vs);
 			
 			// Initialize file watcher
-			FileWatcher watcher = new FileWatcher(root);
+			FileWatcher watcher = new FileWatcher();
 			watcher.Created += x => { lock (vs) vs.Created(x); };
 			watcher.Changed += x => { lock (vs) vs.Changed(x); };
 			watcher.Deleted += x => { lock (vs) vs.Deleted(x); };

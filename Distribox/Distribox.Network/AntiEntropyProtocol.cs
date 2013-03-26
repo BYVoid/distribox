@@ -13,9 +13,6 @@ namespace Distribox.Network
 {
 	public class AntiEntropyProtocol
     {
-		// TODO use config file
-        private const int CONNECT_PERIOD_MS = 1000;
-
         private PeerList _peers;
         private AtomicMessageListener _listener;
         private int _listeningPort;
@@ -249,7 +246,7 @@ namespace Distribox.Network
             _listener.OnReceive += OnReceiveMessage;
 
             // Initialize timer to connect other peers periodically
-            System.Timers.Timer timer = new System.Timers.Timer(CONNECT_PERIOD_MS);
+            System.Timers.Timer timer = new System.Timers.Timer(Config.GetConfig().ConnectPeriodMs);
             timer.Elapsed += this.OnTimerEvent;
             timer.AutoReset = true;
             timer.Enabled = true;

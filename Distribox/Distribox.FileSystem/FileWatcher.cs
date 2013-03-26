@@ -49,9 +49,6 @@ namespace Distribox.FileSystem
 		/// </summary>
         public event IdleHandler Idle;
 
-		// TODO config file
-        private const int TIME_INTERVAL = 1000;
-
 		/// <summary>
 		/// The event queue.
 		/// </summary>
@@ -60,26 +57,21 @@ namespace Distribox.FileSystem
 		/// <summary>
 		/// The timer for polling.
 		/// </summary>
-        private System.Timers.Timer timer = new System.Timers.Timer(TIME_INTERVAL);
-
-		// TODO config
-        private string _root;
+        private System.Timers.Timer timer = new System.Timers.Timer(Config.GetConfig().FileWatcherTimeIntervalMs);
 
         private string _dataPath
         {
-			get { return _root + Properties.MetaFolderData + Properties.PathSep; }
+            get { return Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep; }
         }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Distribox.FileSystem.FileWatcher"/> class.
 		/// </summary>
 		/// <param name="root">Root.</param>
-        public FileWatcher(string root)
+        public FileWatcher()
         {
-            this._root = root;
-
             FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = root;
+            watcher.Path = Config.GetConfig().RootFolder;
             watcher.Changed += OnWatcherEvent;
             watcher.Created += OnWatcherEvent;
             watcher.Renamed += OnWatcherEvent;

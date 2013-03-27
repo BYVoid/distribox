@@ -93,7 +93,7 @@ namespace Distribox.FileSystem
             list.WriteObject(tmpPath + Properties.PathSep + Properties.DeltaFile);
             foreach (var patch in list.Where(x => x.SHA1 != null))
             {
-                File.Copy(dataPath + patch.SHA1, tmpPath + Properties.PathSep + patch.SHA1);
+                File.Copy(dataPath + Properties.PathSep + patch.SHA1, tmpPath + Properties.PathSep + patch.SHA1);
             }
             CommonHelper.Zip(tmpPath + Properties.BundleFileExt, tmpPath);
             Directory.Delete(tmpPath, true);
@@ -118,9 +118,9 @@ namespace Distribox.FileSystem
                 FileInfo info = new FileInfo(file);
                 if (info.Name == Properties.DeltaFile)
                     continue;
-                if (File.Exists(dataPath + info.Name))
+                if (File.Exists(dataPath + Properties.PathSep + info.Name))
                     continue;
-                File.Copy(tmpPath + Properties.PathSep + info.Name, dataPath + info.Name);
+                File.Copy(tmpPath + Properties.PathSep + info.Name, dataPath + Properties.PathSep + info.Name);
             }
 
             // Append versions
@@ -129,7 +129,7 @@ namespace Distribox.FileSystem
             {
                 myFileList[item.Id] = item;
             }
-            var myPatchList = CommonHelper.ReadObject<List<AtomicPatch>>(tmpPath + Properties.DeltaFile);
+            var myPatchList = CommonHelper.ReadObject<List<AtomicPatch>>(tmpPath + Properties.PathSep + Properties.DeltaFile);
             foreach (var patch in myPatchList)
             {
                 if (!myFileList.ContainsKey(patch.Id))

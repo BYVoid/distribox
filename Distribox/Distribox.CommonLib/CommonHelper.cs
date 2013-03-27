@@ -71,7 +71,7 @@ namespace Distribox.CommonLib
             ticks.CopyTo(bytes, 0);
             random.CopyTo(bytes, ticks.Length);
 
-            return Convert.ToBase64String(bytes);
+            return Convert.ToBase64String(bytes).Replace("/", "@");
         }
 
 		/// <summary>
@@ -205,10 +205,6 @@ namespace Distribox.CommonLib
 			if (!File.Exists(root + Properties.VersionListFilePath))
 			{
 				File.WriteAllText(root + Properties.VersionListFilePath, "[]");
-			}
-			if (!File.Exists(root + Properties.PeerListFilePath))
-			{
-				File.WriteAllText(root + Properties.PeerListFilePath, "{}");
 			}
 		}
     }

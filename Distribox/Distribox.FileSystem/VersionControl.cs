@@ -26,13 +26,8 @@ namespace Distribox.FileSystem
         /// <param name="root">Root.</param>
         public VersionControl(string root)
         {
-<<<<<<< HEAD
-            this._root = root;
-            VersionList = new VersionList(root + ".Distribox/VersionList.txt");
-=======
 			this._root = root;
 			VersionList = new VersionList(root + Properties.VersionListFilePath);
->>>>>>> 0e3f188820670e0a477841cd34c3fa9576c0d789
         }
 
         /// <summary>
@@ -85,7 +80,6 @@ namespace Distribox.FileSystem
             VersionList.Flush();
         }
 
-<<<<<<< HEAD
         /// <summary>
         /// Creates a bundle containing version list delta and all data of files.
         /// </summary>
@@ -93,17 +87,17 @@ namespace Distribox.FileSystem
         /// <param name="list">List needed to transfered.</param>
         public string CreateFileBundle(List<AtomicPatch> list)
         {
-            string dataPath = _root + ".Distribox/data/";
-            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            string dataPath = _root + Properties.MetaFolderData;
+            string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmpPath);
-            list.WriteObject(tmpPath + "/Delta.txt");
+            list.WriteObject(tmpPath + Properties.PathSep + Properties.DeltaFile);
             foreach (var patch in list.Where(x => x.SHA1 != null))
             {
-                File.Copy(dataPath + patch.SHA1, tmpPath + "/" + patch.SHA1);
+                File.Copy(dataPath + patch.SHA1, tmpPath + Properties.PathSep + patch.SHA1);
             }
-            CommonHelper.Zip(tmpPath + ".zip", tmpPath);
+            CommonHelper.Zip(tmpPath + Properties.BundleFileExt, tmpPath);
             Directory.Delete(tmpPath, true);
-            return tmpPath + ".zip";
+            return tmpPath + Properties.BundleFileExt;
         }
 
         /// <summary>
@@ -112,21 +106,21 @@ namespace Distribox.FileSystem
         /// <param name="data">Binary data.</param>
         public void AcceptFileBundle(byte[] data)
         {
-            string dataPath = _root + ".Distribox/data/";
-            string tmpPath = _root + ".Distribox/tmp/" + CommonHelper.GetRandomHash();
+            string dataPath = _root + Properties.MetaFolderData;
+            string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmpPath);
-            File.WriteAllBytes(tmpPath + ".zip", data);
-            CommonHelper.UnZip(tmpPath + ".zip", tmpPath);
+            File.WriteAllBytes(tmpPath + Properties.BundleFileExt, data);
+            CommonHelper.UnZip(tmpPath + Properties.BundleFileExt, tmpPath);
 
             // Copy all files
             foreach (var file in Directory.GetFiles(tmpPath))
             {
                 FileInfo info = new FileInfo(file);
-                if (info.Name == "Delta.txt")
+                if (info.Name == Properties.DeltaFile)
                     continue;
                 if (File.Exists(dataPath + info.Name))
                     continue;
-                File.Copy(tmpPath + "/" + info.Name, dataPath + info.Name);
+                File.Copy(tmpPath + Properties.PathSep + info.Name, dataPath + info.Name);
             }
 
             // Append versions
@@ -135,7 +129,7 @@ namespace Distribox.FileSystem
             {
                 myFileList[item.Id] = item;
             }
-            var myPatchList = CommonHelper.ReadObject<List<AtomicPatch>>(tmpPath + "/Delta.txt");
+            var myPatchList = CommonHelper.ReadObject<List<AtomicPatch>>(tmpPath + Properties.DeltaFile);
             foreach (var patch in myPatchList)
             {
                 if (!myFileList.ContainsKey(patch.Id))
@@ -148,88 +142,9 @@ namespace Distribox.FileSystem
             }
 
             // Clean up
-            File.Delete(tmpPath + ".zip");
+            File.Delete(tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             Flush();
         }
-=======
-		/// <summary>
-		/// Creates a bundle containing version list delta and all data of files.
-		/// </summary>
-		/// <returns>The path of bundle.</returns>
-		/// <param name="list">List needed to transfered.</param>
-		public string CreateFileBundle(List<FileItem> list)
-		{
-			string dataPath = _root + Properties.MetaFolderData;
-			string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
-			Directory.CreateDirectory(tmpPath);
-			list.WriteObject(tmpPath + Properties.PathSep + Properties.DeltaFile);
-			foreach (var item in list)
-			{
-				foreach (var history in item.History)
-				{
-					if (history.SHA1 == null)
-						continue;
-					File.Copy(dataPath + Properties.PathSep + history.SHA1, tmpPath + Properties.PathSep + history.SHA1);
-				}
-			}
-			string bundleFileName = tmpPath + Properties.BundleFileExt;
-			CommonHelper.Zip(bundleFileName, tmpPath);
-			Directory.Delete(tmpPath, true);
-			return bundleFileName;
-		}
-		
-		/// <summary>
-		/// Accepts a file bundle containing version list delta and all data of files.
-		/// </summary>
-		/// <param name="data">Binary data.</param>
-		public void AcceptFileBundle(byte[] data)
-		{
-			string dataPath = _root + Properties.MetaFolderData;
-			string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
-			Directory.CreateDirectory(tmpPath);
-			string bundleFileName = tmpPath + Properties.BundleFileExt;
-			File.WriteAllBytes(bundleFileName, data);
-			CommonHelper.UnZip(bundleFileName, tmpPath);
-			
-			// Copy all files
-			foreach (var file in Directory.GetFiles(tmpPath))
-			{
-				FileInfo info = new FileInfo(file);
-				if (info.Name == Properties.DeltaFile)
-					continue;
-				string destFileName = dataPath + Properties.PathSep + info.Name;
-				if (File.Exists(destFileName))
-					continue;
-				File.Copy(tmpPath + Properties.PathSep + info.Name, destFileName);
-			}
-			
-			// Append versions
-			Dictionary<string, FileItem> myFileList = new Dictionary<string, FileItem>();
-			foreach (var item in VersionList.AllFiles)
-			{
-				myFileList[item.Id] = item;
-			}
-			var list = CommonHelper.ReadObject<List<FileItem>>(tmpPath + Properties.PathSep + Properties.DeltaFile);
-			foreach (var item in list)
-			{
-				if (!myFileList.ContainsKey(item.Id))
-				{
-					myFileList[item.Id] = new FileItem(item.Id);
-					VersionList.AllFiles.Add(myFileList[item.Id]);
-					VersionList.SetFileByName(myFileList[item.Id].CurrentName, myFileList[item.Id]);
-				}
-				foreach (var history in item.History)
-				{
-					myFileList[item.Id].NewVersion(history);
-				}
-			}
-			
-			// Clean up
-			File.Delete(bundleFileName);
-			Directory.Delete(tmpPath, true);
-			Flush();
-		}
->>>>>>> 0e3f188820670e0a477841cd34c3fa9576c0d789
     }
 }

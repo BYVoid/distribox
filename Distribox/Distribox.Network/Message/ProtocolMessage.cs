@@ -46,7 +46,7 @@ namespace Distribox.Network
                 case MessageType.VersionListMessage:
                     return CommonLib.CommonHelper.Deserialize<VersionListMessage>(data);
                 case MessageType.FileRequest:
-                    return CommonLib.CommonHelper.Deserialize<FileRequest>(data);
+                    return CommonLib.CommonHelper.Deserialize<PatchRequest>(data);
                 case MessageType.FileResponse:
                     return CommonLib.CommonHelper.Deserialize<FileDataResponse>(data);
             }

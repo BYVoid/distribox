@@ -42,12 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtomicPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileWatcher.cs" />
     <Compile Include="FileChangedEventArgs.cs" />
     <Compile Include="VersionList.cs" />
     <Compile Include="VersionControl.cs" />
-    <Compile Include="FileSubversion.cs" />
+    <Compile Include="FileEvent.cs" />
     <Compile Include="FileItem.cs" />
   </ItemGroup>
   <ItemGroup>

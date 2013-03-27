@@ -9,17 +9,26 @@ namespace Distribox.CLI
 {
 	class Program
 	{
+        static AntiEntropyProtocol protocol;
 		static int port;
 		static string root;
+
+        public class API
+        {
+            public void invite(int port)
+            {
+                protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), port));
+            }
+        }
 		
 		public static void Main(string[] args)
-		{
+        {
 			// TODO use a config file to store port and root
 			Console.WriteLine("What is my port?");
 			port = int.Parse(Console.ReadLine());
 			
 			Console.WriteLine("What is root?");
-			root = Console.ReadLine() + "/";
+			root = Console.ReadLine().Replace("\\", "/") + "/";
 			Initialize();
 			StartPeer();
 		}
@@ -30,7 +39,7 @@ namespace Distribox.CLI
 			
 			// Initialize anti entropy protocol
 			var vs = new VersionControl(root);
-			AntiEntropyProtocol protocol = new AntiEntropyProtocol(port, peerListName, vs);
+			protocol = new AntiEntropyProtocol(port, peerListName, vs);
 			
 			// Initialize file watcher
 			FileWatcher watcher = new FileWatcher(root);
@@ -39,13 +48,12 @@ namespace Distribox.CLI
 			watcher.Deleted += x => { lock (vs) vs.Deleted(x); };
 			watcher.Renamed += x => { lock (vs) vs.Renamed(x); };
 			watcher.Idle += vs.Flush;
-			
-			// Create a console for user to invite peer
-			Console.WriteLine("Whom should I invite?");
-			int i_port = int.Parse(Console.ReadLine());
-			
-			Console.WriteLine("Sending invitation...");
-			protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), i_port));
+
+
+            // Create a virtual machine to repl
+            RubyEngine vm = new RubyEngine();
+            vm["api"] = new API();
+            vm.Repl();
 		}
 		
 		/// <summary>
@@ -75,7 +83,7 @@ namespace Distribox.CLI
 			}
 			if (!File.Exists(root + ".Distribox/PeerList.json"))
 			{
-				File.WriteAllText(root + ".Distribox/PeerList.json", "{}");
+                File.WriteAllText(root + ".Distribox/PeerList.json", String.Format("{{ PeerFileName:\"{0}\" }}", root + ".Distribox/PeerList.json"));
 			}
 		}
 	}

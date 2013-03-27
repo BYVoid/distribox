@@ -47,7 +47,7 @@
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
     <Compile Include="Message\FileDataResponse.cs" />
-    <Compile Include="Message\FileRequest.cs" />
+    <Compile Include="Message\PatchRequest.cs" />
     <Compile Include="Message\PeerListMessage.cs" />
     <Compile Include="Message\ProtocolMessage.cs" />
     <Compile Include="Message\VersionListMessage.cs" />

@@ -64,8 +64,14 @@ namespace Distribox.CommonLib
 		/// <returns>The random hash.</returns>
         public static string GetRandomHash()
         {
-            DateTime now = DateTime.Now;
-            return now.ToString("yyyyMMddHHmmss") + now.Millisecond.ToString() + _rd.Next(10000).ToString();
+            byte[] ticks = BitConverter.GetBytes(DateTime.Now.Ticks);
+            byte[] random = BitConverter.GetBytes(_rd.Next());
+
+            byte[] bytes = new byte[12];
+            ticks.CopyTo(bytes, 0);
+            random.CopyTo(bytes, ticks.Length);
+
+            return Convert.ToBase64String(bytes);
         }
 
 		/// <summary>

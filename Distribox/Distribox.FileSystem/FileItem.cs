@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Distribox.CommonLib;
+using System.Collections;
+using System.IO;
 
 namespace Distribox.FileSystem
 {
@@ -12,41 +14,59 @@ namespace Distribox.FileSystem
 	/// </summary>
     public class FileItem
     {
+        /// <summary>
+        /// Gets or sets the identifier of file.
+        /// </summary>
+        /// <value>The identifier of this file.</value>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this file is a directory.
+        /// </summary>
+        /// <value><c>true</c> if this file is a directory; otherwise, <c>false</c>.</value>
+        public bool IsDirectory { get; set; }
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this file is alive (not deleted).
 		/// </summary>
 		/// <value><c>true</c> if this file is alive; otherwise, <c>false</c>.</value>
-        public bool IsAlive { get; set; }
-
-		/// <summary>
-		/// Gets or sets the identifier of file.
-		/// </summary>
-		/// <value>The identifier of this file.</value>
-        public string Id { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this file is a directory.
-		/// </summary>
-		/// <value><c>true</c> if this file is a directory; otherwise, <c>false</c>.</value>
-        public bool IsDirectory { get; set; }
+        public bool IsAlive
+        {
+            get
+            {
+                return History.Last().Value.Type != FileEventType.Deleted;
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets current name of the file.
 		/// </summary>
 		/// <value>The current name of the file.</value>
-        public string CurrentName { get; set; }
+        public string CurrentName
+        {
+            get
+            {
+                return History.Last().Value.Name;
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets SHA1 checksum.
 		/// </summary>
 		/// <value>SHA1 chcksum.</value>
-        public string CurrentSHA1 { get; set; }
+        public string CurrentSHA1
+        {
+            get
+            {
+                return History.Last().Value.SHA1;
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets history of the file.
 		/// </summary>
 		/// <value>The history of the file.</value>
-        public List<FileSubversion> History { get; set; }
+        public SortedList<long, FileEvent> History { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Distribox.CommonLib.FileItem"/> class.
@@ -54,7 +74,7 @@ namespace Distribox.FileSystem
 		/// </summary>
         public FileItem()
         {
-            this.History = new List<FileSubversion>();
+            this.History = new SortedList<long, FileEvent>();
         }
 
 		/// <summary>
@@ -63,7 +83,7 @@ namespace Distribox.FileSystem
 		/// <param name="Id">Identifier.</param>
         public FileItem(string Id)
         {
-            this.History = new List<FileSubversion>();
+            this.History = new SortedList<long, FileEvent>();
             this.Id = Id;
         }
 
@@ -74,28 +94,24 @@ namespace Distribox.FileSystem
 		/// <param name="IsDirectory">If set to <c>true</c> is directory.</param>
         public FileItem(string Name, bool IsDirectory)
         {
-            this.History = new List<FileSubversion>();
-            this.IsAlive = true;
+            this.History = new SortedList<long, FileEvent>();
             this.Id = CommonHelper.GetRandomHash();
             this.IsDirectory = IsDirectory;
-            this.CurrentName = Name;
-            this.CurrentSHA1 = null;
         }
 
 		/// <summary>
 		/// Create the initial version.
 		/// </summary>
 		/// <param name="When">When.</param>
-        public void Create(DateTime When)
+        public void Create(String Name, DateTime When)
         {
-            FileSubversion vs = new FileSubversion();
-            vs.Type = FileSubversionType.Created;
-            vs.Name = CurrentName;
+            FileEvent vs = new FileEvent();
+            vs.Type = FileEventType.Created;
+            vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = null;
 
-            CurrentSHA1 = null;
-            History.Add(vs);
+            History.Add(vs.LastModify.Ticks, vs);
         }
 
 		/// <summary>
@@ -108,14 +124,13 @@ namespace Distribox.FileSystem
             if (Name == CurrentName)
 				return;
 
-            FileSubversion vs = new FileSubversion();
-            vs.Type = FileSubversionType.Renamed;
+            FileEvent vs = new FileEvent();
+            vs.Type = FileEventType.Renamed;
             vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = CurrentSHA1;
 
-            CurrentName = Name;
-            History.Add(vs);
+            History.Add(vs.LastModify.Ticks, vs);
         }
 
 		/// <summary>
@@ -124,14 +139,13 @@ namespace Distribox.FileSystem
 		/// <param name="When">When.</param>
         public void Delete(DateTime When)
         {
-            FileSubversion vs = new FileSubversion();
-            vs.Type = FileSubversionType.Deleted;
+            FileEvent vs = new FileEvent();
+            vs.Type = FileEventType.Deleted;
             vs.Name = CurrentName;
             vs.LastModify = When;
             vs.SHA1 = CurrentSHA1;
 
-            IsAlive = false;
-            History.Add(vs);
+            History.Add(vs.LastModify.Ticks, vs);
         }
 
 		/// <summary>
@@ -143,26 +157,82 @@ namespace Distribox.FileSystem
         public void Change(string Name, string SHA1, DateTime When)
         {
             if (SHA1 == CurrentSHA1)
-				return;
+            {
+                return;
+            }
 
-            FileSubversion vs = new FileSubversion();
-            vs.Type = FileSubversionType.Changed;
+            FileEvent vs = new FileEvent();
+            vs.Type = FileEventType.Changed;
             vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = SHA1;
 
-            CurrentSHA1 = SHA1;
-            History.Add(vs);
+            History.Add(vs.LastModify.Ticks, vs);
         }
 
 		/// <summary>
-		/// Insert a new version into history
+		/// Apply patch.
 		/// </summary>
-		/// <param name="vs">Vs.</param>
-        public void NewVersion(FileSubversion vs)
+        /// <param name="patch">patch.</param>
+        public void ApplyPatch(String root, AtomicPatch patch)
         {
-			// TODO insert the version to correct position
-            History.Add(vs);
+            if (History.ContainsKey(patch.LastModify.Ticks)) return;
+            
+            this.IsDirectory = patch.IsDirectory;
+            
+            FileEvent vs = new FileEvent();
+            vs.Type = patch.Type;
+            vs.Name = patch.Name;
+            vs.LastModify = patch.LastModify;
+            vs.SHA1 = patch.SHA1;
+
+            // Receive new file
+            if (History.Count() == 0)
+            {
+                if (IsDirectory)
+                {
+                    Directory.CreateDirectory(root + CurrentName);
+                }
+                else
+                {
+                    if (patch.SHA1 == null)
+                    {
+                        File.WriteAllText(root + vs.Name, "");
+                    }
+                    else
+                    {
+                        File.Copy(root + ".Distribox/data/" + patch.SHA1, root + vs.Name, true);
+                    }
+                }
+                History.Add(vs.LastModify.Ticks, vs);
+                return;
+            }
+
+            // Change file or directory.
+            FileEvent lastVersion = History.Last().Value;
+            History.Add(vs.LastModify.Ticks, vs);
+            if (lastVersion.LastModify.Ticks != patch.LastModify.Ticks)
+            {
+                if (IsDirectory)
+                {
+                    if (lastVersion.Name != patch.Name)
+                    {
+                        Directory.Delete(root + lastVersion.Name);
+                        Directory.CreateDirectory(root + patch.Name);
+                    }
+                }
+                else
+                {
+                    if (patch.SHA1 == null)
+                    {
+                        File.WriteAllText(root + vs.Name, "");
+                    }
+                    else
+                    {
+                        File.Copy(root + ".Distribox/data/" + patch.SHA1, root + vs.Name, true);
+                    }
+                }
+            }
         }
     }
 }

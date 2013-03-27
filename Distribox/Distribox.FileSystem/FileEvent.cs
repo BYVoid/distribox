@@ -8,19 +8,27 @@ namespace Distribox.FileSystem
 	/// <summary>
 	/// File subversion type.
 	/// </summary>
-    public enum FileSubversionType
+    public enum FileEventType
     {
         Created, Changed, Renamed, Deleted
     }
 
 	/// <summary>
-	/// File subversion.
+	/// File Event.
 	/// </summary>
-    public class FileSubversion
+    public class FileEvent
     {
+        public string fileId { get; set; }
+        public string eventId { get; set; }
+
+        public string ParentId { get; set; }
+
+        public bool IsDirectory { get; set; }
+
         public string Name { get; set; }
-		public string SHA1 { get; set; }
+        public string SHA1 { get; set; }
+
         public DateTime LastModify { get; set; }
-        public FileSubversionType Type { get; set; }
+        public FileEventType Type { get; set; }
     }
 }

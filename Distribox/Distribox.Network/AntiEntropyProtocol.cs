@@ -136,13 +136,13 @@ namespace Distribox.Network
 		/// <param name="peer">Peer.</param>
 		internal void Process(VersionListMessage message, Peer peer)
         {            
-            List<FileItem> versionRequest;
+            List<AtomicPatch> versionRequest;
             lock (_versionControl.VersionList)
             {
                 versionRequest = _versionControl.VersionList.GetLessThan(message.List);
                 Logger.Info("Received version list from {1}\n{0}", message.List.Serialize(), peer.Serialize());
             }            
-            SendMessage(peer, new FileRequest(versionRequest, _listeningPort));
+            SendMessage(peer, new PatchRequest(versionRequest, _listeningPort));
 
             Console.WriteLine("Sent file request\n{0}", versionRequest.Serialize());
         }
@@ -152,7 +152,7 @@ namespace Distribox.Network
 		/// </summary>
 		/// <param name="message">Message.</param>
 		/// <param name="peer">Peer.</param>
-		internal void Process(FileRequest message, Peer peer)
+		internal void Process(PatchRequest message, Peer peer)
         {
             Logger.Info("Receive file request\n{0}", message.Request.Serialize());
 

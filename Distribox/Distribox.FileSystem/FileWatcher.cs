@@ -257,7 +257,7 @@ namespace Distribox.FileSystem
             if (e.ChangeType == WatcherChangeTypes.Renamed)
             {
                 newEvent.OldName = ((RenamedEventArgs)e).OldName;
-                newEvent.FullPath = ((RenamedEventArgs)e).OldFullPath;
+                newEvent.OldFullPath = ((RenamedEventArgs)e).OldFullPath;
             }
             return newEvent;
         }

@@ -64,7 +64,7 @@ namespace Distribox.FileSystem
 				return null;
 
             FileItem item = new FileItem(name, isDirectory);
-            item.Create(when);
+            item.Create(name, when);
 
             AllFiles.Add(item);
 
@@ -128,31 +128,38 @@ namespace Distribox.FileSystem
 		/// </summary>
 		/// <returns>The less than.</returns>
 		/// <param name="list">List.</param>
-        public List<FileItem> GetLessThan(VersionList list)
+        public List<AtomicPatch> GetLessThan(VersionList list)
         {
             HashSet<string> myFileList = new HashSet<string>();
             foreach (var item in AllFiles)
 			{
 				foreach (var history in item.History)
 				{
-					myFileList.Add(item.Id + "@" + history.SHA1);
+					myFileList.Add(item.Id + "@" + history.Serialize());
 				}
 			}
 
-            Dictionary<string, FileItem> dict = new Dictionary<string, FileItem>();
+            List<AtomicPatch> patches = new List<AtomicPatch>();
             foreach (var item in list.AllFiles)
 			{
-				foreach (var history in item.History)
+				foreach (var history in item.History.Values)
 				{
-					string guid = item.Id + "@" + history.SHA1;
-					if (myFileList.Contains(guid))
-						continue;
-					if (!dict.ContainsKey(item.Id))
-						dict[item.Id] = new FileItem(item.Id);
-					dict[item.Id].NewVersion(history);
+                    string guid = item.Id + "@" + history.Serialize();
+                    if (myFileList.Contains(guid))
+                    {
+                        continue;
+                    }
+                    AtomicPatch patch = new AtomicPatch();
+                    patch.Id = item.Id;
+                    patch.IsDirectory = item.IsDirectory;
+                    patch.Name = history.Name;
+                    patch.SHA1 = history.SHA1;
+                    patch.LastModify = history.LastModify;
+                    patch.Type = history.Type;
+                    patches.Add(patch);
 				}
 			}
-            return dict.Values.ToList();
+            return patches;
         }
 
 		/// <summary>

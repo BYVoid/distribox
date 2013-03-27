@@ -65,9 +65,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonHelper.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
     <Compile Include="RubyEngine.cs" />
+=======
+    <Compile Include="Properties.cs" />
+>>>>>>> 0e3f188820670e0a477841cd34c3fa9576c0d789
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

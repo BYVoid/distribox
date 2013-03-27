@@ -9,6 +9,7 @@ namespace Distribox.CLI
 {
 	class Program
 	{
+<<<<<<< HEAD
         static AntiEntropyProtocol protocol;
 		static int port;
 		static string root;
@@ -31,18 +32,27 @@ namespace Distribox.CLI
 			root = Console.ReadLine().Replace("\\", "/") + "/";
 			Initialize();
 			StartPeer();
+=======
+		public static void Main(string[] args)
+		{
+            int port = Config.GetConfig().ListenPort;
+            string root = Config.GetConfig().RootFolder;
+
+			CommonHelper.InitializeFolder(root);
+			StartPeer(port, root);
+>>>>>>> 0e3f188820670e0a477841cd34c3fa9576c0d789
 		}
 		
-		private static void StartPeer()
+		private static void StartPeer(int port, string root)
 		{
-			string peerListName = root + ".Distribox/PeerList.json";
+			string peerListName = root + Properties.PeerListFilePath;
 			
 			// Initialize anti entropy protocol
 			var vs = new VersionControl(root);
 			protocol = new AntiEntropyProtocol(port, peerListName, vs);
 			
 			// Initialize file watcher
-			FileWatcher watcher = new FileWatcher(root);
+			FileWatcher watcher = new FileWatcher();
 			watcher.Created += x => { lock (vs) vs.Created(x); };
 			watcher.Changed += x => { lock (vs) vs.Changed(x); };
 			watcher.Deleted += x => { lock (vs) vs.Deleted(x); };
@@ -55,6 +65,7 @@ namespace Distribox.CLI
             vm["api"] = new API();
             vm.Repl();
 		}
+<<<<<<< HEAD
 		
 		/// <summary>
 		/// Initialize the folders and version list.
@@ -86,5 +97,7 @@ namespace Distribox.CLI
                 File.WriteAllText(root + ".Distribox/PeerList.json", String.Format("{{ PeerFileName:\"{0}\" }}", root + ".Distribox/PeerList.json"));
 			}
 		}
+=======
+>>>>>>> 0e3f188820670e0a477841cd34c3fa9576c0d789
 	}
 }

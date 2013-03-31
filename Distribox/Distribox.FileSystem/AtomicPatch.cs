@@ -18,5 +18,16 @@ namespace Distribox.FileSystem
         /// Size of the atomic patch, in bytes
         /// </summary>
         public long Size { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var patch = (AtomicPatch) obj;
+            return String.Format("{0}@{1}", Id, LastModify.Ticks) == String.Format("{0}@{1}", patch.Id, patch.LastModify.Ticks);
+        }
+
+        public override int GetHashCode()
+        {
+            return String.Format("{0}@{1}", Id, LastModify.Ticks).GetHashCode();
+        }
     }
 }

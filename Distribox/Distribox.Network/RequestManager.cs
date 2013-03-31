@@ -37,14 +37,23 @@ namespace Distribox.Network
         {
             lock (this)
             {
+                Console.WriteLine("AddRequests :: {0}", requests.Count());
                 foreach (AtomicPatch patch in requests)
                 {
-                    if (_patchToRequest.ContainsKey(patch))
+                    Console.WriteLine("\t{0}", patch.SerializeInline());
+                    if (_patchRequesting.ContainsKey(patch))
                     {
+                        Console.WriteLine("\tA");
+                        _patchRequesting[patch].Add(peerHaveThese);
+                    }
+                    else if (_patchToRequest.ContainsKey(patch))
+                    {
+                        Console.WriteLine("\tB");
                         _patchToRequest[patch].Add(peerHaveThese);
                     }
                     else
                     {
+                        Console.WriteLine("\tC");
                         var peers = new HashSet<Peer>();
                         peers.Add(peerHaveThese);
                         _patchToRequest.Add(patch, peers);
@@ -73,8 +82,7 @@ namespace Distribox.Network
                     return null;
 
                 // See if any other patches can be requested from the same peer
-                List<AtomicPatch> patches = new List<AtomicPatch>();
-                patches.Add(seedPatch);
+                HashSet<AtomicPatch> patches = new HashSet<AtomicPatch>();
                 long requestSize = seedPatch.Size;
                 // TODO improve time efficiency
                 foreach (KeyValuePair<AtomicPatch, HashSet<Peer>> kvp in _patchToRequest)
@@ -91,11 +99,12 @@ namespace Distribox.Network
                 foreach (AtomicPatch patch in patches)
                 {
                     // TODO: ugly!!!
+                    Console.WriteLine("GetRequests::{0}", patch.SerializeInline());
                     _patchRequesting.Add(patch, _patchToRequest[patch]);
                     _patchToRequest.Remove(patch);
                 }
                 // Return
-                return Tuple.Create<List<AtomicPatch>, Peer>(patches, peer);
+                return Tuple.Create<List<AtomicPatch>, Peer>(patches.ToList(), peer);
             }
         }
 
@@ -106,7 +115,9 @@ namespace Distribox.Network
             {
                 foreach (AtomicPatch patch in requests)
                     _patchRequesting.Remove(patch);
-            }            
+            }
+            Console.WriteLine("requests:: {0}", requests.SerializeInline());
+            Console.WriteLine("_patchRequesting:: {0}", _patchRequesting.SerializeInline());
         }
     }
 }

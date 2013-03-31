@@ -41,10 +41,10 @@ namespace Distribox.CLI
 			
 			// Initialize file watcher
 			FileWatcher watcher = new FileWatcher();
-			watcher.Created += x => { lock (vs) vs.Created(x); };
-			watcher.Changed += x => { lock (vs) vs.Changed(x); };
-			watcher.Deleted += x => { lock (vs) vs.Deleted(x); };
-			watcher.Renamed += x => { lock (vs) vs.Renamed(x); };
+			watcher.Created += vs.Created;
+			watcher.Changed += vs.Changed;
+			watcher.Deleted += vs.Deleted;
+			watcher.Renamed += vs.Renamed;
 			watcher.Idle += vs.Flush;
 
 

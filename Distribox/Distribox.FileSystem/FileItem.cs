@@ -110,6 +110,7 @@ namespace Distribox.FileSystem
             vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = null;
+            vs.Size = 0;
 
             History.Add(vs.LastModify.Ticks, vs);
         }
@@ -129,6 +130,14 @@ namespace Distribox.FileSystem
             vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = CurrentSHA1;
+            if (vs.SHA1 != null)
+            {
+                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
+            }
+            else
+            {
+                vs.Size = 0;
+            }
 
             History.Add(vs.LastModify.Ticks, vs);
         }
@@ -144,6 +153,14 @@ namespace Distribox.FileSystem
             vs.Name = CurrentName;
             vs.LastModify = When;
             vs.SHA1 = CurrentSHA1;
+            if (vs.SHA1 != null)
+            {
+                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
+            }
+            else
+            {
+                vs.Size = 0;
+            }
 
             History.Add(vs.LastModify.Ticks, vs);
         }
@@ -166,7 +183,18 @@ namespace Distribox.FileSystem
             vs.Name = Name;
             vs.LastModify = When;
             vs.SHA1 = SHA1;
+            if (vs.SHA1 != null)
+            {
+                FileInfo info = new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1);
+                vs.Size = info.Length;
+            }
+            else
+            {
+                vs.Size = 0;
+            }
 
+            Console.WriteLine(History.SerializeInline());
+            Console.WriteLine(vs.SerializeInline());
             History.Add(vs.LastModify.Ticks, vs);
         }
 
@@ -185,6 +213,14 @@ namespace Distribox.FileSystem
             vs.Name = patch.Name;
             vs.LastModify = patch.LastModify;
             vs.SHA1 = patch.SHA1;
+            if (vs.SHA1 != null)
+            {
+                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
+            }
+            else
+            {
+                vs.Size = 0;
+            }
 
             // Receive new file
             if (History.Count() == 0)

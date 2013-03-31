@@ -82,15 +82,19 @@ namespace Distribox.FileSystem
 		/// <param name="when">When.</param>
 		public void Change(string name, bool isDirectory, string SHA1, DateTime when)
         {
+            Console.WriteLine("Version List change");
             if (!_pathToFile.ContainsKey(name))
             {
                 Create(name, isDirectory, when);
             }
 
+            Console.WriteLine("Version List change 1 ");
             if (isDirectory) return;
 
             FileItem item = _pathToFile[name];
+            Console.WriteLine("Version List change 2 ");
             item.Change(name, SHA1, when);
+            Console.WriteLine("Version List change end");
         }
 
 		/// <summary>
@@ -156,7 +160,7 @@ namespace Distribox.FileSystem
                     patch.SHA1 = history.SHA1;
                     patch.LastModify = history.LastModify;
                     patch.Type = history.Type;
-                    patch.Size = (new FileInfo(Properties.MetaFolderTmp + Properties.PathSep + history.SHA1)).Length;
+                    patch.Size = history.Size;
                     patches.Add(patch);
 				}
 			}

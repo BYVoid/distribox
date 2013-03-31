@@ -30,5 +30,7 @@ namespace Distribox.FileSystem
 
         public DateTime LastModify { get; set; }
         public FileEventType Type { get; set; }
+
+        public long Size { get; set; }
     }
 }

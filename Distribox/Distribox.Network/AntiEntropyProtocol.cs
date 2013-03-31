@@ -89,6 +89,7 @@ namespace Distribox.Network
                 Peer peer = requestTuple.Item2;
 
                 // Send out the request
+                Console.WriteLine(new PatchRequest(patches, _listeningPort).Serialize());
                 SendMessage(peer, new PatchRequest(patches, _listeningPort));
             }            
         }

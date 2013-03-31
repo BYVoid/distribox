@@ -94,10 +94,19 @@ namespace Distribox.CommonLib
             return Deserialize<T>(ByteToString(input));
         }
 
-		/// <summary>
-		/// Serialize the specified input.
-		/// </summary>
-		/// <param name="input">Input.</param>
+        /// <summary>
+        /// Serialize the specified input inline.
+        /// </summary>
+        /// <param name="input">Input.</param>
+        public static string SerializeInline(this Object input)
+        {
+            return JsonConvert.SerializeObject(input);
+        }
+
+        /// <summary>
+        /// Serialize the specified input.
+        /// </summary>
+        /// <param name="input">Input.</param>
         public static string Serialize(this Object input)
         {
             return JsonConvert.SerializeObject(input, Formatting.Indented);

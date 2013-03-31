@@ -64,6 +64,8 @@ namespace Distribox.FileSystem
             get { return Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep; }
         }
 
+        private DateTime _lastEvent;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Distribox.FileSystem.FileWatcher"/> class.
 		/// </summary>
@@ -140,7 +142,7 @@ namespace Distribox.FileSystem
         {
 			// Exclude .Distribox folder
 			if (e.Name.StartsWith(Properties.MetaFolder))
-				return;
+                return;
 			lock (_eventQueue)
 			{
 				_eventQueue.Enqueue(e);
@@ -239,7 +241,16 @@ namespace Distribox.FileSystem
             newEvent.ChangeType = e.ChangeType;
             newEvent.FullPath = e.FullPath;
             newEvent.Name = e.Name;
-            newEvent.When = DateTime.Now;
+
+            if (_lastEvent.Ticks >= DateTime.Now.Ticks)
+            {
+                newEvent.When = _lastEvent.AddTicks(1);
+            }
+            else
+            {
+                newEvent.When = DateTime.Now;
+            }
+            _lastEvent = newEvent.When;
 
             if (e.ChangeType != WatcherChangeTypes.Deleted)
             {

@@ -106,7 +106,6 @@ namespace Distribox.FileSystem
         /// <param name="data">Binary data.</param>
         public List<AtomicPatch> AcceptFileBundle(byte[] data)
         {
-            string dataPath = _root + Properties.MetaFolderData;
             string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
             Directory.CreateDirectory(tmpPath);
             File.WriteAllBytes(tmpPath + Properties.BundleFileExt, data);
@@ -118,9 +117,12 @@ namespace Distribox.FileSystem
                 FileInfo info = new FileInfo(file);
                 if (info.Name == Properties.DeltaFile)
                     continue;
-                if (File.Exists(dataPath + Properties.PathSep + info.Name))
+                if (File.Exists(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name))
+                {
+                    Console.WriteLine("File exists: {0}", Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name);
                     continue;
-                File.Copy(tmpPath + Properties.PathSep + info.Name, dataPath + Properties.PathSep + info.Name);
+                }
+                File.Copy(tmpPath + Properties.PathSep + info.Name, Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name);
             }
 
             // Append versions
@@ -142,10 +144,12 @@ namespace Distribox.FileSystem
             }
 
             // Clean up
-            File.Delete(tmpPath + Properties.BundleFileExt);
+            //File.Delete(tmpPath + Properties.BundleFileExt);
+            Console.WriteLine("File bundle: {0}", tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             Flush();
 
+            Console.WriteLine("Count: {0}", myFileList.Count());
             return myPatchList;
         }
     }

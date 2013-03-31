@@ -55,6 +55,7 @@ namespace Distribox.CommonLib
         {
             EnsureInitialized();
             _logger.Debug(String.Format(format, args));
+            Console.WriteLine(format, args);
         }
 
 		/// <summary>

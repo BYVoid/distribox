@@ -25,6 +25,10 @@ namespace Distribox.CLI
             string root = Config.GetConfig().RootFolder;
 			CommonHelper.InitializeFolder(root);
 			StartPeer(port, root);
+
+            RubyEngine engine = new RubyEngine();
+            engine["api"] = new API();
+            engine.Repl();
 		}
 		
 		private static void StartPeer(int port, string root)

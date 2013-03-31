@@ -29,6 +29,9 @@
     <Externalconsole>True</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronRuby.Libraries">
+      <HintPath>..\..\DLL\IronRuby.Libraries.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>

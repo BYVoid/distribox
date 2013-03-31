@@ -101,7 +101,7 @@ namespace Distribox.FileSystem
         }
 
         /// <summary>
-        /// Accepts a file bundle containing version list delta and all data of files.
+        /// Accepts a file bundle containing all data of files.
         /// </summary>
         /// <param name="data">Binary data.</param>
         public void AcceptFileBundle(byte[] data)
@@ -145,6 +145,15 @@ namespace Distribox.FileSystem
             File.Delete(tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             Flush();
+        }
+
+        /// <summary>
+        /// Accepts version list.
+        /// </summary>
+        /// <param name="list"></param>
+        public void AcceptVersionList(List<AtomicPatch> list)
+        {
+
         }
     }
 }

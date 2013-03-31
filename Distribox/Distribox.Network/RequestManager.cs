@@ -35,7 +35,7 @@ namespace Distribox.Network
 
         public void AddRequests(List<AtomicPatch> requests, Peer peerHaveThese)
         {
-            lock (_patchToRequest)
+            lock (this)
             {
                 foreach (AtomicPatch patch in requests)
                 {
@@ -55,30 +55,27 @@ namespace Distribox.Network
 
         public Tuple<List<AtomicPatch>, Peer> GetRequests()
         {
-            // Check this only at here should be enough
-            CheckForRequestExpire();
-
-            // Find a not requested patch
-            AtomicPatch seedPatch = null;
-            Peer peer = null;
-            lock (_patchToRequest)
+            lock (this)
             {
+                // Check this only at here should be enough
+                CheckForRequestExpire();
+
+                // Find a not requested patch
+                AtomicPatch seedPatch = null;
+                Peer peer = null;
                 if (_patchToRequest.Count > 0)
                 {
                     KeyValuePair<AtomicPatch, HashSet<Peer>> kvp = _patchToRequest.First<KeyValuePair<AtomicPatch, HashSet<Peer>>>();
                     seedPatch = kvp.Key;
                     peer = kvp.Value.First<Peer>();
                 }
-            }
-            if (seedPatch == null)
-                return null;
+                if (seedPatch == null)
+                    return null;
 
-            // See if any other patches can be requested from the same peer
-            List<AtomicPatch> patches = new List<AtomicPatch>();
-            patches.Add(seedPatch);
-            long requestSize = seedPatch.Size;
-            lock (_patchToRequest)
-            {                
+                // See if any other patches can be requested from the same peer
+                List<AtomicPatch> patches = new List<AtomicPatch>();
+                patches.Add(seedPatch);
+                long requestSize = seedPatch.Size;
                 // TODO improve time efficiency
                 foreach (KeyValuePair<AtomicPatch, HashSet<Peer>> kvp in _patchToRequest)
                     if (kvp.Value.Contains(peer))
@@ -89,24 +86,23 @@ namespace Distribox.Network
                         requestSize += kvp.Key.Size;
                         patches.Add(kvp.Key);
                     }
-            }
 
-            // Move them to requesting set
-            foreach (AtomicPatch patch in patches)
-            {
-                // TODO: ugly!!!
-                lock(_patchRequesting) _patchRequesting.Add(patch, _patchToRequest[patch]);
-                lock (_patchToRequest) _patchToRequest.Remove(patch);
+                // Move them to requesting set
+                foreach (AtomicPatch patch in patches)
+                {
+                    // TODO: ugly!!!
+                    _patchRequesting.Add(patch, _patchToRequest[patch]);
+                    _patchToRequest.Remove(patch);
+                }
+                // Return
+                return Tuple.Create<List<AtomicPatch>, Peer>(patches, peer);
             }
-            
-            // Return
-            return Tuple.Create<List<AtomicPatch>, Peer>(patches, peer);
         }
 
         public void FinishRequests(List<AtomicPatch> requests)
         {
             // Remove them from _patchRequesting
-            lock(_patchRequesting)
+            lock(this)
             {
                 foreach (AtomicPatch patch in requests)
                     _patchRequesting.Remove(patch);

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Collections;
 using Distribox.CommonLib;
 using Distribox.FileSystem;
 
@@ -18,6 +19,9 @@ namespace Distribox.Network
         private int _listeningPort;
 
 		private VersionControl _versionControl;
+
+        // Use <AtomicPatch> as its member
+        private RequestManager _requestManager;
 
 		/// <summary>
 		/// Handle receive message event.
@@ -64,6 +68,29 @@ namespace Distribox.Network
             Console.WriteLine(message);
             sender.SendBytes(bMessage);
 			// TODO on error
+        }
+
+        /// <summary>
+        /// This routine will decide if to start a new request. If so, it will get an request from RequestManager and send out the request message
+        /// </summary>
+        private void TryToRequest()
+        {
+            // TODO don't request if too many connections
+            while (true)
+            {
+                // Get a request from RequestManager
+                var requestTuple = _requestManager.GetRequests();
+
+                // Maybe there are not any requests...
+                if (requestTuple == null)
+                    return;
+
+                List<AtomicPatch> patches = requestTuple.Item1;
+                Peer peer = requestTuple.Item2;
+
+                // Send out the request
+                SendMessage(peer, new PatchRequest(patches, _listeningPort));
+            }            
         }
 
 		/// <summary>
@@ -138,10 +165,11 @@ namespace Distribox.Network
             {
                 versionRequest = _versionControl.VersionList.GetLessThan(message.List);
                 Logger.Info("Received version list from {1}\n{0}", message.List.Serialize(), peer.Serialize());
-            }            
-            SendMessage(peer, new PatchRequest(versionRequest, _listeningPort));
+            }
 
-            Console.WriteLine("Sent file request\n{0}", versionRequest.Serialize());
+            // Don't request them now, add them to a request queue first
+            _requestManager.AddRequests(versionRequest, peer);
+            TryToRequest();
         }
 
 		/// <summary>
@@ -170,10 +198,14 @@ namespace Distribox.Network
 		/// <param name="peer">Peer.</param>
 		internal void Process(FileDataResponse message, Peer peer)
         {
+            List<AtomicPatch> patches;
             lock(_versionControl.VersionList)
             {
-                _versionControl.AcceptFileBundle(message._data);
+                 patches = _versionControl.AcceptFileBundle(message._data);
             }
+
+            _requestManager.FinishRequests(patches);
+            TryToRequest();
         }
 
 		/// <summary>
@@ -250,6 +282,9 @@ namespace Distribox.Network
             timer.Elapsed += this.OnTimerEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
+
+            // Initialize request manager
+            _requestManager = new RequestManager();
         }
 
 		/// <summary>

@@ -58,6 +58,8 @@
     <Compile Include="Message\SyncAck.cs" />
     <Compile Include="Message\InvitationRequest.cs" />
     <Compile Include="Peer.cs" />
+    <Compile Include="RequestManager.cs" />
+    <Compile Include="RequestQueueItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

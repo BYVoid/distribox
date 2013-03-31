@@ -13,5 +13,11 @@ namespace Distribox.FileSystem
         public string SHA1 { get; set; }
         public DateTime LastModify { get; set; }
         public FileEventType Type { get; set; }
+
+        /// <summary>
+        /// Size of the atomic patch, in bytes
+        /// </summary>
+        /// TODO (curimit: I add this property, I need this to compute request)
+        public int Size { get; set; }
     }
 }

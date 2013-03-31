@@ -21,7 +21,8 @@ namespace Distribox.Network
             FileRequest,
             FileResponse
         }
-        public int MyListenPort;
+        public int MyListenPort; 
+
         public MessageType _type;
 
         public ProtocolMessage(int myListenPort)

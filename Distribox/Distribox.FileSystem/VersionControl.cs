@@ -104,7 +104,7 @@ namespace Distribox.FileSystem
         /// Accepts a file bundle containing all data of files.
         /// </summary>
         /// <param name="data">Binary data.</param>
-        public void AcceptFileBundle(byte[] data)
+        public List<AtomicPatch> AcceptFileBundle(byte[] data)
         {
             string dataPath = _root + Properties.MetaFolderData;
             string tmpPath = _root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
@@ -145,6 +145,8 @@ namespace Distribox.FileSystem
             File.Delete(tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             Flush();
+
+            throw new NotImplementedException();
         }
 
         /// <summary>

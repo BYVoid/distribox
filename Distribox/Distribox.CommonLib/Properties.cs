@@ -20,6 +20,6 @@ namespace Distribox.CommonLib
         public const string DefaultRootFolder = "shared";
         public const int DefaultConnectPeriodMs = 1000;
         public const int DefaultFileWatcherTimeIntervalMs = 1000;
-
+        public const int MaxRequestSize = 4 * 1024 * 1024;
 	}
 }

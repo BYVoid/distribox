@@ -17,7 +17,6 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Size of the atomic patch, in bytes
         /// </summary>
-        /// TODO (curimit: I add this property, I need this to compute request)
-        public int Size { get; set; }
+        public long Size { get; set; }
     }
 }

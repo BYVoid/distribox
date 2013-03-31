@@ -156,6 +156,7 @@ namespace Distribox.FileSystem
                     patch.SHA1 = history.SHA1;
                     patch.LastModify = history.LastModify;
                     patch.Type = history.Type;
+                    patch.Size = (new FileInfo(Properties.MetaFolderTmp + Properties.PathSep + history.SHA1)).Length;
                     patches.Add(patch);
 				}
 			}

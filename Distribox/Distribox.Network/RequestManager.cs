@@ -76,7 +76,7 @@ namespace Distribox.Network
             // See if any other patches can be requested from the same peer
             List<AtomicPatch> patches = new List<AtomicPatch>();
             patches.Add(seedPatch);
-            int requestSize = seedPatch.Size;
+            long requestSize = seedPatch.Size;
             lock (_patchToRequest)
             {                
                 // TODO improve time efficiency

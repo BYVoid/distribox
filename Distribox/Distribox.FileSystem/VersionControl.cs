@@ -146,16 +146,7 @@ namespace Distribox.FileSystem
             Directory.Delete(tmpPath, true);
             Flush();
 
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Accepts version list.
-        /// </summary>
-        /// <param name="list"></param>
-        public void AcceptVersionList(List<AtomicPatch> list)
-        {
-
+            return myPatchList;
         }
     }
 }

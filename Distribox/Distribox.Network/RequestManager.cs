@@ -9,15 +9,16 @@ using Distribox.CommonLib;
 namespace Distribox.Network
 {
     /// <summary>
-    /// This class will
+    /// The manager of sending patches
+    /// RequestManager will
     /// * Decide which Patches to request right now
     /// * Manage request to ensure no request will be sent twice
-    /// * Resend request if request isn't finish
+    /// * Resend request if request isn't finished
     /// </summary>
     /// <remarks>
     /// 
     /// </remarks>
-    class RequestManager
+    internal class RequestManager
     {
         private Dictionary<AtomicPatch, HashSet<Peer>> _patchRequesting;
         private Dictionary<AtomicPatch, HashSet<Peer>> _patchToRequest;
@@ -27,6 +28,9 @@ namespace Distribox.Network
             // TODO expire requests
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.RequestManager"/> class.
+        /// </summary>
         public RequestManager()
         {
             _patchRequesting = new Dictionary<AtomicPatch, HashSet<Peer>>();

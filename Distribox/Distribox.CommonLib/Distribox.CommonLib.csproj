@@ -39,10 +39,6 @@
     <Reference Include="IronRuby">
       <HintPath>..\..\DLL\IronRuby.dll</HintPath>
     </Reference>
-    <Reference Include="IronRuby.Libraries, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\DLL\IronRuby.Libraries.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\DLL\log4net.dll</HintPath>
     </Reference>
@@ -61,6 +57,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.Scripting">
       <HintPath>..\..\DLL\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="IronRuby.Libraries">
+      <HintPath>..\..\DLL\IronRuby.Libraries.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

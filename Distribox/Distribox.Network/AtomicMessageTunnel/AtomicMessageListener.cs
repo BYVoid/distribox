@@ -10,14 +10,28 @@ using Distribox.CommonLib;
 
 namespace Distribox.Network
 {
+    /// <summary>
+    /// Listener of messages in P2P network.
+    /// </summary>
     public class AtomicMessageListener
     {
+        /// <summary>
+        /// Occurs when received data.
+        /// </summary>
         public delegate void OnReceiveHandler(byte[] data, Peer peerFrom);
+
+        /// <summary>
+        /// Occurs when received data.
+        /// </summary>
         public event OnReceiveHandler OnReceive;
 
         private TcpListener _listener = null;
         private const int BUFFER_SIZE = 1000;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.AtomicMessageListener"/> class.
+        /// </summary>
+        /// <param name="port">Port.</param>
         public AtomicMessageListener(int port)
         {
             Console.WriteLine("==============AtomicMessageListener: {0}===============", port);
@@ -28,7 +42,7 @@ namespace Distribox.Network
         }
 
         /// <summary>
-        /// Wait for connection in a thread
+        /// Waits for connection in a thread
         /// </summary>
         private void BackgroundListener()
         {
@@ -36,12 +50,16 @@ namespace Distribox.Network
             while (true)
             {
                 Socket client = _listener.AcceptSocket();
-                Thread thread = new Thread(StartReceive);
+                Thread thread = new Thread(ReceivePackages);
                 thread.Start(client);
             }
         }
 
-        private void StartReceive(Object _client)
+        /// <summary>
+        /// Reveive packages.
+        /// </summary>
+        /// <param name="_client">_client.</param>
+        private void ReceivePackages(Object _client)
         {
             Socket client = (Socket)_client;
             IPEndPoint ipendpoint = ((IPEndPoint)client.RemoteEndPoint);

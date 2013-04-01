@@ -9,9 +9,21 @@ using Distribox.CommonLib;
 
 namespace Distribox.Network
 {
+    /// <summary>
+    /// List of peers that ever existed in P2P network. 
+    /// </summary>
     class PeerList
     {
+        /// <summary>
+        /// Gets or sets the peers.
+        /// </summary>
+        /// <value>The peers.</value>
         public HashSet<Peer> Peers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the peer file.
+        /// </summary>
+        /// <value>The name of the peer file.</value>
         public string PeerFileName { get; set; }
         private Random _random = new Random();
 

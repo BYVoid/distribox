@@ -12,6 +12,9 @@ using Distribox.FileSystem;
 
 namespace Distribox.Network
 {
+    /// <summary>
+    /// The implementation of Anti-entropy protocol.
+    /// </summary>
     public class AntiEntropyProtocol
     {
         private PeerList _peers;

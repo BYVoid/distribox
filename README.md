@@ -31,3 +31,15 @@ The first step is to implement the architecture of Distribox. The two main aspec
 * Local file system events monitering and new version creation
 * Version tree management
 * GUI for browsering versions and logs
+
+## Download
+
+https://sourceforge.net/projects/distribox/files/
+
+## Source code
+
+https://github.com/BYVoid/distribox
+
+## Documentation for developers
+
+http://distribox.sourceforge.net/

@@ -47,7 +47,7 @@ namespace Distribox.Network
             ProtocolMessage message = CommonHelper.Deserialize<ProtocolMessage>(data).ParseToDerivedClass(data);            
 
             // ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
-            int port = message.MyListenPort;
+            int port = message.ListeningPort;
             Peer peer = new Peer(peerFrom.IP, port);
             
             // Process message (visitor design pattern)
@@ -205,7 +205,7 @@ namespace Distribox.Network
             List<AtomicPatch> patches;
             lock (_versionControl.VersionList)
             {
-                 patches = _versionControl.AcceptFileBundle(message._data);
+                 patches = _versionControl.AcceptFileBundle(message.Data);
             }
 
             _requestManager.FinishRequests(patches);

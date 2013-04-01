@@ -7,8 +7,12 @@ using Distribox.CommonLib;
 
 namespace Distribox.Network
 {
+    /// <summary>
+    /// Abstract message of Anti-Entropy Protocol.
+    /// </summary>
     class ProtocolMessage
     {
+        // FIXME: Use a factory and make this class abstract
         // FIXME: I set all of these public for JSON serialize
         public enum MessageType
         {
@@ -21,13 +25,25 @@ namespace Distribox.Network
             FileRequest,
             FileResponse
         }
-        public int MyListenPort; 
 
-        public MessageType _type;
+        /// <summary>
+        /// Gets the listening port.
+        /// </summary>
+        /// <value>The listening port.</value>
+        public int ListeningPort { get; set; }
 
-        public ProtocolMessage(int myListenPort)
+        /// <summary>
+        /// The type of message.
+        /// </summary>
+        protected MessageType _type;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.ProtocolMessage"/> class.
+        /// </summary>
+        /// <param name="listeningPort">Listening port.</param>
+        public ProtocolMessage(int listeningPort)
         {
-            MyListenPort = myListenPort;
+            ListeningPort = listeningPort;
         }
 
         public ProtocolMessage ParseToDerivedClass(byte[] data)

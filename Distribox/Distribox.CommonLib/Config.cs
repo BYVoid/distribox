@@ -7,7 +7,7 @@ using System.IO;
 namespace Distribox.CommonLib
 {    
     /// <summary>
-    /// 
+    /// Configuration of all properies used in runtime.
     /// </summary>
     /// <remarks>
     /// This class should be implemented as static class, because
@@ -22,8 +22,16 @@ namespace Distribox.CommonLib
         public int FileWatcherTimeIntervalMs { get; set; }
 
         private static Config _config = null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.CommonLib.Config"/> class.
+        /// </summary>
         private Config() { }
 
+        /// <summary>
+        /// Gets the instance of config object.
+        /// </summary>
+        /// <returns>The config.</returns>
         public static Config GetConfig()
         {
             if (_config == null)
@@ -47,11 +55,17 @@ namespace Distribox.CommonLib
             return _config;
         }
 
+        /// <summary>
+        /// Flushes configurations to disk.
+        /// </summary>
         public void Flush()
         {
             CommonHelper.WriteObject(this, Properties.ConfigFileName);
         }
 
+        /// <summary>
+        /// Creates the default config.
+        /// </summary>
         public void CreateDefaultConfig()
         {
             ListenPort = Properties.DefaultListenPort;

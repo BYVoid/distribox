@@ -2,6 +2,9 @@ using System;
 
 namespace Distribox.CommonLib
 {
+    /// <summary>
+    /// Constants.
+    /// </summary>
     public static class Properties
     {
         public const string PathSep = "/";
@@ -15,7 +18,6 @@ namespace Distribox.CommonLib
         public const string PeerListFile = "PeerList.json";
         public const string PeerListFilePath = Properties.MetaFolder + Properties.PathSep + Properties.PeerListFile;
         public const string ConfigFileName = "config.json";
-
         public const int DefaultListenPort = 7777;
         public const string DefaultRootFolder = "shared";
         public const int DefaultConnectPeriodMs = 1000;

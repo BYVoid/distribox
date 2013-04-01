@@ -8,6 +8,9 @@ using log4net.Config;
 
 namespace Distribox.CommonLib
 {
+    /// <summary>
+    /// Logger.
+    /// </summary>
     public static class Logger
     {
         private static ILog _logger = null;

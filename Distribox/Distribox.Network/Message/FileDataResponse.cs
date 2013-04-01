@@ -16,11 +16,11 @@ namespace Distribox.Network
         {
             _data = data;
             _type = MessageType.FileResponse;
-		}
-		
-		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			visitor.Process(this, peer);
-		}
+        }
+        
+        public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            visitor.Process(this, peer);
+        }
     }
 }

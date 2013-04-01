@@ -111,7 +111,7 @@ namespace Distribox.Network
         public void FinishRequests(List<AtomicPatch> requests)
         {
             // Remove them from _patchRequesting
-            lock(this)
+            lock (this)
             {
                 foreach (AtomicPatch patch in requests)
                     _patchRequesting.Remove(patch);

@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Distribox.FileSystem
 {
-	/// <summary>
-	/// File subversion type.
-	/// </summary>
+    /// <summary>
+    /// File subversion type.
+    /// </summary>
     public enum FileEventType
     {
         Created, Changed, Renamed, Deleted
     }
 
-	/// <summary>
-	/// File Event.
-	/// </summary>
+    /// <summary>
+    /// File Event.
+    /// </summary>
     public class FileEvent
     {
         public string fileId { get; set; }

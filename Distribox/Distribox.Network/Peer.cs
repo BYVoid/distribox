@@ -12,21 +12,21 @@ namespace Distribox.Network
     {
         private IPAddress _address;
         private int _port;
-		// TODO add a hash member
+        // TODO add a hash member
 
         public Peer() { }
 
-		public Peer(IPAddress address, int port)
-		{
-			this._address = address;
-			this._port = port;
-		}
-		
-		public Peer(string address, int port)
-		{
-			this._address = IPAddress.Parse(address);
-			this._port = port;
-		}
+        public Peer(IPAddress address, int port)
+        {
+            this._address = address;
+            this._port = port;
+        }
+        
+        public Peer(string address, int port)
+        {
+            this._address = IPAddress.Parse(address);
+            this._port = port;
+        }
 
         public String IP
         {

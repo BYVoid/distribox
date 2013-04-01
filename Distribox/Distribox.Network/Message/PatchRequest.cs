@@ -10,18 +10,18 @@ namespace Distribox.Network
 {
     class PatchRequest : ProtocolMessage
     {
-		public List<AtomicPatch> Request { get; set; }
+        public List<AtomicPatch> Request { get; set; }
 
         public PatchRequest(List<AtomicPatch> request, int myPort)
             : base(myPort)
         {
             Request = request;
             _type = MessageType.FileRequest;
-		}
-		
-		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			visitor.Process(this, peer);
-		}
+        }
+        
+        public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            visitor.Process(this, peer);
+        }
     }
 }

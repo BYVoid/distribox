@@ -21,7 +21,7 @@ namespace Distribox.FileSystem
 
         public override bool Equals(object obj)
         {
-            var patch = (AtomicPatch) obj;
+            var patch = (AtomicPatch)obj;
             return String.Format("{0}@{1}", Id, LastModify.Ticks) == String.Format("{0}@{1}", patch.Id, patch.LastModify.Ticks);
         }
 

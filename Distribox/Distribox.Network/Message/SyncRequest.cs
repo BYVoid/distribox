@@ -13,11 +13,11 @@ namespace Distribox.Network
             : base(myListenPort)
         {
             _type = MessageType.SyncRequest;
-		}
-		
-		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			visitor.Process(this, peer);
-		}
+        }
+        
+        public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            visitor.Process(this, peer);
+        }
     }
 }

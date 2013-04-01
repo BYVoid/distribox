@@ -14,14 +14,14 @@ namespace Distribox.Network
     class AtomicMessageSender
     {
         public delegate void OnCompleteHandler(Exception err);
-		public event OnCompleteHandler OnComplete;
+        public event OnCompleteHandler OnComplete;
 
         private TcpClient _client = null;
-		private Peer _peer;
+        private Peer _peer;
 
         public AtomicMessageSender(Peer peer)
         {
-			this._peer = peer;
+            this._peer = peer;
             Logger.Info("==============AtomicMessageSender: {0}===============", _peer.Port);
         }
 

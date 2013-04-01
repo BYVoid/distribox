@@ -10,7 +10,7 @@ namespace Distribox.Network
 {
     class VersionListMessage : ProtocolMessage
     {
-		public VersionList List { get; set;}
+        public VersionList List { get; set; }
 
         public VersionListMessage(VersionList list, int myPort)
             : base(myPort)
@@ -19,9 +19,9 @@ namespace Distribox.Network
             _type = MessageType.VersionListMessage;
         }
 
-		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			visitor.Process(this, peer);
-		}
+        public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            visitor.Process(this, peer);
+        }
     }
 }

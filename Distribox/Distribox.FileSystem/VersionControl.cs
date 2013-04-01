@@ -26,8 +26,8 @@ namespace Distribox.FileSystem
         /// <param name="root">Root.</param>
         public VersionControl(string root)
         {
-			this._root = root;
-			VersionList = new VersionList(root + Properties.VersionListFilePath);
+            this._root = root;
+            VersionList = new VersionList(root + Properties.VersionListFilePath);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Distribox.FileSystem
             }
 
             // Clean up
-            //File.Delete(tmpPath + Properties.BundleFileExt);
+            // File.Delete(tmpPath + Properties.BundleFileExt);
             Console.WriteLine("File bundle: {0}", tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             Flush();

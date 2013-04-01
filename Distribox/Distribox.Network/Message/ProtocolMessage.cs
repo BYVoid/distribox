@@ -54,10 +54,10 @@ namespace Distribox.Network
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }
 
-		public virtual void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			// TODO avoid instaniate this class. use factory
-			throw new NotImplementedException();
-		}
+        public virtual void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            // TODO avoid instaniate this class. use factory
+            throw new NotImplementedException();
+        }
     }
 }

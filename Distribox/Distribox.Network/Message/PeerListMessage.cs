@@ -17,9 +17,9 @@ namespace Distribox.Network
             _type = MessageType.PeerListMessage;
         }
 
-		public override void Accept(AntiEntropyProtocol visitor, Peer peer)
-		{
-			visitor.Process(this, peer);
-		}
+        public override void Accept(AntiEntropyProtocol visitor, Peer peer)
+        {
+            visitor.Process(this, peer);
+        }
     }
 }

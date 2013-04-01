@@ -12,6 +12,11 @@
     /// * Decide which Patches to request right now
     /// * Manage request to ensure no request will be sent twice
     /// * Resend request if request isn't finished
+    /// It maintains two queues in it: Todo queue and Doing queue, the lifecycle of a request is
+    ///       getRequests         FinishRequests
+    /// Todo -------------> Doing---------------->Done
+    ///      <-------------
+    ///       Fail / Expire
     /// </summary>
     /// <remarks>
     /// 
@@ -29,7 +34,16 @@
             this.patchRequesting = new Dictionary<AtomicPatch, HashSet<Peer>>();
             this.patchToRequest = new Dictionary<AtomicPatch, HashSet<Peer>>();
         }
-
+  
+        /// <summary>
+        /// Adds the requests.
+        /// </summary>
+        /// <param name='requests'>
+        /// Requests to add.
+        /// </param>
+        /// <param name='peerHaveThese'>
+        /// Peer who have these patches.
+        /// </param>
         public void AddRequests(List<AtomicPatch> requests, Peer peerHaveThese)
         {
             lock (this)
@@ -58,7 +72,13 @@
                 }
             }
         }
-
+  
+        /// <summary>
+        /// Gets some requests to be send to a peer. The requests will not exceed <see cref="Distribox.CommonLib.Properties.MaxRequestSize"/>
+        /// </summary>
+        /// <returns>
+        /// The requests.
+        /// </returns>
         public Tuple<List<AtomicPatch>, Peer> GetRequests()
         {
             lock (this)
@@ -111,7 +131,13 @@
                 return Tuple.Create<List<AtomicPatch>, Peer>(patches.ToList(), peer);
             }
         }
-
+  
+        /// <summary>
+        /// Finishs the requests when response of these requests are received.
+        /// </summary>
+        /// <param name='requests'>
+        /// Requests to be finished.
+        /// </param>
         public void FinishRequests(List<AtomicPatch> requests)
         {
             // Remove them from _patchRequesting
@@ -126,10 +152,27 @@
             Console.WriteLine("requests:: {0}", requests.SerializeInline());
             Console.WriteLine("_patchRequesting:: {0}", this.patchRequesting.SerializeInline());
         }
-
+  
+        /// <summary>
+        /// Every time before GetRequests, this method will be invoked to move expired requests from Doing queue back to Todo queue.
+        /// </summary>
         private void CheckForRequestExpire()
         {
             // TODO expire requests
+        }
+        
+        /// <summary>
+        /// Fails the requests.
+        /// </summary>
+        /// <param name='requests'>
+        /// Requests to be moved back to Todo queue.
+        /// </param>
+        /// <exception cref='NotImplementedException'>
+        /// Is thrown when a requested operation is not implemented for a given type.
+        /// </exception>
+        public void FailRequests(List<AtomicPatch> requests)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,8 +6,11 @@ using System.Text;
 namespace Distribox.FileSystem
 {
     /// <summary>
-    /// Atomic patch.
+    /// Meta data of an atomic patch. An atomic patch is the difference between two versions of file. 
     /// </summary>
+    /// <remarks>
+    /// This class is used for identifing a patch request by <see cref="Distribox.Network.AntiEntropyProtocol>.
+    /// </remarks>
     public class AtomicPatch
     {
         public string Id { get; set; }

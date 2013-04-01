@@ -9,7 +9,12 @@ using log4net.Config;
 namespace Distribox.CommonLib
 {
     /// <summary>
-    /// Logger.
+    /// Record Console.Writeln style logs. Different log levels are provided, these levels can be turn on / off seperately. Record levels are
+    /// * Debug
+    /// * Warn
+    /// * Info
+    /// * Error
+    /// * Fatal
     /// </summary>
     public static class Logger
     {

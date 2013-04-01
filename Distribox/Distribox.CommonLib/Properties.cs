@@ -3,7 +3,7 @@ using System;
 namespace Distribox.CommonLib
 {
     /// <summary>
-    /// Constants.
+    /// Global Constants. Including string resources and default config values.
     /// </summary>
     public static class Properties
     {

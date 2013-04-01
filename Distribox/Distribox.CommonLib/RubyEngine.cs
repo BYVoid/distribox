@@ -8,6 +8,9 @@ using Microsoft.Scripting.Hosting;
 
 namespace Distribox.CommonLib
 {
+    /// <summary>
+    /// Ruby engine. Provide a interactive shell for user.
+    /// </summary>
     public class RubyEngine
     {
         private ScriptEngine m_engine = Ruby.CreateEngine();

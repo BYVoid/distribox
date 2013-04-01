@@ -40,7 +40,19 @@ namespace Distribox.Network
         {
             this.ListeningPort = listeningPort;
         }
-
+  
+        /// <summary>
+        /// Parses to derived class.
+        /// </summary>
+        /// <returns>
+        /// The to derived class.
+        /// </returns>
+        /// <param name='data'>
+        /// Serialized ProtocolMessage data.
+        /// </param>
+        /// <exception cref='Exception'>
+        /// Represents errors that occur during application execution.
+        /// </exception>
         public ProtocolMessage ParseToDerivedClass(byte[] data)
         {
             switch (this.Type)
@@ -65,7 +77,19 @@ namespace Distribox.Network
 
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }
-
+  
+        /// <summary>
+        /// Accept the specified visitor and peer.
+        /// </summary>
+        /// <param name='visitor'>
+        /// The Visitor.
+        /// </param>
+        /// <param name='peer'>
+        /// The Peer.
+        /// </param>
+        /// <exception cref='NotImplementedException'>
+        /// Is thrown when a requested operation is not implemented for a given type.
+        /// </exception>
         public virtual void Accept(AntiEntropyProtocol visitor, Peer peer)
         {
             // TODO avoid instaniate this class. use factory

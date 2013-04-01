@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 namespace Distribox.FileSystem
 {
+    /// <summary>
+    /// Arguments of file changing event.
+    /// </summary>
     public class FileChangedEventArgs
     {
         public WatcherChangeTypes ChangeType { get; set; }

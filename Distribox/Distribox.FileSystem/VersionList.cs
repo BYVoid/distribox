@@ -10,7 +10,7 @@ namespace Distribox.FileSystem
 {
     // TODO this class would be serialized for deserialized
     /// <summary>
-    /// Version list.
+    /// List of all versions.
     /// </summary>
     public class VersionList
     {

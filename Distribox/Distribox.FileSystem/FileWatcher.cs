@@ -10,7 +10,7 @@ using System.Diagnostics;
 namespace Distribox.FileSystem
 {
     /// <summary>
-    /// File watcher.
+    /// Watcher of file system.
     /// </summary>
     public class FileWatcher
     {

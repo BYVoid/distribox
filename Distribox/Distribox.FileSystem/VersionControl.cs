@@ -7,6 +7,9 @@ using Distribox.CommonLib;
 
 namespace Distribox.FileSystem
 {
+    /// <summary>
+    /// Controller of creating and accpecting versions.
+    /// </summary>
     public class VersionControl
     {
         /// <summary>

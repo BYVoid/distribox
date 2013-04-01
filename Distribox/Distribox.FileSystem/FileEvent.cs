@@ -14,7 +14,7 @@ namespace Distribox.FileSystem
     }
 
     /// <summary>
-    /// File Event.
+    /// File Events.
     /// </summary>
     public class FileEvent
     {

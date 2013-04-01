@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Distribox.FileSystem
+﻿namespace Distribox.FileSystem
 {
+    using System;
+
     /// <summary>
     /// File subversion type.
     /// </summary>
@@ -19,6 +16,7 @@ namespace Distribox.FileSystem
     public class FileEvent
     {
         public string fileId { get; set; }
+
         public string eventId { get; set; }
 
         public string ParentId { get; set; }
@@ -26,9 +24,11 @@ namespace Distribox.FileSystem
         public bool IsDirectory { get; set; }
 
         public string Name { get; set; }
+
         public string SHA1 { get; set; }
 
         public DateTime LastModify { get; set; }
+
         public FileEventType Type { get; set; }
 
         public long Size { get; set; }

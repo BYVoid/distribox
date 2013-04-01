@@ -1,40 +1,34 @@
-using Distribox.CommonLib;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-
 namespace Distribox.FileSystem
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Distribox.CommonLib;
+
     // TODO this class would be serialized for deserialized
+
     /// <summary>
     /// List of all versions.
     /// </summary>
     public class VersionList
     {
         /// <summary>
-        /// Gets or sets all files that ever existed.
-        /// </summary>
-        /// <value>All files.</value>
-        public List<FileItem> AllFiles { get; set; }
-
-        /// <summary>
         /// Maps relative path to file item object
         /// </summary>
-        private Dictionary<string, FileItem> _pathToFile = new Dictionary<string, FileItem>();
+        private Dictionary<string, FileItem> pathToFile = new Dictionary<string, FileItem>();
 
         /// <summary>
         /// The path of version list.
         /// </summary>
-        private string _path;
+        private string path;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
         /// Only for serialization
         /// </summary>
-        public VersionList() { }
+        public VersionList()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
@@ -42,15 +36,21 @@ namespace Distribox.FileSystem
         /// <param name="path">Path of version list.</param>
         public VersionList(string path)
         {
-            this._path = path;
+            this.path = path;
 
             // Deserialize version list
-            AllFiles = CommonHelper.ReadObject<List<FileItem>>(_path);
-            foreach (var file in AllFiles.Where(x => x.IsAlive))
+            this.AllFiles = CommonHelper.ReadObject<List<FileItem>>(path);
+            foreach (var file in this.AllFiles.Where(x => x.IsAlive))
             {
-                _pathToFile[file.CurrentName] = file;
+                this.pathToFile[file.CurrentName] = file;
             }
         }
+
+        /// <summary>
+        /// Gets or sets all files that ever existed.
+        /// </summary>
+        /// <value>All files.</value>
+        public List<FileItem> AllFiles { get; set; }
 
         /// <summary>
         /// Create a file item
@@ -60,15 +60,17 @@ namespace Distribox.FileSystem
         /// <param name="when">When.</param>
         public FileItem Create(string name, bool isDirectory, DateTime when)
         {
-            if (_pathToFile.ContainsKey(name))
+            if (this.pathToFile.ContainsKey(name))
+            {
                 return null;
+            }
 
             FileItem item = new FileItem(name, isDirectory);
             item.Create(name, when);
 
-            AllFiles.Add(item);
+            this.AllFiles.Add(item);
 
-            _pathToFile[name] = item;
+            this.pathToFile[name] = item;
 
             return item;
         }
@@ -78,22 +80,25 @@ namespace Distribox.FileSystem
         /// </summary>
         /// <param name="name">Name.</param>
         /// <param name="isDirectory">If set to <c>true</c> is directory.</param>
-        /// <param name="SHA1">SH a1.</param>
+        /// <param name="sha1">SH a1.</param>
         /// <param name="when">When.</param>
-        public void Change(string name, bool isDirectory, string SHA1, DateTime when)
+        public void Change(string name, bool isDirectory, string sha1, DateTime when)
         {
             Console.WriteLine("Version List change");
-            if (!_pathToFile.ContainsKey(name))
+            if (!this.pathToFile.ContainsKey(name))
             {
-                Create(name, isDirectory, when);
+                this.Create(name, isDirectory, when);
             }
 
             Console.WriteLine("Version List change 1 ");
-            if (isDirectory) return;
+            if (isDirectory)
+            {
+                return;
+            }
 
-            FileItem item = _pathToFile[name];
+            FileItem item = this.pathToFile[name];
             Console.WriteLine("Version List change 2 ");
-            item.Change(name, SHA1, when);
+            item.Change(name, sha1, when);
             Console.WriteLine("Version List change end");
         }
 
@@ -102,16 +107,16 @@ namespace Distribox.FileSystem
         /// </summary>
         /// <param name="name">Name.</param>
         /// <param name="oldName">Old name.</param>
-        /// <param name="SHA1">SH a1.</param>
+        /// <param name="sha1">SH a1.</param>
         /// <param name="when">When.</param>
-        public void Rename(string name, string oldName, string SHA1, DateTime when)
+        public void Rename(string name, string oldName, string sha1, DateTime when)
         {
-            FileItem item = _pathToFile[oldName];
+            FileItem item = this.pathToFile[oldName];
 
             item.Rename(name, when);
 
-            _pathToFile.Remove(oldName);
-            _pathToFile[name] = item;
+            this.pathToFile.Remove(oldName);
+            this.pathToFile[name] = item;
         }
 
         /// <summary>
@@ -121,9 +126,9 @@ namespace Distribox.FileSystem
         /// <param name="when">When.</param>
         public void Delete(string name, DateTime when)
         {
-            FileItem item = _pathToFile[name];
+            FileItem item = this.pathToFile[name];
             item.Delete(when);
-            _pathToFile.Remove(name);
+            this.pathToFile.Remove(name);
         }
 
         // TODO use version
@@ -135,7 +140,7 @@ namespace Distribox.FileSystem
         public List<AtomicPatch> GetLessThan(VersionList list)
         {
             HashSet<string> myFileList = new HashSet<string>();
-            foreach (var item in AllFiles)
+            foreach (var item in this.AllFiles)
             {
                 foreach (var history in item.History)
                 {
@@ -153,6 +158,7 @@ namespace Distribox.FileSystem
                     {
                         continue;
                     }
+
                     AtomicPatch patch = new AtomicPatch();
                     patch.Id = item.Id;
                     patch.IsDirectory = item.IsDirectory;
@@ -164,6 +170,7 @@ namespace Distribox.FileSystem
                     patches.Add(patch);
                 }
             }
+
             return patches;
         }
 
@@ -172,7 +179,7 @@ namespace Distribox.FileSystem
         /// </summary>
         public void Flush()
         {
-            AllFiles.WriteObject(_path);
+            this.AllFiles.WriteObject(this.path);
         }
 
         /// <summary>
@@ -182,7 +189,7 @@ namespace Distribox.FileSystem
         /// <param name="name">Name.</param>
         public FileItem GetFileByName(string name)
         {
-            return _pathToFile[name];
+            return this.pathToFile[name];
         }
 
         /// <summary>
@@ -192,7 +199,7 @@ namespace Distribox.FileSystem
         /// <param name="fileItem">File item.</param>
         public void SetFileByName(string name, FileItem fileItem)
         {
-            _pathToFile[name] = fileItem;
+            this.pathToFile[name] = fileItem;
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Distribox.FileSystem
+﻿namespace Distribox.FileSystem
 {
+    using System;
+
     /// <summary>
     /// Meta data of an atomic patch. An atomic patch is the difference between two versions of file. 
     /// </summary>
@@ -14,14 +11,19 @@ namespace Distribox.FileSystem
     public class AtomicPatch
     {
         public string Id { get; set; }
+
         public bool IsDirectory { get; set; }
+
         public string Name { get; set; }
+
         public string SHA1 { get; set; }
+
         public DateTime LastModify { get; set; }
+
         public FileEventType Type { get; set; }
 
         /// <summary>
-        /// Size of the atomic patch, in bytes
+        /// Gets or sets size of the atomic patch, in bytes
         /// </summary>
         public long Size { get; set; }
 
@@ -34,7 +36,7 @@ namespace Distribox.FileSystem
         public override bool Equals(object obj)
         {
             var patch = (AtomicPatch)obj;
-            return String.Format("{0}@{1}", Id, LastModify.Ticks) == String.Format("{0}@{1}", patch.Id, patch.LastModify.Ticks);
+            return string.Format("{0}@{1}", this.Id, this.LastModify.Ticks) == string.Format("{0}@{1}", patch.Id, patch.LastModify.Ticks);
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Distribox.FileSystem
         /// hash table.</returns>
         public override int GetHashCode()
         {
-            return String.Format("{0}@{1}", Id, LastModify.Ticks).GetHashCode();
+            return string.Format("{0}@{1}", this.Id, this.LastModify.Ticks).GetHashCode();
         }
     }
 }

@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-using Distribox.FileSystem;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
+    using System.Collections.Generic;
+    using Distribox.FileSystem;
+
     /// <summary>
     /// Message of patch request.
     /// </summary>
-    class PatchRequest : ProtocolMessage
+    internal class PatchRequest : ProtocolMessage
     {
-        /// <summary>
-        /// Gets the request.
-        /// </summary>
-        /// <value>The request.</value>
-        public List<AtomicPatch> Request { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.PatchRequest"/> class.
         /// </summary>
@@ -27,9 +16,15 @@ namespace Distribox.Network
         public PatchRequest(List<AtomicPatch> request, int myPort)
             : base(myPort)
         {
-            Request = request;
-            _type = MessageType.FileRequest;
+            this.Request = request;
+            this.Type = MessageType.FileRequest;
         }
+
+        /// <summary>
+        /// Gets the request.
+        /// </summary>
+        /// <value>The request.</value>
+        public List<AtomicPatch> Request { get; set; }
 
         /// <summary>
         /// Accept the specified visitor and peer.

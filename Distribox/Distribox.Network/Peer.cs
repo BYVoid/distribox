@@ -1,19 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using Distribox.CommonLib;
-
 namespace Distribox.Network
 {
+    using System;
+    using System.Net;
+    using Distribox.CommonLib;
+
     /// <summary>
     /// Peer to connect with.
     /// </summary>
     public class Peer
     {
-        private IPAddress _address;
-        private int _port;
+        private IPAddress address;
+        private int port;
 
         // TODO add a hash member
 
@@ -22,8 +19,8 @@ namespace Distribox.Network
         /// </summary>
         public Peer()
         {
-            this._address = IPAddress.Any;
-            this._port = Properties.DefaultListenPort;
+            this.address = IPAddress.Any;
+            this.port = Properties.DefaultListenPort;
         }
 
         /// <summary>
@@ -33,8 +30,8 @@ namespace Distribox.Network
         /// <param name="port">Port.</param>
         public Peer(IPAddress address, int port)
         {
-            this._address = address;
-            this._port = port;
+            this.address = address;
+            this.port = port;
         }
 
         /// <summary>
@@ -44,24 +41,24 @@ namespace Distribox.Network
         /// <param name="port">Port number.</param>
         public Peer(string address, int port)
         {
-            this._address = IPAddress.Parse(address);
-            this._port = port;
+            this.address = IPAddress.Parse(address);
+            this.port = port;
         }
 
         /// <summary>
         /// Gets or sets the IP address.
         /// </summary>
         /// <value>The I.</value>
-        public String IP
+        public string IP
         {
             get
             {
-                return _address.ToString();
+                return this.address.ToString();
             }
 
             set
             {
-                _address = IPAddress.Parse(value);
+                this.address = IPAddress.Parse(value);
             }
         }
 
@@ -73,12 +70,12 @@ namespace Distribox.Network
         {
             get
             {
-                return _port;
+                return this.port;
             }
 
             set
             {
-                _port = value;
+                this.port = value;
             }
         }
 
@@ -89,7 +86,7 @@ namespace Distribox.Network
         /// hash table.</returns>
         public override int GetHashCode()
         {
-            return String.Format("{0}:{1}", IP, Port).GetHashCode();
+            return string.Format("{0}:{1}", this.IP, this.Port).GetHashCode();
         }
 
         /// <summary>

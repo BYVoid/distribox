@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
     /// <summary>
     /// Message of sync request.
     /// </summary>
-    class SyncRequest : ProtocolMessage
+    internal class SyncRequest : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.SyncRequest"/> class.
@@ -19,7 +12,7 @@ namespace Distribox.Network
         public SyncRequest(int myListenPort)
             : base(myListenPort)
         {
-            _type = MessageType.SyncRequest;
+            this.Type = MessageType.SyncRequest;
         }
 
         /// <summary>

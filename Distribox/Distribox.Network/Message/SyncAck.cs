@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
     /// <summary>
     /// Acknowledgement of sync request.
     /// </summary>
-    class SyncAck : ProtocolMessage
+    internal class SyncAck : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.SyncAck"/> class.
@@ -19,7 +12,7 @@ namespace Distribox.Network
         public SyncAck(int myListenPort)
             : base(myListenPort)
         {
-            _type = MessageType.SyncAck;
+            this.Type = MessageType.SyncAck;
         }
 
         /// <summary>

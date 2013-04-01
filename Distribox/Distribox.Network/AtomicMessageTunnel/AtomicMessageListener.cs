@@ -1,20 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Sockets;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Threading;
+
     /// <summary>
     /// Listener of messages in P2P network.
     /// </summary>
     public class AtomicMessageListener
     {
+        private const int BUFFERSIZE = 1000;
+
+        private TcpListener listener = null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.AtomicMessageListener"/> class.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        public AtomicMessageListener(int port)
+        {
+            Console.WriteLine("==============AtomicMessageListener: {0}===============", port);
+            this.listener = new TcpListener(IPAddress.Any, port);
+
+            Thread thread = new Thread(this.BackgroundListener);
+            thread.Start();
+        }
+
         /// <summary>
         /// Occurs when received data.
         /// </summary>
@@ -25,32 +38,16 @@ namespace Distribox.Network
         /// </summary>
         public event OnReceiveHandler OnReceive;
 
-        private TcpListener _listener = null;
-        private const int BUFFER_SIZE = 1000;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.Network.AtomicMessageListener"/> class.
-        /// </summary>
-        /// <param name="port">Port.</param>
-        public AtomicMessageListener(int port)
-        {
-            Console.WriteLine("==============AtomicMessageListener: {0}===============", port);
-            _listener = new TcpListener(IPAddress.Any, port);
-
-            Thread thread = new Thread(BackgroundListener);
-            thread.Start();
-        }
-
         /// <summary>
         /// Waits for connection in a thread
         /// </summary>
         private void BackgroundListener()
         {
-            _listener.Start();
+            this.listener.Start();
             while (true)
             {
-                Socket client = _listener.AcceptSocket();
-                Thread thread = new Thread(ReceivePackages);
+                Socket client = this.listener.AcceptSocket();
+                Thread thread = new Thread(this.ReceivePackages);
                 thread.Start(client);
             }
         }
@@ -58,26 +55,33 @@ namespace Distribox.Network
         /// <summary>
         /// Reveive packages.
         /// </summary>
-        /// <param name="_client">_client.</param>
-        private void ReceivePackages(Object _client)
+        /// <param name="obj">The client.</param>
+        private void ReceivePackages(object obj)
         {
-            Socket client = (Socket)_client;
-            IPEndPoint ipendpoint = ((IPEndPoint)client.RemoteEndPoint);
+            Socket client = (Socket)obj;
+            IPEndPoint ipendpoint = (IPEndPoint)client.RemoteEndPoint;
             Peer peerFrom = new Peer(ipendpoint.Address, ipendpoint.Port);
             List<byte[]> packages = new List<byte[]>();
             int total = 0;
             while (true)
             {
-                byte[] buffer = new byte[BUFFER_SIZE];
+                byte[] buffer = new byte[BUFFERSIZE];
                 int bytesReceived = client.Receive(buffer);
                 if (bytesReceived == 0)
+                {
                     break;
+                }
+
                 byte[] exact = new byte[bytesReceived];
                 for (int i = 0; i < bytesReceived; i++)
+                {
                     exact[i] = buffer[i];
+                }
+
                 packages.Add(exact);
                 total = total + bytesReceived;
             }
+
             client.Close();
 
             // Merge all packages into a byte array
@@ -92,9 +96,9 @@ namespace Distribox.Network
             }
 
             // Callback
-            if (OnReceive != null)
+            if (this.OnReceive != null)
             {
-                OnReceive(data, peerFrom);
+                this.OnReceive(data, peerFrom);
             }
         }
     }

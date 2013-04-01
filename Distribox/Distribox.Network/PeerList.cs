@@ -1,19 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using Distribox.CommonLib;
+
     /// <summary>
     /// List of peers that ever existed in P2P network. 
     /// </summary>
-    class PeerList
+    internal class PeerList
     {
+        private Random random = new Random();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
+        /// </summary>
+        /// <param name="peerFileName">Peerlist file name.</param>
+        public PeerList(string peerFileName)
+        {
+            this.PeerFileName = peerFileName;
+            this.Peers = new HashSet<Peer>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
+        /// </summary>
+        public PeerList()
+        {
+            this.Peers = new HashSet<Peer>();
+        }
+
         /// <summary>
         /// Gets or sets the peers.
         /// </summary>
@@ -25,45 +42,22 @@ namespace Distribox.Network
         /// </summary>
         /// <value>The name of the peer file.</value>
         public string PeerFileName { get; set; }
-        private Random _random = new Random();
-
-        /// <summary>
-        /// Flushes peerlist file to disk.
-        /// </summary>
-        private void FlushToDisk()
-        {
-            this.WriteObject(PeerFileName);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
-        /// </summary>
-        /// <param name="peerFileName">Peerlist file name.</param>
-        public PeerList(string peerFileName)
-        {
-            PeerFileName = peerFileName;
-            Peers = new HashSet<Peer>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
-        /// </summary>
-        public PeerList()
-        {
-            Peers = new HashSet<Peer>();
-        }
 
         /// <summary>
         /// Gets a peer list.
         /// </summary>
         /// <returns>The peer list.</returns>
         /// <param name="peerFileName">Peer file name.</param>
-        static public PeerList GetPeerList(string peerFileName)
+        public static PeerList GetPeerList(string peerFileName)
         {
             if (File.Exists(peerFileName))
+            {
                 return CommonHelper.ReadObject<PeerList>(peerFileName);
+            }
             else
+            {
                 return new PeerList(peerFileName);
+            }
         }
 
         /// <summary>
@@ -72,21 +66,8 @@ namespace Distribox.Network
         /// <param name="peer">Peer.</param>
         public void AddPeer(Peer peer)
         {
-            AddPeerVolatile(peer);
-            FlushToDisk();
-        }
-
-        /// <summary>
-        /// Adds the peer to memory.
-        /// </summary>
-        /// <param name="peer">Peer.</param>
-        private void AddPeerVolatile(Peer peer)
-        {
-            if (!(Peers.Contains(peer)))
-            {
-                Peers.Add(peer);
-                Logger.Info("New peer: {0}!", peer.IP);
-            }
+            this.AddPeerVolatile(peer);
+            this.FlushToDisk();
         }
 
         /// <summary>
@@ -97,14 +78,17 @@ namespace Distribox.Network
         {
             // TODO efficiency improve required
             ArrayList peers_ram = new ArrayList();
-            foreach (Peer peer in Peers)
+            foreach (Peer peer in this.Peers)
             {
                 peers_ram.Add(peer);
             }
 
             if (peers_ram.Count == 0)
+            {
                 return null;
-            return (Peer)peers_ram[_random.Next(peers_ram.Count)];
+            }
+
+            return (Peer)peers_ram[this.random.Next(peers_ram.Count)];
         }
 
         /// <summary>
@@ -114,10 +98,35 @@ namespace Distribox.Network
         public void MergeWith(PeerList list)
         {
             foreach (Peer peer in list.Peers)
-                if (!Peers.Contains(peer))
-                    AddPeerVolatile(peer);
+            {
+                if (!this.Peers.Contains(peer))
+                {
+                    this.AddPeerVolatile(peer);
+                }
+            }
 
-            FlushToDisk();
+            this.FlushToDisk();
+        }
+
+        /// <summary>
+        /// Flushes peerlist file to disk.
+        /// </summary>
+        private void FlushToDisk()
+        {
+            this.WriteObject(this.PeerFileName);
+        }
+
+        /// <summary>
+        /// Adds the peer to memory.
+        /// </summary>
+        /// <param name="peer">Peer.</param>
+        private void AddPeerVolatile(Peer peer)
+        {
+            if (!this.Peers.Contains(peer))
+            {
+                this.Peers.Add(peer);
+                Logger.Info("New peer: {0}!", peer.IP);
+            }
         }
     }
 }

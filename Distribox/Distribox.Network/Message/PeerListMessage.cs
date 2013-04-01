@@ -1,23 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
     /// <summary>
     /// Message of propagating peer list.
     /// </summary>
-    class PeerListMessage : ProtocolMessage
+    internal class PeerListMessage : ProtocolMessage
     {
-        /// <summary>
-        /// Gets the peer list.
-        /// </summary>
-        /// <value>The list.</value>
-        public PeerList List { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.PeerListMessage"/> class.
         /// </summary>
@@ -25,9 +12,15 @@ namespace Distribox.Network
         /// <param name="port">Port.</param>
         public PeerListMessage(PeerList list, int port) : base(port)
         {
-            List = list;
-            _type = MessageType.PeerListMessage;
+            this.List = list;
+            this.Type = MessageType.PeerListMessage;
         }
+
+        /// <summary>
+        /// Gets the peer list.
+        /// </summary>
+        /// <value>The list.</value>
+        public PeerList List { get; set; }
 
         /// <summary>
         /// Accept the specified visitor and peer.

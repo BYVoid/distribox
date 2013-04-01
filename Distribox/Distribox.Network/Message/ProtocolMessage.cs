@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
 namespace Distribox.Network
 {
+    using System;
+
     /// <summary>
     /// Abstract message of Anti-Entropy Protocol.
     /// </summary>
-    class ProtocolMessage
+    internal class ProtocolMessage
     {
         // FIXME: Use a factory and make this class abstract
         // FIXME: I set all of these public for JSON serialize
@@ -35,7 +30,7 @@ namespace Distribox.Network
         /// <summary>
         /// The type of message.
         /// </summary>
-        protected MessageType _type;
+        public MessageType Type { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.ProtocolMessage"/> class.
@@ -43,12 +38,12 @@ namespace Distribox.Network
         /// <param name="listeningPort">Listening port.</param>
         public ProtocolMessage(int listeningPort)
         {
-            ListeningPort = listeningPort;
+            this.ListeningPort = listeningPort;
         }
 
         public ProtocolMessage ParseToDerivedClass(byte[] data)
         {
-            switch (_type)
+            switch (this.Type)
             {
                 case MessageType.InvitationRequest:
                     return CommonLib.CommonHelper.Deserialize<InvitationRequest>(data);
@@ -67,6 +62,7 @@ namespace Distribox.Network
                 case MessageType.FileResponse:
                     return CommonLib.CommonHelper.Deserialize<FileDataResponse>(data);
             }
+
             throw new Exception("ToDerivedClass: What class is this? Maybe you forgot to add an enum / case statement?");            
         }
 

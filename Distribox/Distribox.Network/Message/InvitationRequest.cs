@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
     /// <summary>
     /// Message of invitation request.
     /// </summary>
-    class InvitationRequest : ProtocolMessage
+    internal class InvitationRequest : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.InvitationRequest"/> class.
@@ -19,7 +12,7 @@ namespace Distribox.Network
         public InvitationRequest(int myListenPort)
             : base(myListenPort)
         {
-            _type = MessageType.InvitationRequest;
+            this.Type = MessageType.InvitationRequest;
         }
 
         /// <summary>

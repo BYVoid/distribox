@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Distribox.CommonLib;
-
-namespace Distribox.Network
+﻿namespace Distribox.Network
 {
     /// <summary>
     /// Acknowledgement of invitation message.
     /// </summary>
-    class InvitationAck : ProtocolMessage
+    internal class InvitationAck : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.InvitationAck"/> class.
@@ -19,7 +12,7 @@ namespace Distribox.Network
         public InvitationAck(int myListenPort)
             : base(myListenPort)
         {
-            _type = MessageType.InvitationAck;
+            this.Type = MessageType.InvitationAck;
         }
 
         /// <summary>

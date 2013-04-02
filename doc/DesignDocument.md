@@ -23,7 +23,12 @@ To implement the distributed system, we devided the software into modules below:
 ## Structure
 
 // Explain every class under Distribox.FileSystem
-File Watcher、Version Control
+File Watcher
+File Event
+Version Control
+Version List
+AtomicPatch
+etc.
 
 ## Version management
 
@@ -67,9 +72,6 @@ The file system (.Distribox folder) can be organized with hierarchies:
 // Event-Driven
 
 # Network Module
-## Structure
-
-// Explain every class under Distribox.Network
 
 ## Protocol
 
@@ -84,7 +86,7 @@ These ideas exists since 1987[1], by the propose for replicated database mainten
 * Connection speed
 * Network stability
 
-## Anti-entropy algorithm
+### Anti-entropy algorithm
 To implement anti-entropy, each peer should has two threads: the pull thread, waiting for other thread’s synchronization and the push thread, which try start synchronization with a random peer actively every t milliseconds.
 
     Push-thread(peer p)
@@ -114,7 +116,7 @@ pt+1 = pt^2
 
 For arbitrary small value ε, the expected number of t, such that pt<ε, is proportional to O(log* p0/ε).
 
-## Incremental synchronization
+### Incremental synchronization
 
 // Add a flow chart
 
@@ -170,18 +172,28 @@ Every time when synchronization begins, the active thread send its hash of root 
       		Merge all blocks of received_commit_id
       		Update files locally by received_commit_id
 
-## Invitation and Online/Offline
-### Invitation
+### Invitation and Online/Offline
+#### Invitation
 If p want to invite q, p and q do a synchronization. Then p and q add q to user list.
 
-### Online
+#### Online
 When a peer online. It does nothing and wait for a synchronization or synchronize with others.
 
-### Offline
+#### Offline
 We can’t do anything when peer offline. The user list is not modified, peers may still try to connect offline nodes.
+
+## Structure
+
+// Explain every class under Distribox.Network
+Peer
+PeerList
+RequestManager
+ProtocolMessage
+AntiEntropyProtocol
 
 ## Design Patern
 
+// Factory
 // Visitor
 
 # Common Library
@@ -197,7 +209,7 @@ RubyEngine
 
 # Contributors
 
-* Carbo Kuo (郭家寶)
+* [Carbo Kuo](http://www.byvoid.com/project) (郭家寶)
   * Architect and development coordinator
   * Code reviewer and documentation maintainer
 * Chris Chen (陳鍵飛)
@@ -208,4 +220,5 @@ RubyEngine
   * C# language specialist
 
 # Reference
+
 [1] Demers, Alan, et al. "Epidemic algorithms for replicated database maintenance."Proceedings of the sixth annual ACM Symposium on Principles of distributed computing. ACM, 1987.

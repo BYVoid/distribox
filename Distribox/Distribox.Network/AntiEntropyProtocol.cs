@@ -9,10 +9,12 @@ namespace Distribox.Network
 
     /// <summary>
     /// The implementation of Anti-entropy protocol.
+    ///
     /// Anti-entropy protocol is first purposed in 1980s, using for maintaining replicated databases all over the world. According to literature, it is "extremely robust" [1]. 
     /// Generally, there are two kind of approaches to synchronize data: the reactive approach and epidemic approach. In the former one, when some change happen, the peer changed acknowlege other peers and these peers get changed too. These newly changed peer continue acknowledging peers, until the change is spread to the whole network. This protocol is not robust, since connection error may happen any time, much effort is needed to prevent potential factors that leads spreading stop before changes are spreaded. For example, all the peers with change are isolated with other peers at some moment.
     /// Instead of passively receive changes, epidemic approach try to synchronize with other nodes consistently. Implementing such protocols involves much less consideration than radioactive approaches.
-    /// #Reference
+    ///
+    /// Reference
     /// [1] Demers, Alan, et al. "Epidemic algorithms for replicated database maintenance." Proceedings of the sixth annual ACM Symposium on Principles of distributed computing. ACM, 1987.
     /// </summary>
     public class AntiEntropyProtocol

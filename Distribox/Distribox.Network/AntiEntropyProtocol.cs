@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="AntiEntropyProtocol.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Network
 {
     using System;
@@ -9,30 +14,47 @@ namespace Distribox.Network
 
     /// <summary>
     /// The implementation of Anti-entropy protocol.
-    ///
+    /// <para />
     /// Anti-entropy protocol is first purposed in 1980s, using for maintaining replicated databases all over the world. According to literature, it is "extremely robust" [1]. 
-    /// Generally, there are two kind of approaches to synchronize data: the reactive approach and epidemic approach. In the former one, when some change happen, the peer changed acknowlege other peers and these peers get changed too. These newly changed peer continue acknowledging peers, until the change is spread to the whole network. This protocol is not robust, since connection error may happen any time, much effort is needed to prevent potential factors that leads spreading stop before changes are spreaded. For example, all the peers with change are isolated with other peers at some moment.
+    /// Generally, there are two kind of approaches to synchronize data: the reactive approach and epidemic approach. In the former one, when some change happen, the peer changed acknowledge other peers and these peers get changed too. These newly changed peer continue acknowledging peers, until the change is spread to the whole network. This protocol is not robust, since connection error may happen any time, much effort is needed to prevent potential factors that leads spreading stop before changes are spread. For example, all the peers with change are isolated with other peers at some moment.
     /// Instead of passively receive changes, epidemic approach try to synchronize with other nodes consistently. Implementing such protocols involves much less consideration than radioactive approaches.
-    ///
+    /// <para />
     /// Reference
     /// [1] Demers, Alan, et al. "Epidemic algorithms for replicated database maintenance." Proceedings of the sixth annual ACM Symposium on Principles of distributed computing. ACM, 1987.
     /// </summary>
     public class AntiEntropyProtocol
     {
+        /// <summary>
+        /// The peers.
+        /// </summary>
         private PeerList peers;
+
+        /// <summary>
+        /// The listener.
+        /// </summary>
         private AtomicMessageListener listener;
+
+        /// <summary>
+        /// The listening port.
+        /// </summary>
         private int listeningPort;
 
+        /// <summary>
+        /// The version control.
+        /// </summary>
         private VersionControl versionControl;
 
-        // Use <FileEvent> as its member
+        /// <summary>
+        /// Use File Event as its member
+        /// </summary>
         private RequestManager requestManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.AntiEntropyProtocol"/> class.
         /// </summary>
         /// <param name="listeningPort">Listening port.</param>
-        /// <param name="peerFileName">File name of peer list.</param>
+        /// <param name="peerFileName">Peer file name.</param>
+        /// <param name="versionControl">Version control.</param>
         public AntiEntropyProtocol(int listeningPort, string peerFileName, VersionControl versionControl)
         {
             // Initialize version control
@@ -102,7 +124,7 @@ namespace Distribox.Network
         }
 
         /// <summary>
-        /// Process the sync ack message and peer.
+        /// Process the specified message and peer.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="peer">The peer.</param>
@@ -147,8 +169,8 @@ namespace Distribox.Network
         /// <summary>
         /// Process the file request message and peer.
         /// </summary>
-        /// <param name="message">Message.</param>
-        /// <param name="peer">Peer.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="peer">The peer.</param>
         internal void Process(PatchRequest message, Peer peer)
         {
             Logger.Info("Receive file request\n{0}", message.Request.Serialize());
@@ -166,8 +188,8 @@ namespace Distribox.Network
         /// <summary>
         /// Process the specified message and peer.
         /// </summary>
-        /// <param name="message">Message.</param>
-        /// <param name="peer">Peer.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="peer">The peer.</param>
         internal void Process(FileDataResponse message, Peer peer)
         {
             List<FileEvent> patches;
@@ -256,7 +278,7 @@ namespace Distribox.Network
         /// <summary>
         /// Sends the meta data.
         /// </summary>
-        /// <param name="peer">Peer.</param>
+        /// <param name="peer">The peer.</param>
         private void SendMetaData(Peer peer)
         {
             // Send PeerList
@@ -300,7 +322,7 @@ namespace Distribox.Network
         /// Handle timer event.
         /// </summary>
         /// <param name="source">Source of event.</param>
-        /// <param name="e">Event.</param>
+        /// <param name="e">The event.</param>
         private void OnTimerEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             this.ConnectRandomPeer();

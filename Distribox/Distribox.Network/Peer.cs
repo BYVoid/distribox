@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="Peer.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Network
 {
     using System;
@@ -9,7 +14,14 @@ namespace Distribox.Network
     /// </summary>
     public class Peer
     {
+        /// <summary>
+        /// The address.
+        /// </summary>
         private IPAddress address;
+
+        /// <summary>
+        /// The port.
+        /// </summary>
         private int port;
 
         // TODO add a hash member
@@ -27,7 +39,7 @@ namespace Distribox.Network
         /// Initializes a new instance of the <see cref="Distribox.Network.Peer"/> class.
         /// </summary>
         /// <param name="address">IP Address.</param>
-        /// <param name="port">Port.</param>
+        /// <param name="port">The port.</param>
         public Peer(IPAddress address, int port)
         {
             this.address = address;

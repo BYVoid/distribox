@@ -1,28 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="ConfigData.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.CommonLib
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
+    /// <summary>
+    /// Config data.
+    /// </summary>
     public class ConfigData
     {
+        /// <summary>
+        /// Gets or sets the listen port.
+        /// </summary>
+        /// <value>The listen port.</value>
         public int ListenPort { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connect period millisecond.
+        /// </summary>
+        /// <value>The connect period millisecond.</value>
         public int ConnectPeriodMs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the file watcher time interval millisecond.
+        /// </summary>
+        /// <value>The file watcher time interval millisecond.</value>
         public int FileWatcherTimeIntervalMs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the root folder.
+        /// </summary>
+        /// <value>The root folder.</value>
         public string RootFolder { get; set; }
 
+        /// <summary>
+        /// Sets the default.
+        /// </summary>
         public void SetDefault()
         {
-            ListenPort = Properties.DefaultListenPort;
+            this.ListenPort = Properties.DefaultListenPort;
 
             // Use working directory/shared as root folder
-            RootFolder = Directory.GetCurrentDirectory();
+            this.RootFolder = Directory.GetCurrentDirectory();
 
-            ConnectPeriodMs = Properties.DefaultConnectPeriodMs;
+            this.ConnectPeriodMs = Properties.DefaultConnectPeriodMs;
 
-            FileWatcherTimeIntervalMs = Properties.DefaultFileWatcherTimeIntervalMs;
+            this.FileWatcherTimeIntervalMs = Properties.DefaultFileWatcherTimeIntervalMs;
 
             CommonHelper.WriteObject(this, Properties.ConfigFileName);
         }

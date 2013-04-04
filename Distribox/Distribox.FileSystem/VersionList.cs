@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="VersionList.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.FileSystem
 {
     using System;
@@ -25,15 +30,14 @@ namespace Distribox.FileSystem
         private string path;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
-        /// Only for serialization
+        /// Initializes a new instance of the <see cref="Distribox.FileSystem.VersionList"/> class.
         /// </summary>
         public VersionList()
         {
             this.path = Config.VersionListFilePath;
 
             // Deserialize version list
-            this.AllFiles = CommonHelper.ReadObject<List<FileItem>>(path);
+            this.AllFiles = CommonHelper.ReadObject<List<FileItem>>(this.path);
             foreach (var file in this.AllFiles.Where(x => x.IsAlive))
             {
                 this.pathToFile[file.CurrentName] = file;
@@ -49,9 +53,10 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Create a file item
         /// </summary>
-        /// <param name="name">Name.</param>
+        /// <param name="name">The name.</param>
         /// <param name="isDirectory">If set to <c>true</c> is directory.</param>
-        /// <param name="when">When.</param>
+        /// <param name="when">The when.</param>
+        /// <returns>The file item.</returns>
         public FileItem Create(string name, bool isDirectory, DateTime when)
         {
             if (this.pathToFile.ContainsKey(name))
@@ -72,10 +77,10 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Change a file item.
         /// </summary>
-        /// <param name="name">Name.</param>
+        /// <param name="name">The Name.</param>
         /// <param name="isDirectory">If set to <c>true</c> is directory.</param>
-        /// <param name="sha1">SH a1.</param>
-        /// <param name="when">When.</param>
+        /// <param name="sha1">The SHA1.</param>
+        /// <param name="when">The when.</param>
         public void Change(string name, bool isDirectory, string sha1, DateTime when)
         {
             if (!this.pathToFile.ContainsKey(name))
@@ -95,10 +100,10 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Rename a file item.
         /// </summary>
-        /// <param name="name">Name.</param>
+        /// <param name="name">The name.</param>
         /// <param name="oldName">Old name.</param>
-        /// <param name="sha1">SH a1.</param>
-        /// <param name="when">When.</param>
+        /// <param name="sha1">The SHA1.</param>
+        /// <param name="when">The when.</param>
         public void Rename(string name, string oldName, string sha1, DateTime when)
         {
             FileItem item = this.pathToFile[oldName];
@@ -112,8 +117,8 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Delete a file item.
         /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="when">When.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="when">The when.</param>
         public void Delete(string name, DateTime when)
         {
             FileItem item = this.pathToFile[name];
@@ -121,12 +126,11 @@ namespace Distribox.FileSystem
             this.pathToFile.Remove(name);
         }
 
-        // TODO use version
         /// <summary>
         /// Gets all version that exist in <paramref name="list"/> but not exist in this
         /// </summary>
         /// <returns>The less than.</returns>
-        /// <param name="list">List.</param>
+        /// <param name="list">The list.</param>
         public List<FileEvent> GetLessThan(VersionList list)
         {
             HashSet<string> myFileList = new HashSet<string>();
@@ -168,7 +172,7 @@ namespace Distribox.FileSystem
         /// Gets file by name.
         /// </summary>
         /// <returns>The file.</returns>
-        /// <param name="name">Name.</param>
+        /// <param name="name">The name.</param>
         public FileItem GetFileByName(string name)
         {
             return this.pathToFile[name];
@@ -177,19 +181,24 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Sets file by name.
         /// </summary>
-        /// <param name="name">Name.</param>
+        /// <param name="name">The name.</param>
         /// <param name="fileItem">File item.</param>
         public void SetFileByName(string name, FileItem fileItem)
         {
             this.pathToFile[name] = fileItem;
         }
 
+        /// <summary>
+        /// Removes the name of the file by.
+        /// </summary>
+        /// <param name="oldName">Old name.</param>
         public void RemoveFileByName(string oldName)
         {
             if (oldName == null)
             {
                 return;
             }
+
             this.pathToFile.Remove(oldName);
         }
     }

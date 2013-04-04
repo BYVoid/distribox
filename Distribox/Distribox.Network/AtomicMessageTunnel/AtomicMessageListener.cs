@@ -1,4 +1,9 @@
-﻿namespace Distribox.Network
+﻿//-----------------------------------------------------------------------
+// <copyright file="AtomicMessageListener.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.Network
 {
     using System;
     using System.Collections.Generic;
@@ -11,8 +16,14 @@
     /// </summary>
     public class AtomicMessageListener
     {
+        /// <summary>
+        /// The BUFFERSIZ.
+        /// </summary>
         private const int BUFFERSIZE = 1000;
 
+        /// <summary>
+        /// The listener.
+        /// </summary>
         private TcpListener listener = null;
 
         /// <summary>
@@ -30,6 +41,8 @@
         /// <summary>
         /// Occurs when received data.
         /// </summary>
+        /// <param name="data">The data</param>
+        /// <param name="peerFrom">The peer from.</param>
         public delegate void OnReceiveHandler(byte[] data, Peer peerFrom);
 
         /// <summary>
@@ -52,7 +65,7 @@
         }
 
         /// <summary>
-        /// Reveive packages.
+        /// Receive packages.
         /// </summary>
         /// <param name="obj">The client.</param>
         private void ReceivePackages(object obj)

@@ -1,4 +1,9 @@
-﻿namespace Distribox.Network
+﻿//-----------------------------------------------------------------------
+// <copyright file="AtomicMessageSender.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.Network
 {
     using System;
     using System.IO;
@@ -11,7 +16,14 @@
     /// </summary>
     internal class AtomicMessageSender
     {
+        /// <summary>
+        /// The client.
+        /// </summary>
         private TcpClient client = null;
+
+        /// <summary>
+        /// The peer.
+        /// </summary>
         private Peer peer;
 
         /// <summary>
@@ -27,6 +39,7 @@
         /// <summary>
         /// Occurs when completed.
         /// </summary>
+        /// <param name="err">The error.</param>
         public delegate void OnCompleteHandler(Exception err);
 
         /// <summary>
@@ -37,7 +50,7 @@
         /// <summary>
         /// Sends binary data to the specified peer.
         /// </summary>
-        /// <param name="bytes">Bytes.</param>
+        /// <param name="bytes">The bytes.</param>
         public void SendBytes(byte[] bytes)
         {
             Thread thread = new Thread(this.SendBytes);

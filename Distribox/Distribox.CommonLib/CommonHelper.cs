@@ -1,24 +1,29 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using Newtonsoft.Json;
-using System.Threading;
-using ICSharpCode.SharpZipLib.Zip;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="CommonHelper.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.CommonLib
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading;
+    using ICSharpCode.SharpZipLib.Zip;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Common helpers.
     /// </summary>
     public static class CommonHelper
     {
         /// <summary>
-        /// Ramdom Generator
+        /// Random Generator
         /// </summary>
-        private static Random _rd = new Random();
+        private static Random rd = new Random();
 
         /// <summary>
         /// Gets the SHA1 hash of a file.
@@ -27,22 +32,22 @@ namespace Distribox.CommonLib
         /// <param name="pathName">Path name.</param>
         public static string GetSHA1Hash(string pathName)
         {
-            string strResult = "";
-            string strHashData = "";
+            string strResult = string.Empty;
+            string strHashData = string.Empty;
 
             byte[] arrbytHashValue;
-            System.IO.FileStream oFileStream = null;
+            System.IO.FileStream fileStream = null;
 
-            SHA1CryptoServiceProvider oSHA1Hasher = new SHA1CryptoServiceProvider();
+            SHA1CryptoServiceProvider sha1Hasher = new SHA1CryptoServiceProvider();
 
             // TODO comment for find another solution
             while (true)
             {
                 try
                 {
-                    oFileStream = new FileStream(pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    arrbytHashValue = oSHA1Hasher.ComputeHash(oFileStream);
-                    oFileStream.Close();
+                    fileStream = new FileStream(pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    arrbytHashValue = sha1Hasher.ComputeHash(fileStream);
+                    fileStream.Close();
                     break;
                 }
                 catch
@@ -52,10 +57,10 @@ namespace Distribox.CommonLib
             }
 
             strHashData = BitConverter.ToString(arrbytHashValue);
-            strHashData = strHashData.Replace("-", "");
+            strHashData = strHashData.Replace("-", string.Empty);
             strResult = strHashData;
 
-            return (strResult);
+            return strResult;
         }
 
         /// <summary>
@@ -64,10 +69,10 @@ namespace Distribox.CommonLib
         /// <returns>The random hash.</returns>
         public static string GetRandomHash()
         {
-            return _rd.Next().ToString();
+            return rd.Next().ToString();
 
             byte[] ticks = BitConverter.GetBytes(DateTime.Now.Ticks);
-            byte[] random = BitConverter.GetBytes(_rd.Next());
+            byte[] random = BitConverter.GetBytes(rd.Next());
 
             byte[] bytes = new byte[12];
             ticks.CopyTo(bytes, 0);
@@ -79,8 +84,9 @@ namespace Distribox.CommonLib
         /// <summary>
         /// Deserialize the specified input.
         /// </summary>
-        /// <param name="input">Input.</param>
+        /// <param name="input">The input.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>Deserialize result.</returns>
         public static T Deserialize<T>(this string input)
         {
             return JsonConvert.DeserializeObject<T>(input);
@@ -89,8 +95,9 @@ namespace Distribox.CommonLib
         /// <summary>
         /// Deserialize the specified input.
         /// </summary>
-        /// <param name="input">Input.</param>
+        /// <param name="input">The input.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>Deserialize result.</returns>
         public static T Deserialize<T>(this byte[] input)
         {
             return Deserialize<T>(ByteToString(input));
@@ -99,8 +106,9 @@ namespace Distribox.CommonLib
         /// <summary>
         /// Serialize the specified input inline.
         /// </summary>
-        /// <param name="input">Input.</param>
-        public static string SerializeInline(this Object input)
+        /// <param name="input">The input.</param>
+        /// <returns>Serialize result.</returns>
+        public static string SerializeInline(this object input)
         {
             return JsonConvert.SerializeObject(input);
         }
@@ -108,8 +116,9 @@ namespace Distribox.CommonLib
         /// <summary>
         /// Serialize the specified input.
         /// </summary>
-        /// <param name="input">Input.</param>
-        public static string Serialize(this Object input)
+        /// <param name="input">The input.</param>
+        /// <returns>Serialize result.</returns>
+        public static string Serialize(this object input)
         {
             return JsonConvert.SerializeObject(input, Formatting.Indented);
         }
@@ -118,8 +127,9 @@ namespace Distribox.CommonLib
         /// Serializes as bytes.
         /// </summary>
         /// <returns>The as bytes.</returns>
-        /// <param name="input">Input.</param>
-        public static byte[] SerializeAsBytes(this Object input)
+        /// <param name="input">The input.</param>
+        /// <returns>Serialize result.</returns>
+        public static byte[] SerializeAsBytes(this object input)
         {
             return StringToByte(Serialize(input));
         }
@@ -128,7 +138,7 @@ namespace Distribox.CommonLib
         /// Reads the object from file.
         /// </summary>
         /// <returns>The object.</returns>
-        /// <param name="filename">Filename.</param>
+        /// <param name="filename">The filename.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T ReadObject<T>(string filename)
         {
@@ -139,9 +149,9 @@ namespace Distribox.CommonLib
         /// <summary>
         /// Writes the object to file.
         /// </summary>
-        /// <param name="input">Input.</param>
-        /// <param name="filename">Filename.</param>
-        public static void WriteObject(this Object input, string filename)
+        /// <param name="input">The input.</param>
+        /// <param name="filename">The filename.</param>
+        public static void WriteObject(this object input, string filename)
         {
             string str = input.Serialize();
             File.WriteAllText(filename, str);
@@ -151,7 +161,7 @@ namespace Distribox.CommonLib
         /// Converts string to bytes.
         /// </summary>
         /// <returns>The to byte.</returns>
-        /// <param name="str">String.</param>
+        /// <param name="str">The string.</param>
         public static byte[] StringToByte(string str)
         {
             UTF8Encoding encoding = new UTF8Encoding();
@@ -162,7 +172,8 @@ namespace Distribox.CommonLib
         /// Converts bytes to string.
         /// </summary>
         /// <returns>The to string.</returns>
-        /// <param name="bytes">Bytes.</param>
+        /// <param name="bytes">The bytes.</param>
+        /// <returns>The string.</returns>
         public static string ByteToString(byte[] bytes)
         {
             UTF8Encoding encoding = new UTF8Encoding();
@@ -192,27 +203,30 @@ namespace Distribox.CommonLib
         }
 
         /// <summary>
-        /// Initialize all the folders and files in monitered file.
+        /// Initialize all the folders and files in monitored file.
         /// </summary>
-        /// <param name="root">Path of root folder.</param>
         public static void InitializeFolder()
         {
             if (!Directory.Exists(Config.RootFolder))
             {
                 Directory.CreateDirectory(Config.RootFolder);
             }
+
             if (!Directory.Exists(Config.MetaFolder))
             {
                 Directory.CreateDirectory(Config.MetaFolder);
             }
+
             if (!Directory.Exists(Config.MetaFolderTmp))
             {
                 Directory.CreateDirectory(Config.MetaFolderTmp);
             }
+
             if (!Directory.Exists(Config.MetaFolderData))
             {
                 Directory.CreateDirectory(Config.MetaFolderData);
             }
+
             if (!File.Exists(Config.VersionListFilePath))
             {
                 File.WriteAllText(Config.VersionListFilePath, "[]");

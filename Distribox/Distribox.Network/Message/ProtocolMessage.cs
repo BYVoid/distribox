@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="ProtocolMessage.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Network
 {
     using System;
@@ -9,28 +14,6 @@ namespace Distribox.Network
     {
         // FIXME: Use a factory and make this class abstract
         // FIXME: I set all of these public for JSON serialize
-        public enum MessageType
-        {
-            InvitationRequest,
-            InvitationAck,
-            SyncRequest,
-            SyncAck,
-            PeerListMessage,
-            VersionListMessage,
-            FileRequest,
-            FileResponse
-        }
-
-        /// <summary>
-        /// Gets the listening port.
-        /// </summary>
-        /// <value>The listening port.</value>
-        public int ListeningPort { get; set; }
-
-        /// <summary>
-        /// The type of message.
-        /// </summary>
-        public MessageType Type { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.ProtocolMessage"/> class.
@@ -40,6 +23,64 @@ namespace Distribox.Network
         {
             this.ListeningPort = listeningPort;
         }
+        
+        /// <summary>
+        /// Message type;
+        /// </summary>
+        public enum MessageType
+        {
+            /// <summary>
+            /// The invitation request.
+            /// </summary>
+            InvitationRequest,
+            
+            /// <summary>
+            /// The invitation ACK.
+            /// </summary>
+            InvitationAck,
+            
+            /// <summary>
+            /// The sync request.
+            /// </summary>
+            SyncRequest,
+            
+            /// <summary>
+            /// The sync ACK.
+            /// </summary>
+            SyncAck,
+            
+            /// <summary>
+            /// The peer list message.
+            /// </summary>
+            PeerListMessage,
+            
+            /// <summary>
+            /// The version list message.
+            /// </summary>
+            VersionListMessage,
+            
+            /// <summary>
+            /// The file request.
+            /// </summary>
+            FileRequest,
+            
+            /// <summary>
+            /// The file response.
+            /// </summary>
+            FileResponse
+        }
+        
+        /// <summary>
+        /// Gets or sets the listening port.
+        /// </summary>
+        /// <value>The listening port.</value>
+        public int ListeningPort { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
+        /// <value>The type.</value>
+        public MessageType Type { get; set; }
   
         /// <summary>
         /// Parses to derived class.

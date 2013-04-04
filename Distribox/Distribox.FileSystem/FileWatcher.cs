@@ -1,4 +1,9 @@
-﻿namespace Distribox.FileSystem
+﻿//-----------------------------------------------------------------------
+// <copyright file="FileWatcher.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.FileSystem
 {
     using System;
     using System.Collections.Generic;
@@ -24,7 +29,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.FileSystem.FileWatcher"/> class.
         /// </summary>
-        /// <param name="root">The root.</param>
         public FileWatcher()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
@@ -46,6 +50,7 @@
         /// <summary>
         /// Occurs when file system event occurs.
         /// </summary>
+        /// <param name="e">The event args.</param>
         public delegate void FileSystemChangedHandler(FileChangedEventArgs e);
 
         /// <summary>
@@ -78,6 +83,10 @@
         /// </summary>
         public event IdleHandler Idle;
     
+        /// <summary>
+        /// Gets or sets the last event.
+        /// </summary>
+        /// <value>The last event.</value>
         private DateTime LastEvent { get; set; }
 
         /// <summary>
@@ -136,8 +145,8 @@
         /// <summary>
         /// Handle the watcher event.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
         private void OnWatcherEvent(object sender, FileSystemEventArgs e)
         {
             // Display versions
@@ -161,8 +170,8 @@
         /// <summary>
         /// Handle delete event.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
         private void OnDeletedEvent(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine("Deleted: {0}", e.Name);
@@ -177,8 +186,8 @@
         /// <summary>
         /// Handle rename event.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
         private void OnRenamedEvent(object sender, RenamedEventArgs e)
         {
             Console.WriteLine("Renamed: {0} -> {1}", e.OldName, e.Name);
@@ -205,8 +214,8 @@
         /// <summary>
         /// Handle create event.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
         private void OnCreatedEvent(object sender, FileSystemEventArgs e)
         {
             FileChangedEventArgs newEvent = this.TranslateEvent(e);
@@ -220,8 +229,8 @@
         /// <summary>
         /// Handle the changed event.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
         private void OnChangedEvent(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine("Changed: {0}", e.Name);
@@ -247,7 +256,7 @@
         /// Translates the system event to FileChangedEvent.
         /// </summary>
         /// <returns>The event.</returns>
-        /// <param name="e">E.</param>
+        /// <param name="e">The event args.</param>
         private FileChangedEventArgs TranslateEvent(FileSystemEventArgs e)
         {
             FileChangedEventArgs newEvent = new FileChangedEventArgs();

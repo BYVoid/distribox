@@ -1,4 +1,9 @@
-﻿namespace Distribox.Network
+﻿//-----------------------------------------------------------------------
+// <copyright file="RequestManager.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.Network
 {
     using System;
     using System.Collections.Generic;
@@ -12,18 +17,24 @@
     /// * Decide which Patches to request right now
     /// * Manage request to ensure no request will be sent twice
     /// * Resend request if request isn't finished
-    /// It maintains two queues in it: Todo queue and Doing queue, the lifecycle of a request is
+    /// It maintains two queues in it: TODO queue and Doing queue, the lifecycle of a request is
     ///       getRequests         FinishRequests
-    /// Todo -------------> Doing---------------->Done
-    ///      <-------------
-    ///       Fail / Expire
+    /// TODO -------------> Doing ----------------> Done
+    ///                           ----------------> Fail / Expire
     /// </summary>
     /// <remarks>
-    /// 
+    /// <para />
     /// </remarks>
     internal class RequestManager
     {
+        /// <summary>
+        /// The patch requesting.
+        /// </summary>
         private Dictionary<FileEvent, HashSet<Peer>> patchRequesting;
+
+        /// <summary>
+        /// The patch to request.
+        /// </summary>
         private Dictionary<FileEvent, HashSet<Peer>> patchToRequest;
 
         /// <summary>
@@ -99,6 +110,7 @@
                 // See if any other patches can be requested from the same peer
                 HashSet<FileEvent> patches = new HashSet<FileEvent>();
                 long requestSize = seedPatch.Size;
+
                 // TODO improve time efficiency
                 foreach (KeyValuePair<FileEvent, HashSet<Peer>> kvp in this.patchToRequest)
                 {
@@ -121,13 +133,14 @@
                     this.patchRequesting.Add(patch, this.patchToRequest[patch]);
                     this.patchToRequest.Remove(patch);
                 }
+
                 // Return
                 return Tuple.Create<List<FileEvent>, Peer>(patches.ToList(), peer);
             }
         }
   
         /// <summary>
-        /// Finishs the requests when response of these requests are received.
+        /// Finish the requests when response of these requests are received.
         /// </summary>
         /// <param name='requests'>
         /// Requests to be finished.
@@ -143,20 +156,12 @@
                 }
             }
         }
-  
-        /// <summary>
-        /// Every time before GetRequests, this method will be invoked to move expired requests from Doing queue back to Todo queue.
-        /// </summary>
-        private void CheckForRequestExpire()
-        {
-            // TODO expire requests
-        }
         
         /// <summary>
         /// Fails the requests.
         /// </summary>
         /// <param name='requests'>
-        /// Requests to be moved back to Todo queue.
+        /// Requests to be moved back to TODO queue.
         /// </param>
         /// <exception cref='NotImplementedException'>
         /// Is thrown when a requested operation is not implemented for a given type.
@@ -164,6 +169,14 @@
         public void FailRequests(List<FileEvent> requests)
         {
             throw new NotImplementedException();
+        }
+        
+        /// <summary>
+        /// Every time before GetRequests, this method will be invoked to move expired requests from Doing queue back to TODO queue.
+        /// </summary>
+        private void CheckForRequestExpire()
+        {
+            // TODO expire requests
         }
     }
 }

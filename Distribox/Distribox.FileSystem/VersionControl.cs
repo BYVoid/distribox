@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="VersionControl.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.FileSystem
 {
     using System;
@@ -12,13 +17,7 @@ namespace Distribox.FileSystem
     public class VersionControl
     {
         /// <summary>
-        /// Gets or sets the version list.
-        /// </summary>
-        /// <value>The version list.</value>
-        public VersionList VersionList { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionControl"/> class.
+        /// Initializes a new instance of the <see cref="Distribox.FileSystem.VersionControl"/> class.
         /// </summary>
         public VersionControl()
         {
@@ -26,9 +25,15 @@ namespace Distribox.FileSystem
         }
 
         /// <summary>
+        /// Gets or sets the version list.
+        /// </summary>
+        /// <value>The version list.</value>
+        public VersionList VersionList { get; set; }
+
+        /// <summary>
         /// File created.
         /// </summary>
-        /// <param name="e">E.</param>
+        /// <param name="e">The event.</param>
         public void Created(FileChangedEventArgs e)
         {
             // TODO comments
@@ -39,7 +44,7 @@ namespace Distribox.FileSystem
         /// <summary>
         /// File changed.
         /// </summary>
-        /// <param name="e">E.</param>
+        /// <param name="e">The event.</param>
         public void Changed(FileChangedEventArgs e)
         {
             Console.WriteLine("Changed");
@@ -49,7 +54,7 @@ namespace Distribox.FileSystem
         /// <summary>
         /// File renamed.
         /// </summary>
-        /// <param name="e">E.</param>
+        /// <param name="e">The event.</param>
         public void Renamed(FileChangedEventArgs e)
         {
             Console.WriteLine("Renamed");
@@ -59,7 +64,7 @@ namespace Distribox.FileSystem
         /// <summary>
         /// File deleted.
         /// </summary>
-        /// <param name="e">E.</param>
+        /// <param name="e">The event.</param>
         public void Deleted(FileChangedEventArgs e)
         {
             Console.WriteLine("Deleted");
@@ -79,7 +84,7 @@ namespace Distribox.FileSystem
         /// Creates a bundle containing version list delta and all data of files.
         /// </summary>
         /// <returns>The path of bundle.</returns>
-        /// <param name="list">List needed to transfered.</param>
+        /// <param name="list">List needed to transferred.</param>
         public string CreateFileBundle(List<FileEvent> list)
         {
             string tmpPathName = CommonHelper.GetRandomHash();
@@ -102,6 +107,7 @@ namespace Distribox.FileSystem
         /// Accepts a file bundle containing all data of files.
         /// </summary>
         /// <param name="data">Binary data.</param>
+        /// <returns>List of events.</returns>
         public List<FileEvent> AcceptFileBundle(byte[] data)
         {
             string tmpPathName = CommonHelper.GetRandomHash();

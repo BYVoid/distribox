@@ -1,4 +1,9 @@
-﻿namespace Distribox.Network
+﻿//-----------------------------------------------------------------------
+// <copyright file="PeerList.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.Network
 {
     using System;
     using System.Collections;
@@ -11,12 +16,15 @@
     /// </summary>
     internal class PeerList
     {
+        /// <summary>
+        /// The random.
+        /// </summary>
         private Random random = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
         /// </summary>
-        /// <param name="peerFileName">Peerlist file name.</param>
+        /// <param name="peerFileName">Peer file name.</param>
         public PeerList(string peerFileName)
         {
             this.PeerFileName = peerFileName;
@@ -63,7 +71,7 @@
         /// <summary>
         /// Adds the peer and flush to disk.
         /// </summary>
-        /// <param name="peer">Peer.</param>
+        /// <param name="peer">The peer.</param>
         public void AddPeer(Peer peer)
         {
             this.AddPeerVolatile(peer);
@@ -94,7 +102,7 @@
         /// <summary>
         /// Merges the with another peer list.
         /// </summary>
-        /// <param name="list">List.</param>
+        /// <param name="list">The list.</param>
         public void MergeWith(PeerList list)
         {
             foreach (Peer peer in list.Peers)
@@ -109,7 +117,7 @@
         }
 
         /// <summary>
-        /// Flushes peerlist file to disk.
+        /// Flushes peer list file to disk.
         /// </summary>
         private void FlushToDisk()
         {
@@ -119,7 +127,7 @@
         /// <summary>
         /// Adds the peer to memory.
         /// </summary>
-        /// <param name="peer">Peer.</param>
+        /// <param name="peer">The peer.</param>
         private void AddPeerVolatile(Peer peer)
         {
             if (!this.Peers.Contains(peer))

@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using log4net;
-using log4net.Config;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Logger.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.CommonLib
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Text;
+    using log4net;
+    using log4net.Config;
+    
     /// <summary>
-    /// Record Console.Writeln style logs. Different log levels are provided, these levels can be turn on / off seperately. Record levels are
+    /// Record Console.Write line style logs. Different log levels are provided, these levels can be turn on / off separately. Record levels are
     /// * Debug
     /// * Warn
     /// * Info
@@ -18,74 +23,77 @@ namespace Distribox.CommonLib
     /// </summary>
     public static class Logger
     {
-        private static ILog _logger = null;
-
         /// <summary>
-        /// Ensures the instance initialized.
+        /// The _logger.
         /// </summary>
-        private static void EnsureInitialized()
-        {
-            if (_logger == null)
-            {
-                _logger = log4net.LogManager.GetLogger(typeof(Logger));
-                log4net.Config.XmlConfigurator.Configure();
-            }
-        }
+        private static ILog logger = null;
 
         /// <summary>
         /// Log warning message.
         /// </summary>
-        /// <param name="format">Format.</param>
-        /// <param name="args">Arguments.</param>
-        public static void Warn(String format, params object[] args)
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void Warn(string format, params object[] args)
         {
             EnsureInitialized();
-            _logger.Warn(String.Format(format, args));
+            logger.Warn(string.Format(format, args));
         }
 
         /// <summary>
         /// Log info message.
         /// </summary>
-        /// <param name="format">Format.</param>
-        /// <param name="args">Arguments.</param>
-        public static void Info(String format, params object[] args)
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void Info(string format, params object[] args)
         {
             EnsureInitialized();
-            _logger.Info(String.Format(format, args));
+            logger.Info(string.Format(format, args));
         }
 
         /// <summary>
         /// Log debug message.
         /// </summary>
-        /// <param name="format">Format.</param>
-        /// <param name="args">Arguments.</param>
-        public static void Debug(String format, params object[] args)
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void Debug(string format, params object[] args)
         {
             EnsureInitialized();
-            _logger.Debug(String.Format(format, args));
+            logger.Debug(string.Format(format, args));
             Console.WriteLine(format, args);
         }
 
         /// <summary>
         /// Log error message.
         /// </summary>
-        /// <param name="format">Format.</param>
-        /// <param name="args">Arguments.</param>
-        public static void Error(String format, params object[] args)
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void Error(string format, params object[] args)
         {
             EnsureInitialized();
-            _logger.Error(String.Format(format, args));
+            logger.Error(string.Format(format, args));
         }
 
         /// <summary>
         /// Log fatal message.
         /// </summary>
-        /// <param name="format">Format.</param>
-        /// <param name="args">Arguments.</param>
-        public static void Fatal(String format, params object[] args)
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void Fatal(string format, params object[] args)
         {
             EnsureInitialized();
-            _logger.Fatal(String.Format(format, args));
+            logger.Fatal(string.Format(format, args));
+        }
+        
+        /// <summary>
+        /// Ensures the instance initialized.
+        /// </summary>
+        private static void EnsureInitialized()
+        {
+            if (logger == null)
+            {
+                logger = log4net.LogManager.GetLogger(typeof(Logger));
+                log4net.Config.XmlConfigurator.Configure();
+            }
         }
     }
 }

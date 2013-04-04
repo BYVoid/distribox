@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Config.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.CommonLib
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
     /// <summary>
-    /// Configuration of all properies used in runtime.
+    /// Configuration of all properties used in runtime.
     /// </summary>
     /// <remarks>
     /// This class should be implemented as static class, because
@@ -16,8 +21,15 @@ namespace Distribox.CommonLib
     /// </remarks>
     public class Config
     {
+        /// <summary>
+        /// The config data.
+        /// </summary>
         private static ConfigData configData = null;
 
+        /// <summary>
+        /// Gets the root folder.
+        /// </summary>
+        /// <value>The root folder.</value>
         public static AbsolutePath RootFolder
         {
             get
@@ -27,6 +39,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the meta folder.
+        /// </summary>
+        /// <value>The meta folder.</value>
         public static AbsolutePath MetaFolder
         {
             get
@@ -36,6 +52,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the meta folder data.
+        /// </summary>
+        /// <value>The meta folder data.</value>
         public static AbsolutePath MetaFolderData
         {
             get
@@ -45,6 +65,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the meta folder temp.
+        /// </summary>
+        /// <value>The meta folder temp.</value>
         public static AbsolutePath MetaFolderTmp
         {
             get
@@ -54,6 +78,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the version list file path.
+        /// </summary>
+        /// <value>The version list file path.</value>
         public static string VersionListFilePath
         {
             get
@@ -63,6 +91,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the peer list file path.
+        /// </summary>
+        /// <value>The peer list file path.</value>
         public static string PeerListFilePath
         {
             get
@@ -72,6 +104,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the listen port.
+        /// </summary>
+        /// <value>The listen port.</value>
         public static int ListenPort
         {
             get
@@ -81,6 +117,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the connect period millisecond.
+        /// </summary>
+        /// <value>The connect period millisecond.</value>
         public static int ConnectPeriodMs
         {
             get
@@ -90,6 +130,10 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the file watcher time interval millisecond.
+        /// </summary>
+        /// <value>The file watcher time interval millisecond.</value>
         public static int FileWatcherTimeIntervalMs
         {
             get
@@ -99,9 +143,15 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Ensures the initialized.
+        /// </summary>
         private static void EnsureInitialized()
         {
-            if (configData != null) return;
+            if (configData != null)
+            {
+                return;
+            }
 
             if (File.Exists(Properties.ConfigFileName))
             {
@@ -111,8 +161,7 @@ namespace Distribox.CommonLib
             else
             {
                 // Create a new one
-                Logger.Warn("{0} not found in {1}. Creating a default one...",
-                    Properties.ConfigFileName, Directory.GetCurrentDirectory());
+                Logger.Warn("{0} not found in {1}. Creating a default one...", Properties.ConfigFileName, Directory.GetCurrentDirectory());
 
                 configData = new ConfigData();
                 configData.SetDefault();

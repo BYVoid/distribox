@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 namespace Distribox.FileSystem
 {
+    using System;
     using Distribox.CommonLib;
 
     /// <summary>

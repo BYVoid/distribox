@@ -32,17 +32,6 @@ namespace Distribox.CommonLib
             return new AbsolutePath(this.BasePath, newRoad.ToArray());
         }
 
-        public AbsolutePath Enter(RelativePath road)
-        {
-            List<string> newRoad = this.Road.ToList();
-            foreach (var x in road.GetRoads())
-            {
-                newRoad.Add(x);
-            }
-
-            return new AbsolutePath(this.BasePath, newRoad.ToArray());
-        }
-
         public string File(string file)
         {
             return this.ToString() + file;

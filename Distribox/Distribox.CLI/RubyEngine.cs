@@ -24,7 +24,7 @@ namespace Distribox.CommonLib
             DoString("0");
         }
 
-        public dynamic this[String name]
+        public object this[String name]
         {
             get
             {
@@ -50,41 +50,20 @@ namespace Distribox.CommonLib
             source.Execute(m_scope);
         }
 
-        public void SetVariable(String name, Object obj)
-        {
-            m_scope.SetVariable(name, obj);
-        }
-
-        private StringBuilder sb = new StringBuilder();
-
-        private IEnumerable<String> ReplList()
+        public void Repl()
         {
             while (true)
             {
-                Console.Write("Ruby> ");
-                if (sb.Length != 0) Console.Write("... ");
-                String line = Console.ReadLine();
-                if (line == "") break;
-                yield return line;
-            }
-        }
-
-        public void Repl()
-        {
-            foreach (var line in ReplList())
-            {
                 try
                 {
-                    sb.Append(line);
-                    DoString(sb.ToString());
-                    if (Console.CursorLeft != 0) Console.WriteLine();
-                    sb.Clear();
+                    Console.Write("Ruby> ");
+                    string line = Console.ReadLine();
+                    if (line == "") return;
+                    DoString(line);
                 }
                 catch (Exception e)
                 {
-                    if (e.Message.StartsWith("syntax error, unexpected end of file")) continue;
                     Console.WriteLine(e.Message);
-                    sb.Clear();
                 }
             }
         }

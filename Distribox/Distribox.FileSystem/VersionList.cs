@@ -7,6 +7,8 @@ namespace Distribox.FileSystem
 
     // TODO this class would be serialized for deserialized
 
+    // this class forbid serialize
+
     /// <summary>
     /// List of all versions.
     /// </summary>
@@ -28,15 +30,7 @@ namespace Distribox.FileSystem
         /// </summary>
         public VersionList()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionList"/> class.
-        /// </summary>
-        /// <param name="path">Path of version list.</param>
-        public VersionList(string path)
-        {
-            this.path = path;
+            this.path = Config.VersionListFilePath;
 
             // Deserialize version list
             this.AllFiles = CommonHelper.ReadObject<List<FileItem>>(path);
@@ -84,22 +78,18 @@ namespace Distribox.FileSystem
         /// <param name="when">When.</param>
         public void Change(string name, bool isDirectory, string sha1, DateTime when)
         {
-            Console.WriteLine("Version List change");
             if (!this.pathToFile.ContainsKey(name))
             {
                 this.Create(name, isDirectory, when);
             }
-
-            Console.WriteLine("Version List change 1 ");
+            
             if (isDirectory)
             {
                 return;
             }
 
             FileItem item = this.pathToFile[name];
-            Console.WriteLine("Version List change 2 ");
             item.Change(name, sha1, when);
-            Console.WriteLine("Version List change end");
         }
 
         /// <summary>
@@ -137,7 +127,7 @@ namespace Distribox.FileSystem
         /// </summary>
         /// <returns>The less than.</returns>
         /// <param name="list">List.</param>
-        public List<AtomicPatch> GetLessThan(VersionList list)
+        public List<FileEvent> GetLessThan(VersionList list)
         {
             HashSet<string> myFileList = new HashSet<string>();
             foreach (var item in this.AllFiles)
@@ -148,10 +138,10 @@ namespace Distribox.FileSystem
                 }
             }
 
-            List<AtomicPatch> patches = new List<AtomicPatch>();
+            List<FileEvent> patches = new List<FileEvent>();
             foreach (var item in list.AllFiles)
             {
-                foreach (var history in item.History.Values)
+                foreach (var history in item.History)
                 {
                     string guid = item.Id + "@" + history.Serialize();
                     if (myFileList.Contains(guid))
@@ -159,15 +149,7 @@ namespace Distribox.FileSystem
                         continue;
                     }
 
-                    AtomicPatch patch = new AtomicPatch();
-                    patch.Id = item.Id;
-                    patch.IsDirectory = item.IsDirectory;
-                    patch.Name = history.Name;
-                    patch.SHA1 = history.SHA1;
-                    patch.LastModify = history.LastModify;
-                    patch.Type = history.Type;
-                    patch.Size = history.Size;
-                    patches.Add(patch);
+                    patches.Add(history);
                 }
             }
 
@@ -200,6 +182,15 @@ namespace Distribox.FileSystem
         public void SetFileByName(string name, FileItem fileItem)
         {
             this.pathToFile[name] = fileItem;
+        }
+
+        public void RemoveFileByName(string oldName)
+        {
+            if (oldName == null)
+            {
+                return;
+            }
+            this.pathToFile.Remove(oldName);
         }
     }
 }

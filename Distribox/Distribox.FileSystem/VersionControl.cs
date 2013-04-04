@@ -12,11 +12,6 @@ namespace Distribox.FileSystem
     public class VersionControl
     {
         /// <summary>
-        /// The sync root of Distribox.
-        /// </summary>
-        private string root;
-
-        /// <summary>
         /// Gets or sets the version list.
         /// </summary>
         /// <value>The version list.</value>
@@ -25,11 +20,9 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.CommonLib.VersionControl"/> class.
         /// </summary>
-        /// <param name="root">Root.</param>
-        public VersionControl(string root)
+        public VersionControl()
         {
-            this.root = root;
-            VersionList = new VersionList(root + Properties.VersionListFilePath);
+            VersionList = new VersionList();
         }
 
         /// <summary>
@@ -87,32 +80,36 @@ namespace Distribox.FileSystem
         /// </summary>
         /// <returns>The path of bundle.</returns>
         /// <param name="list">List needed to transfered.</param>
-        public string CreateFileBundle(List<AtomicPatch> list)
+        public string CreateFileBundle(List<FileEvent> list)
         {
-            string dataPath = this.root + Properties.MetaFolderData;
-            string tmpPath = this.root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
+            string tmpPathName = CommonHelper.GetRandomHash();
+            string bundlePath = Config.MetaFolderTmp.File(tmpPathName + Properties.BundleFileExt);
+            AbsolutePath tmpPath = Config.MetaFolderTmp.Enter(tmpPathName);
             Directory.CreateDirectory(tmpPath);
+            
             list.WriteObject(tmpPath + Properties.PathSep + Properties.DeltaFile);
-            foreach (var patch in list.Where(x => x.SHA1 != null))
+            foreach (var sha1 in list.Where(x => x.SHA1 != null).Select(x => x.SHA1).Distinct())
             {
-                File.Copy(dataPath + Properties.PathSep + patch.SHA1, tmpPath + Properties.PathSep + patch.SHA1);
+                File.Copy(Config.MetaFolderData.File(sha1), tmpPath.File(sha1));
             }
 
-            CommonHelper.Zip(tmpPath + Properties.BundleFileExt, tmpPath);
+            CommonHelper.Zip(bundlePath, tmpPath);
             Directory.Delete(tmpPath, true);
-            return tmpPath + Properties.BundleFileExt;
+            return bundlePath;
         }
 
         /// <summary>
         /// Accepts a file bundle containing all data of files.
         /// </summary>
         /// <param name="data">Binary data.</param>
-        public List<AtomicPatch> AcceptFileBundle(byte[] data)
+        public List<FileEvent> AcceptFileBundle(byte[] data)
         {
-            string tmpPath = this.root + Properties.MetaFolderTmp + Properties.PathSep + CommonHelper.GetRandomHash();
+            string tmpPathName = CommonHelper.GetRandomHash();
+            string bundlePath = Config.MetaFolderTmp.File(tmpPathName + Properties.BundleFileExt);
+            AbsolutePath tmpPath = Config.MetaFolderTmp.Enter(tmpPathName);
             Directory.CreateDirectory(tmpPath);
-            File.WriteAllBytes(tmpPath + Properties.BundleFileExt, data);
-            CommonHelper.UnZip(tmpPath + Properties.BundleFileExt, tmpPath);
+            File.WriteAllBytes(bundlePath, data);
+            CommonHelper.UnZip(bundlePath, tmpPath);
 
             // Copy all files
             foreach (var file in Directory.GetFiles(tmpPath))
@@ -123,13 +120,13 @@ namespace Distribox.FileSystem
                     continue;
                 }
 
-                if (File.Exists(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name))
+                if (File.Exists(Config.MetaFolderData.File(info.Name)))
                 {
-                    Console.WriteLine("File exists: {0}", Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name);
+                    Console.WriteLine("File exists: {0}", Config.MetaFolderData.File(info.Name));
                     continue;
                 }
 
-                File.Copy(tmpPath + Properties.PathSep + info.Name, Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + info.Name);
+                File.Copy(info.FullName, Config.MetaFolderData.File(info.Name));
             }
 
             // Append versions
@@ -139,26 +136,31 @@ namespace Distribox.FileSystem
                 myFileList[item.Id] = item;
             }
 
-            var myPatchList = CommonHelper.ReadObject<List<AtomicPatch>>(tmpPath + Properties.PathSep + Properties.DeltaFile);
+            var myPatchList = CommonHelper.ReadObject<List<FileEvent>>(tmpPath.File(Properties.DeltaFile));
             foreach (var patch in myPatchList)
             {
-                if (!myFileList.ContainsKey(patch.Id))
+                if (!myFileList.ContainsKey(patch.FileId))
                 {
-                    myFileList[patch.Id] = new FileItem(patch.Id);
-                    VersionList.AllFiles.Add(myFileList[patch.Id]);
-                    VersionList.SetFileByName(patch.Name, myFileList[patch.Id]);
+                    myFileList[patch.FileId] = new FileItem(patch.FileId);
+                    VersionList.AllFiles.Add(myFileList[patch.FileId]);
+                    VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
                 }
 
-                myFileList[patch.Id].ApplyPatch(this.root, patch);
+                string oldName = myFileList[patch.FileId].CurrentName;
+                myFileList[patch.FileId].Merge(patch);
+                string currentName = myFileList[patch.FileId].CurrentName;
+                if (oldName != currentName)
+                {
+                    VersionList.RemoveFileByName(oldName);
+                    VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
+                }
             }
 
             // Clean up
             // File.Delete(tmpPath + Properties.BundleFileExt);
-            Console.WriteLine("File bundle: {0}", tmpPath + Properties.BundleFileExt);
             Directory.Delete(tmpPath, true);
             this.Flush();
 
-            Console.WriteLine("Count: {0}", myFileList.Count());
             return myPatchList;
         }
     }

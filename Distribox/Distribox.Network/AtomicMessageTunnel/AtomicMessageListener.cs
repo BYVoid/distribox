@@ -21,7 +21,6 @@
         /// <param name="port">The port.</param>
         public AtomicMessageListener(int port)
         {
-            Console.WriteLine("==============AtomicMessageListener: {0}===============", port);
             this.listener = new TcpListener(IPAddress.Any, port);
 
             Thread thread = new Thread(this.BackgroundListener);

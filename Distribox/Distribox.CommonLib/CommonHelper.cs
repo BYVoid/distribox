@@ -64,6 +64,8 @@ namespace Distribox.CommonLib
         /// <returns>The random hash.</returns>
         public static string GetRandomHash()
         {
+            return _rd.Next().ToString();
+
             byte[] ticks = BitConverter.GetBytes(DateTime.Now.Ticks);
             byte[] random = BitConverter.GetBytes(_rd.Next());
 
@@ -193,27 +195,27 @@ namespace Distribox.CommonLib
         /// Initialize all the folders and files in monitered file.
         /// </summary>
         /// <param name="root">Path of root folder.</param>
-        public static void InitializeFolder(string root)
+        public static void InitializeFolder()
         {
-            if (!Directory.Exists(root))
+            if (!Directory.Exists(Config.RootFolder))
             {
-                Directory.CreateDirectory(root);
+                Directory.CreateDirectory(Config.RootFolder);
             }
-            if (!Directory.Exists(root + Properties.MetaFolder))
+            if (!Directory.Exists(Config.MetaFolder))
             {
-                Directory.CreateDirectory(root + Properties.MetaFolder);
+                Directory.CreateDirectory(Config.MetaFolder);
             }
-            if (!Directory.Exists(root + Properties.MetaFolderTmp))
+            if (!Directory.Exists(Config.MetaFolderTmp))
             {
-                Directory.CreateDirectory(root + Properties.MetaFolderTmp);
+                Directory.CreateDirectory(Config.MetaFolderTmp);
             }
-            if (!Directory.Exists(root + Properties.MetaFolderData))
+            if (!Directory.Exists(Config.MetaFolderData))
             {
-                Directory.CreateDirectory(root + Properties.MetaFolderData);
+                Directory.CreateDirectory(Config.MetaFolderData);
             }
-            if (!File.Exists(root + Properties.VersionListFilePath))
+            if (!File.Exists(Config.VersionListFilePath))
             {
-                File.WriteAllText(root + Properties.VersionListFilePath, "[]");
+                File.WriteAllText(Config.VersionListFilePath, "[]");
             }
         }
     }

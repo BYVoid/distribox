@@ -13,7 +13,7 @@ namespace Distribox.CLI
     class Program
     {
         static AntiEntropyProtocol protocol;
-  
+
         /// <summary>
         /// Used for the ruby engine.
         /// </summary>
@@ -43,14 +43,13 @@ namespace Distribox.CLI
         public static void Main(string[] args)
         {
             // Get config
-            int port = Config.GetConfig().ListenPort;
-            string root = Config.GetConfig().RootFolder;
+            int port = Config.ListenPort;
             
             // Initialize folder
-            CommonHelper.InitializeFolder(root);
+            CommonHelper.InitializeFolder();
             
             // Start peer service
-            StartPeer(port, root);
+            StartPeer(port);
    
             // Start CLI
             RubyEngine engine = new RubyEngine();
@@ -64,15 +63,12 @@ namespace Distribox.CLI
         /// <param name='port'>
         /// Listening port of the peer.
         /// </param>
-        /// <param name='root'>
-        /// Root folder to be watched.
-        /// </param>
-        private static void StartPeer(int port, string root)
+        private static void StartPeer(int port)
         {
-            string peerListName = root + Properties.PeerListFilePath;
+            string peerListName = Config.PeerListFilePath;
             
             // Initialize anti entropy protocol
-            var vs = new VersionControl(root);
+            var vs = new VersionControl();
             protocol = new AntiEntropyProtocol(port, peerListName, vs);
             
             // Initialize file watcher

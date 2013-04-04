@@ -13,7 +13,7 @@
         /// </summary>
         /// <param name="request">Request.</param>
         /// <param name="myPort">My port.</param>
-        public PatchRequest(List<AtomicPatch> request, int myPort)
+        public PatchRequest(List<FileEvent> request, int myPort)
             : base(myPort)
         {
             this.Request = request;
@@ -24,7 +24,7 @@
         /// Gets the request.
         /// </summary>
         /// <value>The request.</value>
-        public List<AtomicPatch> Request { get; set; }
+        public List<FileEvent> Request { get; set; }
 
         /// <summary>
         /// Accept the specified visitor and peer.

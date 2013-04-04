@@ -25,7 +25,7 @@ namespace Distribox.Network
 
         private VersionControl versionControl;
 
-        // Use <AtomicPatch> as its member
+        // Use <FileEvent> as its member
         private RequestManager requestManager;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Distribox.Network
             this.listener.OnReceive += this.OnReceiveMessage;
 
             // Initialize timer to connect other peers periodically
-            System.Timers.Timer timer = new System.Timers.Timer(Config.GetConfig().ConnectPeriodMs);
+            System.Timers.Timer timer = new System.Timers.Timer(Config.ConnectPeriodMs);
             timer.Elapsed += this.OnTimerEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -132,7 +132,7 @@ namespace Distribox.Network
         /// <param name="peer">The peer.</param>
         internal void Process(VersionListMessage message, Peer peer)
         {
-            List<AtomicPatch> versionRequest;
+            List<FileEvent> versionRequest;
             lock (this.versionControl.VersionList)
             {
                 versionRequest = this.versionControl.VersionList.GetLessThan(message.List);
@@ -170,7 +170,7 @@ namespace Distribox.Network
         /// <param name="peer">Peer.</param>
         internal void Process(FileDataResponse message, Peer peer)
         {
-            List<AtomicPatch> patches;
+            List<FileEvent> patches;
             lock (this.versionControl.VersionList)
             {
                 patches = this.versionControl.AcceptFileBundle(message.Data);
@@ -195,7 +195,6 @@ namespace Distribox.Network
             }
 
             byte[] bytesMessage = CommonLib.CommonHelper.SerializeAsBytes(message);
-            Console.WriteLine(message);
             sender.SendBytes(bytesMessage);
 
             // TODO on error
@@ -246,11 +245,10 @@ namespace Distribox.Network
                     return;
                 }
 
-                List<AtomicPatch> patches = requestTuple.Item1;
+                List<FileEvent> patches = requestTuple.Item1;
                 Peer peer = requestTuple.Item2;
 
                 // Send out the request
-                Console.WriteLine(new PatchRequest(patches, this.listeningPort).Serialize());
                 SendMessage(peer, new PatchRequest(patches, this.listeningPort));
             }
         }
@@ -266,10 +264,6 @@ namespace Distribox.Network
 
             // Send VersionList
             SendMessage(peer, new VersionListMessage(this.versionControl.VersionList, this.listeningPort));
-
-            // TODO logger
-            Console.WriteLine("Send version list to {0}", peer.Serialize());
-            Console.WriteLine(this.versionControl.VersionList.Serialize());
         }
 
         /// <summary>

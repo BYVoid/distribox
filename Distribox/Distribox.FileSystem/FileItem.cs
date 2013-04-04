@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using Distribox.CommonLib;
+    using System.Diagnostics;
 
     // TODO create a new class indicating version delta
 
@@ -19,7 +20,7 @@
         /// </summary>
         public FileItem()
         {
-            this.History = new SortedList<long, FileEvent>();
+            this.History = new List<FileEvent>();
         }
 
         /// <summary>
@@ -28,7 +29,7 @@
         /// <param name="id">Identifier.</param>
         public FileItem(string id)
         {
-            this.History = new SortedList<long, FileEvent>();
+            this.History = new List<FileEvent>();
             this.Id = id;
         }
 
@@ -39,7 +40,7 @@
         /// <param name="isDirectory">If set to <c>true</c> is directory.</param>
         public FileItem(string name, bool isDirectory)
         {
-            this.History = new SortedList<long, FileEvent>();
+            this.History = new List<FileEvent>();
             this.Id = CommonHelper.GetRandomHash();
             this.IsDirectory = isDirectory;
         }
@@ -64,7 +65,7 @@
         {
             get
             {
-                return this.History.Last().Value.Type != FileEventType.Deleted;
+                return this.History.Last().Type != FileEventType.Deleted;
             }
         }
 
@@ -76,7 +77,7 @@
         {
             get
             {
-                return this.History.Last().Value.Name;
+                return this.History.Count() == 0 ? null : this.History.Last().Name;
             }
         }
 
@@ -88,7 +89,31 @@
         {
             get
             {
-                return this.History.Last().Value.SHA1;
+                return this.History.Count() == 0 ? null : this.History.Last().SHA1;
+            }
+        }
+
+        /// <summary>
+        /// Gets current file size.
+        /// </summary>
+        /// <value>File size.</value>
+        public long CurrentSize
+        {
+            get
+            {
+                return this.History.Count() == 0 ? 0 : this.History.Last().Size;
+            }
+        }
+
+        /// <summary>
+        /// Gets current parent id.
+        /// </summary>
+        /// <value>Current parent id.</value>
+        public string CurrentParentId
+        {
+            get
+            {
+                return this.History.Count() == 0 ? null : this.History.Last().EventId;
             }
         }
 
@@ -96,7 +121,13 @@
         /// Gets or sets history of the file.
         /// </summary>
         /// <value>The history of the file.</value>
-        public SortedList<long, FileEvent> History { get; set; }
+        public List<FileEvent> History { get; set; }
+
+        private void PushHistory(FileEvent vs)
+        {
+            this.History.Add(vs);
+            this.History.Sort((x, y) => x.When.Ticks.CompareTo(y.When.Ticks));
+        }
 
         /// <summary>
         /// Create the initial version.
@@ -106,13 +137,17 @@
         public void Create(string name, DateTime when)
         {
             FileEvent vs = new FileEvent();
-            vs.Type = FileEventType.Created;
+            vs.FileId = this.Id;
+            vs.EventId = CommonHelper.GetRandomHash();
+            vs.ParentId = this.CurrentParentId;
+            vs.IsDirectory = this.IsDirectory;
             vs.Name = name;
-            vs.LastModify = when;
+            vs.When = when;
             vs.SHA1 = null;
             vs.Size = 0;
+            vs.Type = FileEventType.Created;
 
-            this.History.Add(vs.LastModify.Ticks, vs);
+            PushHistory(vs);
         }
 
         /// <summary>
@@ -122,26 +157,18 @@
         /// <param name="when">When.</param>
         public void Rename(string name, DateTime when)
         {
-            if (name == this.CurrentName)
-            {
-                return;
-            }
-
             FileEvent vs = new FileEvent();
-            vs.Type = FileEventType.Renamed;
+            vs.FileId = this.Id;
+            vs.EventId = CommonHelper.GetRandomHash();
+            vs.ParentId = this.CurrentParentId; ;
+            vs.IsDirectory = this.IsDirectory;
             vs.Name = name;
-            vs.LastModify = when;
+            vs.When = when;
             vs.SHA1 = this.CurrentSHA1;
-            if (vs.SHA1 != null)
-            {
-                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
-            }
-            else
-            {
-                vs.Size = 0;
-            }
+            vs.Size = this.CurrentSize;
+            vs.Type = FileEventType.Renamed;
 
-            this.History.Add(vs.LastModify.Ticks, vs);
+            PushHistory(vs);
         }
 
         /// <summary>
@@ -151,20 +178,17 @@
         public void Delete(DateTime when)
         {
             FileEvent vs = new FileEvent();
-            vs.Type = FileEventType.Deleted;
+            vs.FileId = this.Id;
+            vs.EventId = CommonHelper.GetRandomHash();
+            vs.ParentId = this.CurrentParentId; ;
+            vs.IsDirectory = this.IsDirectory;
             vs.Name = this.CurrentName;
-            vs.LastModify = when;
+            vs.When = when;
             vs.SHA1 = this.CurrentSHA1;
-            if (vs.SHA1 != null)
-            {
-                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
-            }
-            else
-            {
-                vs.Size = 0;
-            }
+            vs.Size = this.CurrentSize;
+            vs.Type = FileEventType.Deleted;
 
-            this.History.Add(vs.LastModify.Ticks, vs);
+            PushHistory(vs);
         }
 
         /// <summary>
@@ -175,104 +199,143 @@
         /// <param name="when">When.</param>
         public void Change(string name, string sha1, DateTime when)
         {
-            if (sha1 == this.CurrentSHA1)
-            {
-                return;
-            }
-
             FileEvent vs = new FileEvent();
-            vs.Type = FileEventType.Changed;
-            vs.Name = name;
-            vs.LastModify = when;
+            vs.FileId = this.Id;
+            vs.EventId = CommonHelper.GetRandomHash();
+            vs.ParentId = this.CurrentParentId;
+            vs.IsDirectory = this.IsDirectory;
+            vs.Name = this.CurrentName;
+            vs.When = when;
             vs.SHA1 = sha1;
-            if (vs.SHA1 != null)
-            {
-                FileInfo info = new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1);
-                vs.Size = info.Length;
-            }
-            else
-            {
-                vs.Size = 0;
-            }
+            vs.Size = this.IsDirectory || sha1 == null ? 0 : (new FileInfo(Config.MetaFolderData.File(vs.SHA1))).Length;
+            vs.Type = FileEventType.Changed;
 
-            Console.WriteLine(this.History.SerializeInline());
-            Console.WriteLine(vs.SerializeInline());
-            this.History.Add(vs.LastModify.Ticks, vs);
+            PushHistory(vs);
         }
 
         /// <summary>
-        /// Apply patch.
+        /// Merge event.
         /// </summary>
-        /// <param name="root">The root.</param>
-        /// <param name="patch">The patch.</param>
-        public void ApplyPatch(string root, AtomicPatch patch)
+        /// <param name="e">The FileEvent.</param>
+        public void Merge(FileEvent vs)
         {
-            if (this.History.ContainsKey(patch.LastModify.Ticks))
+            if (History.Count() == 0)
             {
-                return;
-            }
-            
-            this.IsDirectory = patch.IsDirectory;
-            
-            FileEvent vs = new FileEvent();
-            vs.Type = patch.Type;
-            vs.Name = patch.Name;
-            vs.LastModify = patch.LastModify;
-            vs.SHA1 = patch.SHA1;
-            if (vs.SHA1 != null)
-            {
-                vs.Size = (new FileInfo(Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep + vs.SHA1)).Length;
-            }
-            else
-            {
-                vs.Size = 0;
-            }
+                this.Id = vs.FileId;
+                this.IsDirectory = vs.IsDirectory;
 
-            // Receive new file
-            if (this.History.Count() == 0)
-            {
-                if (this.IsDirectory)
+                PushHistory(vs);
+                if (IsDirectory)
                 {
-                    Directory.CreateDirectory(root + this.CurrentName);
-                }
-                else
-                {
-                    if (patch.SHA1 == null)
+                    switch (vs.Type)
                     {
-                        File.WriteAllText(root + vs.Name, string.Empty);
-                    }
-                    else
-                    {
-                        File.Copy(root + ".Distribox/data/" + patch.SHA1, root + vs.Name, true);
-                    }
-                }
-
-                this.History.Add(vs.LastModify.Ticks, vs);
-                return;
-            }
-
-            // Change file or directory.
-            FileEvent lastVersion = this.History.Last().Value;
-            this.History.Add(vs.LastModify.Ticks, vs);
-            if (lastVersion.LastModify.Ticks != patch.LastModify.Ticks)
-            {
-                if (this.IsDirectory)
-                {
-                    if (lastVersion.Name != patch.Name)
-                    {
-                        Directory.Delete(root + lastVersion.Name);
-                        Directory.CreateDirectory(root + patch.Name);
+                        case FileEventType.Created:
+                            GlobalFlag.AcceptFileEvent = false;
+                            Directory.CreateDirectory(Config.RootFolder.Enter(vs.Name));
+                            GlobalFlag.AcceptFileEvent = true;
+                            break;
+                        default:
+                            Debug.Assert(false);
+                            break;
                     }
                 }
                 else
                 {
-                    if (patch.SHA1 == null)
+                    switch (vs.Type)
                     {
-                        File.WriteAllText(root + vs.Name, string.Empty);
+                        case FileEventType.Created:
+                            if (vs.SHA1 == null)
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.WriteAllText(Config.RootFolder.File(vs.Name), "");
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            else
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name));
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            break;
+                        default:
+                            Debug.Assert(false);
+                            break;
                     }
-                    else
+                }
+                return;
+            }
+
+            FileEvent last = History.Last();
+            PushHistory(vs);
+
+            // Display changes
+            if (vs.When.Ticks > last.When.Ticks)
+            {
+                if (IsDirectory)
+                {
+                    switch (vs.Type)
                     {
-                        File.Copy(root + ".Distribox/data/" + patch.SHA1, root + vs.Name, true);
+                        case FileEventType.Created:
+                            GlobalFlag.AcceptFileEvent = false;
+                            Directory.CreateDirectory(Config.RootFolder.Enter(vs.Name));
+                                GlobalFlag.AcceptFileEvent = true;
+                            break;
+                        case FileEventType.Changed:
+                            break;
+                        case FileEventType.Renamed:
+                            GlobalFlag.AcceptFileEvent = false;
+                            Directory.Move(Config.RootFolder.Enter(last.Name), Config.RootFolder.Enter(vs.Name));
+                            GlobalFlag.AcceptFileEvent = true;
+                            break;
+                        case FileEventType.Deleted:
+                            GlobalFlag.AcceptFileEvent = false;
+                            Directory.Delete(Config.RootFolder.Enter(vs.Name));
+                            GlobalFlag.AcceptFileEvent = true;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (vs.Type)
+                    {
+                        case FileEventType.Created:
+                            if (vs.SHA1 == null)
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.WriteAllText(Config.RootFolder.File(vs.Name), "");
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            else
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name));
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            break;
+                        case FileEventType.Changed:
+                            if (vs.SHA1 == null)
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.WriteAllText(Config.RootFolder.File(vs.Name), "");
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            else
+                            {
+                                GlobalFlag.AcceptFileEvent = false;
+                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name), true);
+                                GlobalFlag.AcceptFileEvent = true;
+                            }
+                            break;
+                        case FileEventType.Renamed:
+                            GlobalFlag.AcceptFileEvent = false;
+                            File.Move(Config.RootFolder.File(last.Name), Config.RootFolder.File(vs.Name));
+                            GlobalFlag.AcceptFileEvent = true;
+                            break;
+                        case FileEventType.Deleted:
+                            GlobalFlag.AcceptFileEvent = false;
+                            File.Delete(Config.RootFolder.File(vs.Name));
+                            GlobalFlag.AcceptFileEvent = true;
+                            break;
                     }
                 }
             }

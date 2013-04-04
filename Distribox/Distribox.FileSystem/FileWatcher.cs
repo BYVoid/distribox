@@ -14,7 +14,7 @@
         /// <summary>
         /// The timer for polling.
         /// </summary>
-        private System.Timers.Timer timer = new System.Timers.Timer(Config.GetConfig().FileWatcherTimeIntervalMs);
+        private System.Timers.Timer timer = new System.Timers.Timer(Config.FileWatcherTimeIntervalMs);
 
         /// <summary>
         /// The event queue.
@@ -28,7 +28,7 @@
         public FileWatcher()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = Config.GetConfig().RootFolder;
+            watcher.Path = Config.RootFolder.ToString();
             watcher.Changed += this.OnWatcherEvent;
             watcher.Created += this.OnWatcherEvent;
             watcher.Renamed += this.OnWatcherEvent;
@@ -77,12 +77,7 @@
         /// Occurs when firstly idle from busy.
         /// </summary>
         public event IdleHandler Idle;
-
-        private string DataPath
-        {
-            get { return Config.GetConfig().RootFolder + Properties.MetaFolderData + Properties.PathSep; }
-        }
-
+    
         private DateTime LastEvent { get; set; }
 
         /// <summary>
@@ -145,8 +140,14 @@
         /// <param name="e">E.</param>
         private void OnWatcherEvent(object sender, FileSystemEventArgs e)
         {
+            // Display versions
+            if (!GlobalFlag.AcceptFileEvent)
+            {
+                return;
+            }
+
             // Exclude .Distribox folder
-            if (e.Name.StartsWith(Properties.MetaFolder))
+            if (e.Name.StartsWith(Properties.MetaFolder.ToString()))
             {
                 return;
             }
@@ -188,7 +189,7 @@
             {
                 // TODO remove sha1
                 newEvent.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                newEvent.DataPath = this.DataPath + newEvent.SHA1;
+                newEvent.DataPath = Config.MetaFolderData.File(newEvent.SHA1);
                 if (!File.Exists(newEvent.DataPath))
                 {
                     File.Copy(newEvent.FullPath, newEvent.DataPath);
@@ -229,7 +230,7 @@
             if (!newEvent.IsDirectory)
             {
                 newEvent.SHA1 = CommonHelper.GetSHA1Hash(e.FullPath);
-                newEvent.DataPath = this.DataPath + newEvent.SHA1;
+                newEvent.DataPath = Config.MetaFolderData.File(newEvent.SHA1);
                 if (!File.Exists(newEvent.DataPath))
                 {
                     File.Copy(newEvent.FullPath, newEvent.DataPath);
@@ -251,8 +252,8 @@
         {
             FileChangedEventArgs newEvent = new FileChangedEventArgs();
             newEvent.ChangeType = e.ChangeType;
-            newEvent.FullPath = e.FullPath;
-            newEvent.Name = e.Name;
+            newEvent.FullPath = e.FullPath.Replace("\\", Properties.PathSep).Replace("/", Properties.PathSep);
+            newEvent.Name = e.Name.Replace("\\", Properties.PathSep).Replace("/", Properties.PathSep);
 
             if (this.LastEvent.Ticks >= DateTime.Now.Ticks)
             {
@@ -273,8 +274,8 @@
 
             if (e.ChangeType == WatcherChangeTypes.Renamed)
             {
-                newEvent.OldName = ((RenamedEventArgs)e).OldName;
-                newEvent.OldFullPath = ((RenamedEventArgs)e).OldFullPath;
+                newEvent.OldName = ((RenamedEventArgs)e).OldName.Replace("\\", Properties.PathSep).Replace("/", Properties.PathSep);
+                newEvent.OldFullPath = ((RenamedEventArgs)e).OldFullPath.Replace("\\", Properties.PathSep).Replace("/", Properties.PathSep);
             }
 
             return newEvent;

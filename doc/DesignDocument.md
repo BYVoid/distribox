@@ -2,15 +2,35 @@
 
 # Overview
 ## Architecture
-Distribox is designed as a P2P system, which means every peer (or node, client) in the network is equal. No peer plays a role as a manager or supervisor. Therefore we have only one kind of client, and each client can join the synchrounization network by being inviting by another client.
 
-The client runs on a machine. It monitors a folder on local file system. With handling the hooks of operating system, it gathers all file events, and builds a version tree. The synchronization runs in another thread periodically. On every progress of synchronization, the client finds a target peer with Anti-entropy algorithm, and generates a patch containing the difference between the local peer and remote peer. Then the patch will be sent to the target, and applys to the remote version tree. At the same time the remote peer sends a patch back as well. After a synchronization between the two clients, they will be fully synchrounized up-to-date. Then both the two peers will propagate changes to other peers on the next synchronization. It is proved that all peers in the network will eventually consistency.
+Distribox is designed as a P2P system, which means every peer (or
+node, client) in the network is equal. No peer plays a role as a
+manager or supervisor. Therefore we have only one kind of client, and
+each client can join the synchrounization network by being inviting by
+another client.
 
-Since the architecture of Distribox is totally distributed and decentralized, there is no single point of failure. We perserved all versions of all files, so no data will lose even if one peer is controlled by a unauthorized user or invader.
+The client runs on a machine. It monitors a folder on local file
+system. With handling the hooks of operating system, it gathers all
+file events, and builds a version tree. The synchronization runs in
+another thread periodically. On every progress of synchronization, the
+client finds a target peer with Anti-entropy algorithm, and generates
+a patch containing the difference between the local peer and remote
+peer. Then the patch will be sent to the target, and applys to the
+remote version tree. At the same time the remote peer sends a patch
+back as well. After a synchronization between the two clients, they
+will be fully synchrounized up-to-date. Then both the two peers will
+propagate changes to other peers on the next synchronization. It is
+proved that all peers in the network will eventually consistency.
+
+Since the architecture of Distribox is totally distributed and
+decentralized, there is no single point of failure. We perserved all
+versions of all files, so no data will lose even if one peer is
+controlled by a unauthorized user or invader.
 
 ## Modules
 
-To implement the distributed system, we devided the software into modules below:
+To implement the distributed system, we devided the software into
+modules below:
 
 * Network
 * File System
@@ -18,6 +38,10 @@ To implement the distributed system, we devided the software into modules below:
 * Command Line Interface
 
 ## Third-party Libraries
+
+* Zip library for C#
+* Ruby engine for C#
+* Json serialization for C#
 
 # File System Module
 ## Structure
@@ -36,16 +60,28 @@ A version includes:
 
 // Changed, please rewrite
 
-* Timestamp: the time of the commit, in GMT. If this time is incorrect or asynchronized among peers. Distribox may respect wrong file as the latest. This mistake could be repaired by manually set the correct latest version. (We haven't considered how to spread this correction to other peers yet.)
-* Commit ID: a 160-bit random number, generated when commit is submitted on the peer who made the commit.
-* File list: a xml file, contains full path and filename of all files in this commit, and number of file blocks in this version.
-* File blocks: 1MB sized blocks, named by Hash(file name + block ID in this file), where Hash(x) is the 160-bit SHA1 code of x. The block data contains: Commit ID + 1 MB binary data of the original file.
+* Timestamp: the time of the commit, in GMT. If this time is incorrect
+  or asynchronized among peers. Distribox may respect wrong file as
+  the latest. This mistake could be repaired by manually set the
+  correct latest version. (We haven't considered how to spread this
+  correction to other peers yet.)
+  
+* Commit ID: a 160-bit random number, generated when commit is
+  submitted on the peer who made the commit.
+  
+* File list: a xml file, contains full path and filename of all files
+  in this commit, and number of file blocks in this version.
+  
+* File blocks: 1MB sized blocks, named by Hash(file name + block ID in
+  this file), where Hash(x) is the 160-bit SHA1 code of x. The block
+  data contains: Commit ID + 1 MB binary data of the original file.
 
 // FileItem
 
 // Version tree
 
 ## Storage organization
+
 The file system (.Distribox folder) can be organized with hierarchies:
 
 // need to express more
@@ -75,30 +111,155 @@ The file system (.Distribox folder) can be organized with hierarchies:
 
 ## Protocol
 
-There are 2 kind of protocols, Distribox uses a hybrid approach of both:
+There are 2 kind of protocols, Distribox uses a hybrid approach of
+both:
 
-Anti-entropy: Each peer picks a random peer periodically and these two peers synchronize their data completely. This approach is extremely reliable but changes propagates slowly. Anti-entropy is suitable when significant difference of peers exists, for example, a newly-invited peer or a peer which has just login.
+Anti-entropy: Each peer picks a random peer periodically and these two
+peers synchronize their data completely. This approach is extremely
+reliable but changes propagates slowly. Anti-entropy is suitable when
+significant difference of peers exists, for example, a newly-invited
+peer or a peer which has just login.
 
-Gossip protocol: Rather than synchronizing data completely, gossip protocol spreads updates (as rumor). When a peer receive a new rumor, the rumor becomes hot. If a peer sends a rumor to other peers and is acknowledged that the rumor has already been seen, the rumor will becomes cold. Rumor cycles can be more frequent than anti-entropy cycles because they require fewer resources at each site, but there is some chance that an update will not reach all sites.
+Gossip protocol: Rather than synchronizing data completely, gossip
+protocol spreads updates (as rumor). When a peer receive a new rumor,
+the rumor becomes hot. If a peer sends a rumor to other peers and is
+acknowledged that the rumor has already been seen, the rumor will
+becomes cold. Rumor cycles can be more frequent than anti-entropy
+cycles because they require fewer resources at each site, but there is
+some chance that an update will not reach all sites.
 
-These ideas exists since 1987[1], by the propose for replicated database maintenance in Xerox company. Since Distribox can be considered as a replicated database, where versions in Distribox are considered as records in database, we found that the ideas are still applicable to Distribox without major modifications. The major difference these two scenarios perhaps are
+These ideas exists since 1987[1], by the propose for replicated
+database maintenance in Xerox company. Since Distribox can be
+considered as a replicated database, where versions in Distribox are
+considered as records in database, we found that the ideas are still
+applicable to Distribox without major modifications. The major
+difference these two scenarios perhaps are
 
 * Connection speed
 * Network stability
 
+Anti-Entropy favors fast connection speed and can deal with network
+instability, while gossip protocol favors relatively good network
+stability.
+
 ### Design philosophy
 
-Design of Distribox protocols aims to be
+Distribox's protocol aims to be
 
 * Simple
 * Robust
 
-The key to achieve robustness is reduce memory and side-effects. The complexity of distributed protocol designing arise from inconsistency: if connection between peer A and peer B closed unexpectedly, how do A and B know this and ensure their consisteny? If peers don't remember any "states", there won't be any inconsistency. Our protocol are designed to be event-driven, states are encoded in events. If any connection error happens, the event will lost automatically, which is exactly what we want do to maintain consistency.
+The key to achieve robustness is reduce memory and side-effects. The
+complexity of distributed protocol designing arise from inconsistency:
+if connection between peer A and peer B closed unexpectedly, how do A
+and B know this and ensure their consisteny? If peers don't remember
+any "states", there won't be any inconsistency. Our protocol are
+designed to be event-driven, states are encoded in events. If any
+connection error happens, the event will lost automatically, which is
+exactly what we want do to maintain consistency.
+
+### Global Data structure
+Anti-Entropy protocol need to maintain these global data structures.
+
+* Peer List
+
+  Stores every known peer's IP and port, whatever if it is online
+  currently. This peer list will be synchronzied between all peers.
+  
+* Version List
+
+  Stores meta data of patches.
+
+* Patch data
+
+  Actual data of patches.
+
+### Synchronization
+Every peer periodcally try to start a synchronization with a random
+picked peer in its peer list. By starting a synchronization, all the
+data structures of the two peers will eventually synchronized.
+
+The synchronization procedure acts as follows:
+
+1. Suppose A want to synchronize with B now, to do so, it sends a
+SyncRequest message to B. 
+
+2. Receiving SyncRequest, if number active connections does not exceed
+a given limit, B will accept this synchronization by send a SyncAck
+message. Otherwise it will do nothing to reject the message.
+
+3. B send its peer list and version list to A.
+
+4. Receiving SyncAck, A send its peer list and version list to B.
+
+5. For each peer receiving peer list, it merge the received list with
+its own.
+
+6. For each peer receving version list, it computes the files which
+remote peer has but it don't has. It computes patchRequests for these
+patches. But it acknowledge these patchRequest to a request manager,
+which add them to its own pending list rather than send out all of the
+requests now to avoid network congestion.
+
+To fetch actual patch data, a peer periodcally ask its request manager
+for pending request. If there are any, request manager will select a
+collection of requests, satisfing following condition:
+
+* They can be fetched from one same peer
+* The total data of these patches do not exceed 4MB
+
+The peer will send these requests to a peer. After the remote peer
+receives these requests, it packs these patches to a zip file and send
+back. The requesting peer will store these files locally and update
+its version list.
+
+<img src="synchronization.png"/>
+
+### Request management
+The request manager maintain a list of all pending requests. There are
+3 stages of a requests lifecycle:
+
+* Pending
+* Requesting
+* Done
+
+### Peer invitation
+
+Suppose peer A would like to invite peer B, and A knows B's IP address
+and port. First, A send an Invitation message to B. After receiving
+Invitation, to accept the invitation, B add A to its peer list, send
+an InvitationAck back to A. After received InvitationAck, A add B to
+its own peer list as well and try to synchronize with B immediately by
+sending a SyncRequest. See the flow chart below.
+
+<img src="invitation.png"/>
+
+### Online and Offline
+
+### Parallel synchronization
+
+### Blockwise transferring
+
+### Protocol Messages
+
+Currently, Distribox have these kind of messages:
+* Invitation
+* InvitationAck
+* SyncRequest
+* SyncAck
+* SyncRefuse
+* PeerListMEssage
+* VersionListMessage
+* PatchRequest
+* FileDataResponse
 
 ### Basic Anti-entropy algorithm
 
 
-To implement anti-entropy, each peer should has two threads: the pull thread, waiting for other thread’s synchronization and the push thread, which try start synchronization with a random peer actively every t milliseconds.
+To implement anti-entropy, each peer should has two threads: the pull
+thread, waiting for other thread’s synchronization and the push
+thread, which try start synchronization with a random peer actively
+every t milliseconds.
 
     Push-thread(peer p)
     	For every t milliseconds
@@ -122,8 +283,9 @@ To implement anti-entropy, each peer should has two threads: the pull thread, wa
     			Synchronize-passively(p, q)
     			set q is idle
 
-According to [1], suppose no more updates are made since time 0. The probability that a peer is NOT synchronized at time t, denoting it as pt , follows the recursive equation.
-pt+1 = pt^2
+According to [1], suppose no more updates are made since time 0. The
+probability that a peer is NOT synchronized at time t, denoting it as
+pt , follows the recursive equation.  pt+1 = pt^2
 
 For arbitrary small value ε, the expected number of t, such that pt<ε, is proportional to O(log* p0/ε).
 
@@ -133,13 +295,31 @@ For arbitrary small value ε, the expected number of t, such that pt<ε, is prop
 
 <DEPRECATED>
 
-The efficiency of anti-entropy is relies on the efficiency of synchronization. If two .dbox folders is compared directed during a single synchronization, the efficiency will be very low and the system cannot be used in practice. Our ideal result is during each synchronization, only differences of two versions is transferred, that is the ideal incremental synchronization. In practice, additional information should be transferred to found the difference between .dbox folders.
+The efficiency of anti-entropy is relies on the efficiency of
+synchronization. If two .dbox folders is compared directed during a
+single synchronization, the efficiency will be very low and the system
+cannot be used in practice. Our ideal result is during each
+synchronization, only differences of two versions is transferred, that
+is the ideal incremental synchronization. In practice, additional
+information should be transferred to found the difference between
+.dbox folders.
 
-Our approach is a hierarchical hash algorithm. First, we sort all data, namely, file blocks and file lists by their timestamp followed by their hash. We do this not only for define a unique and deterministic sequence for files, but also try to make latest versions aggregate in our hash tree (explained soon), reducing the expensive network I/Os.
+Our approach is a hierarchical hash algorithm. First, we sort all
+data, namely, file blocks and file lists by their timestamp followed
+by their hash. We do this not only for define a unique and
+deterministic sequence for files, but also try to make latest versions
+aggregate in our hash tree (explained soon), reducing the expensive
+network I/Os.
 
-For the i th item, denote its hash as hashi. We then compute Hash(hash0, hash1, …, hashb-1), Hash(hashb+0, hashb+1, …, hash2b-1) for a branch constant b. And keep doing this until we got a final hash code for the root node.
+For the i th item, denote its hash as hashi. We then compute
+Hash(hash0, hash1, …, hashb-1), Hash(hashb+0, hashb+1, …, hash2b-1)
+for a branch constant b. And keep doing this until we got a final hash
+code for the root node.
 
-Every time when synchronization begins, the active thread send its hash of root to passive thread, the passive thread will compare it with its own hash of root to decide if synchronization should be done on other nodes
+Every time when synchronization begins, the active thread send its
+hash of root to passive thread, the passive thread will compare it
+with its own hash of root to decide if synchronization should be done
+on other nodes
 
 </DEPRECATED>
 
@@ -185,26 +365,36 @@ Every time when synchronization begins, the active thread send its hash of root 
 
 ### Invitation and Online/Offline
 #### Invitation
-If p want to invite q, p and q do a synchronization. Then p and q add q to user list.
+
+If p want to invite q, p and q do a synchronization. Then p and q add
+q to user list.
 
 #### Online
-When a peer online. It does nothing and wait for a synchronization or synchronize with others.
+
+When a peer online. It does nothing and wait for a synchronization or
+synchronize with others.
 
 #### Offline
-We can’t do anything when peer offline. The user list is not modified, peers may still try to connect offline nodes.
+
+We can’t do anything when peer offline. The user list is not modified,
+peers may still try to connect offline nodes.
 
 ## Structure
 
 Distribox protocol is implemented with several classes.
 
 ### Atomic message listener / Atomic message sender
-These class are abstract message sender and receivers, implemented on top of TCP protocol. While TCP protocol provides a reliable peer-to-peer byte stream. These two classes ensure atomicity of messages by send additional message length information. 
 
-To send a message, a NEW TCP connection is established between the two users, wait for message to be transferred, and close the connection.
+These class are abstract message sender and receivers, implemented on
+top of TCP protocol. While TCP protocol provides a reliable
+peer-to-peer byte stream. These two classes ensure atomicity of
+messages by send additional message length information.
+
+To send a message, a NEW TCP connection is established between the two
+users, wait for message to be transferred, and close the connection.
 
 ### Anti entropy protocol
-<img src="invitation.png"/>
-<img src="synchronization.png"/>
+
 
 ### TODO Protocol messages
 ### TODO Peer list
@@ -228,7 +418,7 @@ RubyEngine
 * [Carbo Kuo](http://www.byvoid.com/project) (郭家寶)
   * Architect and development coordinator
   * Code reviewer and documentation maintainer
-* Chris Chen (陳鍵飛)
+* [Chris Chen](http://ml-thu.net/~jianfei) (陳鍵飛)
   * Designer of Distribox's version of Anti-entropy protocol
   * Developer of network module
 * Wenjie Song (宋文杰)
@@ -237,4 +427,6 @@ RubyEngine
 
 # Reference
 
-[1] Demers, Alan, et al. "Epidemic algorithms for replicated database maintenance."Proceedings of the sixth annual ACM Symposium on Principles of distributed computing. ACM, 1987.
+[1] Demers, Alan, et al. "Epidemic algorithms for replicated database
+maintenance."Proceedings of the sixth annual ACM Symposium on
+Principles of distributed computing. ACM, 1987.

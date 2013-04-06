@@ -47,13 +47,20 @@ modules below:
 # File System Module
 ## Structure
 
-// Explain every class under Distribox.FileSystem
-File Watcher
-File Event
-Version Control
-Version List
-AtomicPatch
-etc.
+File Watcher:
+Listens to the file system change notifications and raises events when a directory, or file in a directory, changes.
+
+File Event:
+There are four kinds of event, created/changed/renamed/deleted.
+
+Version Control:
+When file event happened, this class will handle these events and maintain version list.
+
+Version List:
+All file whatever exist or deleted, we will record its version.
+
+Atomic Patch:
+Atomic patch means a event happened to a file.
 
 ## Version management
 
@@ -317,8 +324,10 @@ We use a third-party library.
 
 # Command Line Interface
 
-// Explain class under Distribox.CLI
-RubyEngine
+We use read-eval-print-loop as command line interface.
+You can call function declared in class API by using ruby's syntax.
+
+Exampe: api.Invite(6666)
 
 # Contributors
 

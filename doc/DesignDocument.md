@@ -42,6 +42,7 @@ modules below:
 * Zip library for C#
 * Ruby engine for C#
 * Json serialization for C#
+* Logger
 
 # File System Module
 ## Structure
@@ -282,9 +283,37 @@ Currently, Distribox have these kind of messages:
 
 # Common Library
 
-// Explain every class under Distribox.CommonLib
-Config
-Logger
+## Logger
+
+The logger can record logs at different level
+
+* Debug
+* Info
+* Warning
+* Error
+* Fatal
+
+It is implementation by third-party library.
+
+## Configuration
+
+The configuration file is read and stored as a json object. By utilizing json
+serialization, we can easily create a powerful yet readable
+configuration file. The configuration contains information such as
+
+* Root folder to watch
+* Connection period
+
+## Global properties
+
+Contains
+
+* String resources
+* Default values for configuration file
+
+## Json serialization
+
+We use a third-party library.
 
 # Command Line Interface
 

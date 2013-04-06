@@ -22,7 +22,7 @@ namespace Distribox.Network
             : base(myPort)
         {
             this.Request = request;
-            this.Type = MessageType.FileRequest;
+            this.Type = MessageType.PatchRequest;
         }
 
         /// <summary>

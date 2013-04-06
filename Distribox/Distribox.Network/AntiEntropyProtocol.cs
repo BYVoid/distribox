@@ -50,6 +50,11 @@ namespace Distribox.Network
         private RequestManager requestManager;
 
         /// <summary>
+        /// Factory class for ProtocolMessage
+        /// </summary>
+        private ProtocolMessageFactory messageFactory;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.AntiEntropyProtocol"/> class.
         /// </summary>
         /// <param name="listeningPort">Listening port.</param>
@@ -76,6 +81,9 @@ namespace Distribox.Network
 
             // Initialize request manager
             this.requestManager = new RequestManager();
+
+            // Initialize Protocol message factory
+            this.messageFactory = new ProtocolMessageFactory();
         }
 
         /// <summary>
@@ -216,7 +224,7 @@ namespace Distribox.Network
                 sender.OnComplete += onCompleteHandler;
             }
 
-            byte[] bytesMessage = CommonLib.CommonHelper.SerializeAsBytes(message);
+            byte[] bytesMessage = new ProtocolMessageContainer(message).SerializeAsBytes();
             sender.SendBytes(bytesMessage);
 
             // TODO on error
@@ -240,7 +248,8 @@ namespace Distribox.Network
         private void ParseAndDispatchMessage(byte[] data, Peer peerFrom)
         {
             // Parse it, and convert to the right derived class
-            ProtocolMessage message = CommonHelper.Deserialize<ProtocolMessage>(data).ParseToDerivedClass(data);
+            var container = CommonHelper.Deserialize<ProtocolMessageContainer>(data);
+            ProtocolMessage message = this.messageFactory.CreateMessage(container);
 
             // ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......
             int port = message.ListeningPort;

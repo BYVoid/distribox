@@ -50,6 +50,8 @@
     <Compile Include="Message\PatchRequest.cs" />
     <Compile Include="Message\PeerListMessage.cs" />
     <Compile Include="Message\ProtocolMessage.cs" />
+    <Compile Include="Message\ProtocolMessageContainer.cs" />
+    <Compile Include="Message\ProtocolMessageFactory.cs" />
     <Compile Include="Message\VersionListMessage.cs" />
     <Compile Include="PeerList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

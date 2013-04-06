@@ -217,11 +217,35 @@ its version list.
 
 ### Request management
 The request manager maintain a list of all pending requests. There are
-3 stages of a requests lifecycle:
+3 stages of a requests lifecycle, forming a state machine:
 
 * Pending
 * Requesting
 * Done
+
+When a request is send out, it become requesting. If we don't get the
+desired response in a time limit, the request will expire and become
+pending again. Ths time limit will be adjusted adaptively. If
+desired response is get in time limit, the state of the request will
+become done, otherwise the response will be discarded. The pending and
+requesting list will be lost if a peer is offline. The requests will
+be add to request manager again when the peer is receiving version
+list from other peers.
+
+<img src="request_life_cycle.png"/>
+
+The request manager solves lots of problems and enables lots of
+features:
+
+* Ensure every part of a patch is received.
+* Ensure a request for a certain patch won't be sent redundantly.
+* Accelerate transmission of small files by combining them to a single
+  request.
+* Enable continuing transferring. By the facility of VersionControl
+  module, which divide large patches into 4MB blocks, we can achieve
+  continuing transferring at a granuity of blocks.
+* Enable fetching large file through many peers. This approach is much
+  like traditional P2P software like BitTorrent.
 
 ### Peer invitation
 
@@ -236,13 +260,16 @@ sending a SyncRequest. See the flow chart below.
 
 ### Online and Offline
 
-### Parallel synchronization
-
-### Blockwise transferring
+Nothing should be done when a peer is online and offline in the
+protocol module of distribox. When it is online, it just do some
+initialization and wait for synchronization. When it is offline,
+nothing need to be saved, since we use event-driven architecture to
+reduce the need of maintaining to the lowest level.
 
 ### Protocol Messages
 
 Currently, Distribox have these kind of messages:
+
 * Invitation
 * InvitationAck
 * SyncRequest
@@ -252,155 +279,6 @@ Currently, Distribox have these kind of messages:
 * VersionListMessage
 * PatchRequest
 * FileDataResponse
-
-### Basic Anti-entropy algorithm
-
-
-To implement anti-entropy, each peer should has two threads: the pull
-thread, waiting for other thread’s synchronization and the push
-thread, which try start synchronization with a random peer actively
-every t milliseconds.
-
-    Push-thread(peer p)
-    	For every t milliseconds
-    		If p is idle
-    			q = random peer from peer list
-    			Send “Invitation” to q
-    			If q returned “Accept”
-    				set p is busy
-    				Synchronize-actively(p, q)
-    				set p is idle
-    			Else
-    				do nothing
-
-    Pull-thread(peer q)
-    	Wait for invitation, suppose invitation is from peer p
-    		If q is busy
-    			Send “Refuse”
-    		Else 					# q is idle
-    			set q is busy
-    			Send “Accept”
-    			Synchronize-passively(p, q)
-    			set q is idle
-
-According to [1], suppose no more updates are made since time 0. The
-probability that a peer is NOT synchronized at time t, denoting it as
-pt , follows the recursive equation.  pt+1 = pt^2
-
-For arbitrary small value ε, the expected number of t, such that pt<ε, is proportional to O(log* p0/ε).
-
-### Incremental synchronization
-
-// Add a flow chart
-
-<DEPRECATED>
-
-The efficiency of anti-entropy is relies on the efficiency of
-synchronization. If two .dbox folders is compared directed during a
-single synchronization, the efficiency will be very low and the system
-cannot be used in practice. Our ideal result is during each
-synchronization, only differences of two versions is transferred, that
-is the ideal incremental synchronization. In practice, additional
-information should be transferred to found the difference between
-.dbox folders.
-
-Our approach is a hierarchical hash algorithm. First, we sort all
-data, namely, file blocks and file lists by their timestamp followed
-by their hash. We do this not only for define a unique and
-deterministic sequence for files, but also try to make latest versions
-aggregate in our hash tree (explained soon), reducing the expensive
-network I/Os.
-
-For the i th item, denote its hash as hashi. We then compute
-Hash(hash0, hash1, …, hashb-1), Hash(hashb+0, hashb+1, …, hash2b-1)
-for a branch constant b. And keep doing this until we got a final hash
-code for the root node.
-
-Every time when synchronization begins, the active thread send its
-hash of root to passive thread, the passive thread will compare it
-with its own hash of root to decide if synchronization should be done
-on other nodes
-
-</DEPRECATED>
-
-    Synchronize-actively(peer p, peer q)
-    	Send user list to q
-    	Receive user list from q
-    	Merge
-
-    	Send commit ID list to q
-    	Receive commit ID list from q
-    	Merge received commit ID list with its own list
-
-    	For any commit ID received from q
-    		Send q “Send commit ID”
-    		Receive data from q
-
-      Send q “Sync 1”
-      Keep received instructions from q until received “Sync 2”
-      	Send commit ID to q
-
-      For any commit ID that hash of p and q conflicts
-      	Send file list to q
-      	Receive file list from q
-      	For any file block that p have but q doesn’t have
-      		Send that block to q
-      	For any file block that q have but p doesn’t have
-      		Receive that block from q
-
-    Safe-receive(peer p, peer q)
-    	q receives file_block from p
-      q receives hash from p
-      	If Hash(file_block) is equal to hash
-      		q saves file_block
-      	Else
-          Safe-receive(peer p, peer q)
-
-    Check-If-Version-Complete(file_block)
-    	save(file_block.data)
-      received_commit_id = file_block.id
-      	If every block of received_commit_id is received
-      		Merge all blocks of received_commit_id
-      		Update files locally by received_commit_id
-
-### Invitation and Online/Offline
-#### Invitation
-
-If p want to invite q, p and q do a synchronization. Then p and q add
-q to user list.
-
-#### Online
-
-When a peer online. It does nothing and wait for a synchronization or
-synchronize with others.
-
-#### Offline
-
-We can’t do anything when peer offline. The user list is not modified,
-peers may still try to connect offline nodes.
-
-## Structure
-
-Distribox protocol is implemented with several classes.
-
-### Atomic message listener / Atomic message sender
-
-These class are abstract message sender and receivers, implemented on
-top of TCP protocol. While TCP protocol provides a reliable
-peer-to-peer byte stream. These two classes ensure atomicity of
-messages by send additional message length information.
-
-To send a message, a NEW TCP connection is established between the two
-users, wait for message to be transferred, and close the connection.
-
-### Anti entropy protocol
-
-
-### TODO Protocol messages
-### TODO Peer list
-### TODO Request manager
-
-## TODO Design Patern
 
 # Common Library
 

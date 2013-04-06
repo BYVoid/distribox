@@ -14,7 +14,7 @@ namespace Distribox.Network
     /// <summary>
     /// Listener of messages in P2P network.
     /// </summary>
-    public class AtomicMessageListener
+    internal class AtomicMessageListener
     {
         /// <summary>
         /// The BUFFERSIZ.

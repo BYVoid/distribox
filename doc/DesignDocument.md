@@ -86,7 +86,18 @@ These ideas exists since 1987[1], by the propose for replicated database mainten
 * Connection speed
 * Network stability
 
-### Anti-entropy algorithm
+### Design philosophy
+
+Design of Distribox protocols aims to be
+
+* Simple
+* Robust
+
+The key to achieve robustness is reduce memory and side-effects. The complexity of distributed protocol designing arise from inconsistency: if connection between peer A and peer B closed unexpectedly, how do A and B know this and ensure their consisteny? If peers don't remember any "states", there won't be any inconsistency. Our protocol are designed to be event-driven, states are encoded in events. If any connection error happens, the event will lost automatically, which is exactly what we want do to maintain consistency.
+
+### Basic Anti-entropy algorithm
+
+
 To implement anti-entropy, each peer should has two threads: the pull thread, waiting for other thread’s synchronization and the push thread, which try start synchronization with a random peer actively every t milliseconds.
 
     Push-thread(peer p)
@@ -184,17 +195,22 @@ We can’t do anything when peer offline. The user list is not modified, peers m
 
 ## Structure
 
-// Explain every class under Distribox.Network
-Peer
-PeerList
-RequestManager
-ProtocolMessage
-AntiEntropyProtocol
+Distribox protocol is implemented with several classes.
 
-## Design Patern
+### Atomic message listener / Atomic message sender
+These class are abstract message sender and receivers, implemented on top of TCP protocol. While TCP protocol provides a reliable peer-to-peer byte stream. These two classes ensure atomicity of messages by send additional message length information. 
 
-// Factory
-// Visitor
+To send a message, a NEW TCP connection is established between the two users, wait for message to be transferred, and close the connection.
+
+### Anti entropy protocol
+<img src="invitation.png"/>
+<img src="synchronization.png"/>
+
+### TODO Protocol messages
+### TODO Peer list
+### TODO Request manager
+
+## TODO Design Patern
 
 # Common Library
 
@@ -213,7 +229,7 @@ RubyEngine
   * Architect and development coordinator
   * Code reviewer and documentation maintainer
 * Chris Chen (陳鍵飛)
-  * Designer of Anti-entropy protocol
+  * Designer of Distribox's version of Anti-entropy protocol
   * Developer of network module
 * Wenjie Song (宋文杰)
   * Developer of file system module

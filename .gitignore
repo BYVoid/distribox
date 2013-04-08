@@ -2,6 +2,7 @@
 *.suo
 StyleCop.Cache
 
+Distribox/packages
 Distribox/Distribox.FileSystem/bin
 Distribox/Distribox.FileSystem/obj
 Distribox/Distribox.CommonLib/bin

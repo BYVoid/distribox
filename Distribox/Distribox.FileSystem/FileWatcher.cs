@@ -14,7 +14,7 @@ namespace Distribox.FileSystem
     /// <summary>
     /// Watcher of file system.
     /// </summary>
-    public class FileWatcher
+    public class FileWatcher : IDisposable
     {
         /// <summary>
         /// The timer for polling.
@@ -288,6 +288,11 @@ namespace Distribox.FileSystem
             }
 
             return newEvent;
+        }
+
+        public void Dispose()
+        {
+            this.timer.Dispose();
         }
     }
 }

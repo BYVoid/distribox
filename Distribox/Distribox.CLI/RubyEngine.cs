@@ -10,7 +10,6 @@ namespace Distribox.CommonLib
     using System.Linq;
     using System.Text;
     using IronRuby;
-    using Microsoft.Scripting;
     using Microsoft.Scripting.Hosting;
 
     /// <summary>

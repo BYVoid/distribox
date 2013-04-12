@@ -39,10 +39,10 @@ modules below:
 
 ## Third-party Libraries
 
-* Zip library for C#
-* Ruby engine for C#
-* Json serialization for C#
-* Logger
+* SharpZipLib
+* IronRuby
+* Newtonsoft.Json
+* log4net
 
 # File System Module
 ## Structure
@@ -59,34 +59,31 @@ When file event happened, this class will handle these events and maintain versi
 Version List:
 All file whatever exist or deleted, we will record its version.
 
-Atomic Patch:
-Atomic patch means a event happened to a file.
+File Item:
+File item is a version of a file.
 
 ## Version management
 
 A version includes:
 
-// Changed, please rewrite
+* File ID: a 160-bit random number, generated when a new file is created.
+  
+* Event ID: a 160-bit random number, generated when a event happened to a file.
+
+* Is Directory: Weather this is a file or directory.
 
 * Timestamp: the time of the commit, in GMT. If this time is incorrect
   or asynchronized among peers. Distribox may respect wrong file as
   the latest. This mistake could be repaired by manually set the
   correct latest version. (We haven't considered how to spread this
   correction to other peers yet.)
-  
-* Commit ID: a 160-bit random number, generated when commit is
-  submitted on the peer who made the commit.
-  
-* File list: a xml file, contains full path and filename of all files
-  in this commit, and number of file blocks in this version.
-  
-* File blocks: 1MB sized blocks, named by Hash(file name + block ID in
-  this file), where Hash(x) is the 160-bit SHA1 code of x. The block
-  data contains: Commit ID + 1 MB binary data of the original file.
 
-// FileItem
+* File Event Type: Created or 
 
-// Version tree
+* File item: Contains fully information about one single event happened to a file.
+  
+* File list: List of file items.
+
 
 ## Storage organization
 
@@ -99,21 +96,25 @@ The file system (.Distribox folder) can be organized with hierarchies:
 * peer list
 
 ## File system event monitor
+### Create
+Create a new file id, represent this file.
+Add a new version to this file, which SHA1 is empty, type is 'Created'.
 
-// FileEvent
+### Change
+Copy the file into `.Distribox/data/`, name is it's SHA1.
+Add a new version to this file, which type is 'Changed'.
 
-* Create
-* Change
-* Delete
-* Rename
+### Delete
+Add a new version to this file, which SHA1 is empty, type is 'Deleted'.
 
-// wierd situations (i.e. many small files)
-
-// How to handle these events
+### Rename
+Add a new version to this file, name is it's relative path, type is 'Renamed'.
 
 ## Design Patern
+* Protocol Message Factory: Factory
+* Protocol Message: Visitor
+* Command Line Interface: Interpreter
 
-// Event-Driven
 
 # Network Module
 
@@ -337,7 +338,7 @@ Exampe: api.Invite(6666)
 * [Chris Chen](http://ml-thu.net/~jianfei) (陳鍵飛)
   * Designer of Distribox's version of Anti-entropy protocol
   * Developer of network module
-* Wenjie Song (宋文杰)
+* [Wenjie Song](http://curimit.com/blog) (宋文杰)
   * Developer of file system module
   * C# language specialist
 

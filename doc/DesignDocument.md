@@ -47,19 +47,19 @@ modules below:
 # File System Module
 ## Structure
 
-File Watcher:
+### File Watcher
 Listens to the file system change notifications and raises events when a directory, or file in a directory, changes.
 
-File Event:
+### File Event
 There are four kinds of event, created/changed/renamed/deleted.
 
-Version Control:
+### Version Control
 When file event happened, this class will handle these events and maintain version list.
 
-Version List:
+### Version List
 All file whatever exist or deleted, we will record its version.
 
-File Item:
+### File Item
 File item is a version of a file.
 
 ## Version management
@@ -87,34 +87,31 @@ A version includes:
 
 ## Storage organization
 
-The file system (.Distribox folder) can be organized with hierarchies:
+The file system (`.Distribox` folder) can be organized with hierarchies:
 
-// need to express more
-
-* version list
-* version data
-* peer list
+* List of versions
+* Data of versions
+* List of peers
 
 ## File system event monitor
 ### Create
 Create a new file id, represent this file.
-Add a new version to this file, which SHA1 is empty, type is 'Created'.
+Add a new version to this file, whose SHA1 checksum is empty, type is `Created`.
 
 ### Change
-Copy the file into `.Distribox/data/`, name is it's SHA1.
-Add a new version to this file, which type is 'Changed'.
+Copy the file into `.Distribox/data/`, name of witch is it's SHA1 checksum.
+Add a new version to this file, whose type is `Changed`.
 
 ### Delete
-Add a new version to this file, which SHA1 is empty, type is 'Deleted'.
+Add a new version to this file, whose SHA1 checksum is empty, and type is `Deleted`.
 
 ### Rename
-Add a new version to this file, name is it's relative path, type is 'Renamed'.
+Add a new version to this file, name of witch is it's relative path, and type is `Renamed`.
 
 ## Design Patern
 * Protocol Message Factory: Factory
 * Protocol Message: Visitor
 * Command Line Interface: Interpreter
-
 
 # Network Module
 
@@ -314,21 +311,19 @@ configuration file. The configuration contains information such as
 
 ## Global properties
 
-Contains
-
 * String resources
 * Default values for configuration file
 
 ## Json serialization
 
-We use a third-party library.
+We used a third-party library: SharpZipLib.
 
 # Command Line Interface
 
 We use read-eval-print-loop as command line interface.
 You can call function declared in class API by using ruby's syntax.
 
-Exampe: api.Invite(6666)
+Exampe: `api.Invite(6666)`
 
 # Contributors
 

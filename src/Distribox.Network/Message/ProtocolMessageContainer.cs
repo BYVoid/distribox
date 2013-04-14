@@ -15,6 +15,10 @@ namespace Distribox.Network
     /// </summary>
     internal class ProtocolMessageContainer
     {
+        public ProtocolMessageContainer()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProtocolMessageContainer"/> class.
         /// Create a container from ProtocolMessage.

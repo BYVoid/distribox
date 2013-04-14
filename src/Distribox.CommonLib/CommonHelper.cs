@@ -70,15 +70,6 @@ namespace Distribox.CommonLib
         public static string GetRandomHash()
         {
             return rd.Next().ToString();
-
-            byte[] ticks = BitConverter.GetBytes(DateTime.Now.Ticks);
-            byte[] random = BitConverter.GetBytes(rd.Next());
-
-            byte[] bytes = new byte[12];
-            ticks.CopyTo(bytes, 0);
-            random.CopyTo(bytes, ticks.Length);
-
-            return Convert.ToBase64String(bytes).Replace("/", "@");
         }
 
         /// <summary>

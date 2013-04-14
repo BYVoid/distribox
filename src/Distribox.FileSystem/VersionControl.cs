@@ -10,6 +10,7 @@ namespace Distribox.FileSystem
     using System.IO;
     using System.Linq;
     using Distribox.CommonLib;
+    using ICSharpCode.SharpZipLib.Zip;
 
     /// <summary>
     /// Controller of creating and accepting versions.
@@ -83,24 +84,32 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Creates a bundle containing version list delta and all data of files.
         /// </summary>
-        /// <returns>The path of bundle.</returns>
+        /// <returns>The binary bundle.</returns>
         /// <param name="list">List needed to transferred.</param>
-        public string CreateFileBundle(List<FileEvent> list)
+        public static byte[] CreateFileBundle(List<FileEvent> list)
         {
-            string tmpPathName = CommonHelper.GetRandomHash();
-            string bundlePath = Config.MetaFolderTmp.File(tmpPathName + Properties.BundleFileExt);
-            AbsolutePath tmpPath = Config.MetaFolderTmp.Enter(tmpPathName);
-            Directory.CreateDirectory(tmpPath);
-            
-            list.WriteObject(tmpPath + Properties.PathSep + Properties.DeltaFile);
-            foreach (var sha1 in list.Where(x => x.SHA1 != null).Select(x => x.SHA1).Distinct())
+            using (MemoryStream ms = new MemoryStream())
+            using (ZipOutputStream zip = new ZipOutputStream(ms))
             {
-                File.Copy(Config.MetaFolderData.File(sha1), tmpPath.File(sha1));
-            }
+                ZipEntry block = new ZipEntry("vs");
+                zip.PutNextEntry(block);
+                zip.WriteAllBytes(list.SerializeAsBytes());
+                zip.CloseEntry();
 
-            CommonHelper.Zip(bundlePath, tmpPath);
-            Directory.Delete(tmpPath, true);
-            return bundlePath;
+                foreach (var sha1 in list.Where(x => x.SHA1 != null).Select(x => x.SHA1).Distinct())
+                {
+                    block = new ZipEntry(sha1);
+                    zip.PutNextEntry(block);
+                    zip.WriteAllBytes(File.ReadAllBytes(Config.MetaFolderData.File(sha1)));
+                    zip.CloseEntry();
+                }
+
+                zip.Finish();
+                ms.Flush();
+                ms.Position = 0;
+
+                return ms.ToArray();
+            }
         }
 
         /// <summary>
@@ -110,64 +119,47 @@ namespace Distribox.FileSystem
         /// <returns>List of events.</returns>
         public List<FileEvent> AcceptFileBundle(byte[] data)
         {
-            string tmpPathName = CommonHelper.GetRandomHash();
-            string bundlePath = Config.MetaFolderTmp.File(tmpPathName + Properties.BundleFileExt);
-            AbsolutePath tmpPath = Config.MetaFolderTmp.Enter(tmpPathName);
-            Directory.CreateDirectory(tmpPath);
-            File.WriteAllBytes(bundlePath, data);
-            CommonHelper.UnZip(bundlePath, tmpPath);
-
-            // Copy all files
-            foreach (var file in Directory.GetFiles(tmpPath))
+            using (MemoryStream ms = new MemoryStream(data))
+            using (ZipInputStream zip = new ZipInputStream(ms))
             {
-                FileInfo info = new FileInfo(file);
-                if (info.Name == Properties.DeltaFile)
+                ZipEntry block = zip.GetNextEntry();
+                var myPatchList = zip.ReadAllBytes().Deserialize<List<FileEvent>>();
+
+                while (true)
                 {
-                    continue;
+                    block = zip.GetNextEntry();
+                    if (block == null) break;
+                    File.WriteAllBytes(Config.MetaFolderData.File(block.Name), zip.ReadAllBytes());
                 }
 
-                if (File.Exists(Config.MetaFolderData.File(info.Name)))
+                // Append versions
+                Dictionary<string, FileItem> myFileList = new Dictionary<string, FileItem>();
+                foreach (var item in VersionList.AllFiles)
                 {
-                    Console.WriteLine("File exists: {0}", Config.MetaFolderData.File(info.Name));
-                    continue;
+                    myFileList[item.Id] = item;
                 }
 
-                File.Copy(info.FullName, Config.MetaFolderData.File(info.Name));
+                foreach (var patch in myPatchList)
+                {
+                    if (!myFileList.ContainsKey(patch.FileId))
+                    {
+                        myFileList[patch.FileId] = new FileItem(patch.FileId);
+                        VersionList.AllFiles.Add(myFileList[patch.FileId]);
+                        VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
+                    }
+
+                    string oldName = myFileList[patch.FileId].CurrentName;
+                    myFileList[patch.FileId].Merge(patch);
+                    string currentName = myFileList[patch.FileId].CurrentName;
+                    if (oldName != currentName)
+                    {
+                        VersionList.RemoveFileByName(oldName);
+                        VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
+                    }
+                }
+
+                return myPatchList;
             }
-
-            // Append versions
-            Dictionary<string, FileItem> myFileList = new Dictionary<string, FileItem>();
-            foreach (var item in VersionList.AllFiles)
-            {
-                myFileList[item.Id] = item;
-            }
-
-            var myPatchList = CommonHelper.ReadObject<List<FileEvent>>(tmpPath.File(Properties.DeltaFile));
-            foreach (var patch in myPatchList)
-            {
-                if (!myFileList.ContainsKey(patch.FileId))
-                {
-                    myFileList[patch.FileId] = new FileItem(patch.FileId);
-                    VersionList.AllFiles.Add(myFileList[patch.FileId]);
-                    VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
-                }
-
-                string oldName = myFileList[patch.FileId].CurrentName;
-                myFileList[patch.FileId].Merge(patch);
-                string currentName = myFileList[patch.FileId].CurrentName;
-                if (oldName != currentName)
-                {
-                    VersionList.RemoveFileByName(oldName);
-                    VersionList.SetFileByName(patch.Name, myFileList[patch.FileId]);
-                }
-            }
-
-            // Clean up
-            // File.Delete(tmpPath + Properties.BundleFileExt);
-            Directory.Delete(tmpPath, true);
-            this.Flush();
-
-            return myPatchList;
         }
     }
 }

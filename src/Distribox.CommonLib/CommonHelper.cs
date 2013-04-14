@@ -223,5 +223,17 @@ namespace Distribox.CommonLib
                 File.WriteAllText(Config.VersionListFilePath, "[]");
             }
         }
+
+        public static void WriteAllBytes(this Stream stream, byte[] bytes)
+        {
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
+        public static byte[] ReadAllBytes(this Stream stream)
+        {
+            MemoryStream ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
+        }
     }
 }

@@ -182,15 +182,8 @@ namespace Distribox.Network
         internal void Process(PatchRequest message, Peer peer)
         {
             Logger.Info("Receive file request\n{0}", message.Request.Serialize());
-
-            string filename = null;
-            lock (this.versionControl.VersionList)
-            {
-                filename = this.versionControl.CreateFileBundle(message.Request);
-            }
-
-            byte[] data = File.ReadAllBytes(filename);
-            SendMessage(peer, new FileDataResponse(data, this.listeningPort), (err) => File.Delete(filename));
+            byte[] data = VersionControl.CreateFileBundle(message.Request);
+            SendMessage(peer, new FileDataResponse(data, this.listeningPort));
         }
 
         /// <summary>

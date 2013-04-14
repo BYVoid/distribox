@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="ProtocolMessageContainer.cs" company="CompanyName">
 //     Copyright info.
 // </copyright>

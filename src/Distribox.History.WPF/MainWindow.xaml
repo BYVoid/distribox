@@ -6,11 +6,12 @@
         x:Name="root"
         Title="{Binding ElementName=root, Path=FileName}" Height="600" Width="800">
     <Grid>
-        <zoom:ZoomControl>
+        <zoom:ZoomControl Mode="Custom">
             <graphsharp:GraphLayout x:Name="graphLayout"
                                     Graph="{Binding ElementName=root, Path=GraphToVisualize}"
                                     LayoutAlgorithmType="Tree"
-                                    OverlapRemovalAlgorithmType="FSA" />
+                                    OverlapRemovalAlgorithmType="FSA">
+            </graphsharp:GraphLayout>
         </zoom:ZoomControl>
     </Grid>
 </Window>

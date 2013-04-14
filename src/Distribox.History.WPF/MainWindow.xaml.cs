@@ -16,6 +16,7 @@ using GraphSharp.Controls;
 using Distribox.FileSystem;
 using Distribox.CommonLib;
 using System.IO;
+using GraphSharp.Algorithms.Layout.Simple.Tree;
 
 namespace Distribox.History.WPF
 {
@@ -89,6 +90,7 @@ namespace Distribox.History.WPF
                     VertexControl vc = (VertexControl)v;
                     vc.MouseEnter += MainWindow_MouseEnter;
                     vc.MouseLeave += MainWindow_MouseLeave;
+                    vc.PreviewMouseDown += MainWindow_PreviewMouseDown;
                 }
 
                 if (v is EdgeControl)
@@ -96,6 +98,11 @@ namespace Distribox.History.WPF
                     EdgeControl ec = (EdgeControl)v;
                 }
             }
+
+            SimpleTreeLayoutParameters a = new SimpleTreeLayoutParameters();
+            a.LayerGap = 24;
+            a.VertexGap = 20;
+            this.graphLayout.LayoutParameters = a;
         }
 
         void MainWindow_MouseEnter(object sender, MouseEventArgs e)
@@ -112,6 +119,11 @@ namespace Distribox.History.WPF
             GraphNode node = (GraphNode)v.Vertex;
             node.CloseToolTip();
             v.Background = new SolidColorBrush(Color.FromRgb(51, 153, 255));
+        }
+
+        void MainWindow_PreviewMouseDown(object sender, MouseEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 

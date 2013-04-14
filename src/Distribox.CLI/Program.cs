@@ -15,7 +15,7 @@ namespace Distribox.CLI
     /// <summary>
     /// Root of the CLI program.
     /// </summary>
-    internal class Program
+    class Program
     {
         /// <summary>
         /// The protocol.

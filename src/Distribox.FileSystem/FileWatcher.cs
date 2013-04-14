@@ -290,6 +290,14 @@ namespace Distribox.FileSystem
             return newEvent;
         }
 
+		/// <summary>
+		/// Releases all resource used by the <see cref="Distribox.FileSystem.FileWatcher"/> object.
+		/// </summary>
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Distribox.FileSystem.FileWatcher"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="Distribox.FileSystem.FileWatcher"/> in an unusable state. After
+		/// calling <see cref="Dispose"/>, you must release all references to the
+		/// <see cref="Distribox.FileSystem.FileWatcher"/> so the garbage collector can reclaim the memory that the
+		/// <see cref="Distribox.FileSystem.FileWatcher"/> was occupying.</remarks>
         public void Dispose()
         {
             this.timer.Dispose();

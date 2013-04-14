@@ -4,14 +4,13 @@
         xmlns:graphsharp="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
         xmlns:zoom="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
         x:Name="root"
-        Title="Distribox - History" Height="600" Width="800">
+        Title="{Binding ElementName=root, Path=FileName}" Height="600" Width="800">
     <Grid>
         <zoom:ZoomControl>
-            <graphsharp:GraphLayout x:Name="graphlayout"
-                                    Graph="{Binding ElementName=root,Path=GraphToVisualize}"
+            <graphsharp:GraphLayout x:Name="graphLayout"
+                                    Graph="{Binding ElementName=root, Path=GraphToVisualize}"
                                     LayoutAlgorithmType="Tree"
-                                    OverlapRemovalAlgorithmType="FSA"
-                                    HighlightAlgorithmType="Simple" />
+                                    OverlapRemovalAlgorithmType="FSA" />
         </zoom:ZoomControl>
     </Grid>
 </Window>

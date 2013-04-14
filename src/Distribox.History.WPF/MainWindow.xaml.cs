@@ -12,6 +12,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using QuickGraph;
+using GraphSharp.Controls;
+using Distribox.FileSystem;
+using Distribox.CommonLib;
+using System.IO;
 
 namespace Distribox.History.WPF
 {
@@ -22,9 +26,17 @@ namespace Distribox.History.WPF
             CreateGraphToVisualize();
 
             InitializeComponent();
+
+            AddEventsToGraph();
         }
 
         public IBidirectionalGraph<object, IEdge<object>> GraphToVisualize
+        {
+            get;
+            private set;
+        }
+
+        public string FileName
         {
             get;
             private set;
@@ -34,17 +46,27 @@ namespace Distribox.History.WPF
         {
             var graph = new BidirectionalGraph<object, IEdge<object>>();
 
-            Random rd = new Random();
-            int n = 10;
+            var item = CommonHelper.ReadObject<FileItem[]>("VersionList.txt").First();
 
+            this.FileName = string.Format("Distribox.History - {0}", item.CurrentName);
+
+            int n = item.History.Count();
+
+            GraphNode[] nodes = new GraphNode[n];
+
+            Dictionary<string, GraphNode> dict = new Dictionary<string, GraphNode>();
             for (int i = 0; i < n; i++)
             {
-                graph.AddVertex(i);
-            }
+                FileEvent e = item.History.ElementAt(i);
+                nodes[i] = new GraphNode(e);
+                dict[e.EventId] = nodes[i];
 
-            for (int i = 1; i < n; i++)
-            {
-                graph.AddEdge(new Edge<object>(rd.Next((i+1)/2), i));
+                graph.AddVertex(nodes[i]);
+
+                if (e.ParentId != null)
+                {
+                    graph.AddEdge(new TaggedEdge<object, string>(dict[e.ParentId], nodes[i], "haha"));
+                }
             }
 
             foreach (var vertex in graph.Vertices)
@@ -56,6 +78,69 @@ namespace Distribox.History.WPF
             }
 
             GraphToVisualize = graph;
+        }
+
+        private void AddEventsToGraph()
+        {
+            foreach (var v in this.graphLayout.Children)
+            {
+                if (v is VertexControl)
+                {
+                    VertexControl vc = (VertexControl)v;
+                    vc.MouseEnter += MainWindow_MouseEnter;
+                    vc.MouseLeave += MainWindow_MouseLeave;
+                }
+
+                if (v is EdgeControl)
+                {
+                    EdgeControl ec = (EdgeControl)v;
+                }
+            }
+        }
+
+        void MainWindow_MouseEnter(object sender, MouseEventArgs e)
+        {
+            VertexControl v = (VertexControl)sender;
+            GraphNode node = (GraphNode)v.Vertex;
+            node.ShowToolTip();
+            v.Background = new SolidColorBrush(Color.FromRgb(255, 153, 51));
+        }
+
+        void MainWindow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            VertexControl v = (VertexControl)sender;
+            GraphNode node = (GraphNode)v.Vertex;
+            node.CloseToolTip();
+            v.Background = new SolidColorBrush(Color.FromRgb(51, 153, 255));
+        }
+    }
+
+    public class GraphNode
+    {
+        private ToolTip toolTip;
+        private FileEventType type;
+
+        public GraphNode(FileEvent e)
+        {
+            this.toolTip = new ToolTip();
+            this.toolTip.Content = string.Format("Name: {0}\nSize: {1}\nTime: {2:yyyy-MM-dd HH:mm:ss}\nEvent Id: {3}", e.Name, e.Size, e.When, e.EventId);
+
+            this.type = e.Type;
+        }
+
+        public void ShowToolTip()
+        {
+            this.toolTip.IsOpen = true;
+        }
+
+        public void CloseToolTip()
+        {
+            this.toolTip.IsOpen = false;
+        }
+
+        public override string ToString()
+        {
+            return type.ToString();
         }
     }
 }

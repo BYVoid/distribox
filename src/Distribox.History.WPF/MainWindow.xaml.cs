@@ -110,7 +110,15 @@ namespace Distribox.History.WPF
             VertexControl v = (VertexControl)sender;
             GraphNode node = (GraphNode)v.Vertex;
             node.ShowToolTip();
-            v.Background = new SolidColorBrush(Color.FromRgb(255, 153, 51));
+
+            if (node.Selected)
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(255, 95, 85));
+            }
+            else
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(255, 153, 51));
+            }
         }
 
         void MainWindow_MouseLeave(object sender, MouseEventArgs e)
@@ -118,11 +126,32 @@ namespace Distribox.History.WPF
             VertexControl v = (VertexControl)sender;
             GraphNode node = (GraphNode)v.Vertex;
             node.CloseToolTip();
-            v.Background = new SolidColorBrush(Color.FromRgb(51, 153, 255));
+
+            if (node.Selected)
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(255, 15, 0));
+            }
+            else
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(51, 153, 255));
+            }
         }
 
         void MainWindow_PreviewMouseDown(object sender, MouseEventArgs e)
         {
+            VertexControl v = (VertexControl)sender;
+            GraphNode node = (GraphNode)v.Vertex;
+
+            node.Selected = !node.Selected;
+            if (node.Selected)
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(255, 95, 85));
+            }
+            else
+            {
+                v.Background = new SolidColorBrush(Color.FromRgb(51, 153, 255));
+            }
+
             e.Handled = true;
         }
     }
@@ -138,6 +167,13 @@ namespace Distribox.History.WPF
             this.toolTip.Content = string.Format("Name: {0}\nSize: {1}\nTime: {2:yyyy-MM-dd HH:mm:ss}\nEvent Id: {3}", e.Name, e.Size, e.When, e.EventId);
 
             this.type = e.Type;
+            this.Selected = false;
+        }
+
+        public bool Selected
+        {
+            get;
+            set;
         }
 
         public void ShowToolTip()

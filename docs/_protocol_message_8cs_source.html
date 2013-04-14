@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.Network/Message/ProtocolMessage.cs Source File</title>
+<title>Distribox: src/Distribox.Network/Message/ProtocolMessage.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_89273e91298dd3c0d50e4e91f3866e1c.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_feca2f063344c4697268e8878a985488.html">Message</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_44d4e22dc8a99df0fb2376c5a2be05dc.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_666e130b57cad9c412099aa608160959.html">Message</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -96,46 +96,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">using</span> System;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">internal</span> <span class="keyword">abstract</span> <span class="keyword">class </span>ProtocolMessage</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html">   13</a></span>&#160;    <span class="keyword">internal</span> <span class="keyword">abstract</span> <span class="keyword">class </span><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html" title="Abstract message of Anti-Entropy Protocol. ">ProtocolMessage</a></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="comment">// FIXME: Use a factory and make this class abstract</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="comment">// FIXME: I set all of these public for JSON serialize</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keyword">protected</span> ProtocolMessage(<span class="keywordtype">int</span> listeningPort)</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#ac8b35bfe777fc9fb16c0efad757d0f96">   22</a></span>&#160;        <span class="keyword">protected</span> <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html" title="Abstract message of Anti-Entropy Protocol. ">ProtocolMessage</a>(<span class="keywordtype">int</span> listeningPort)</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        {</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            this.ListeningPort = listeningPort;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        }</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">public</span> <span class="keyword">enum</span> MessageType</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#a9951b5aa2d96979f3af1a98ae49dfafa">   30</a></span>&#160;        <span class="keyword">public</span> <span class="keyword">enum</span> <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#a9951b5aa2d96979f3af1a98ae49dfafa" title="Message type; ">MessageType</a></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            InvitationRequest,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_invitation_request.html" title="Message of invitation request. ">InvitationRequest</a>,</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            InvitationAck,</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_invitation_ack.html" title="Acknowledgement of invitation message. ">InvitationAck</a>,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            SyncRequest,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_sync_request.html" title="Message of sync request. ">SyncRequest</a>,</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            SyncAck,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_sync_ack.html" title="Acknowledgement of sync request. ">SyncAck</a>,</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            PeerListMessage,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_peer_list_message.html" title="Message of propagating peer list. ">PeerListMessage</a>,</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            VersionListMessage,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_version_list_message.html" title="Message of propagating version list. ">VersionListMessage</a>,</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            PatchRequest,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_patch_request.html" title="Message of patch request. ">PatchRequest</a>,</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            FileResponse</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">public</span> <span class="keywordtype">int</span> ListeningPort { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#af34a5fa51f15d44126ba0b469755edd3">   77</a></span>&#160;        <span class="keyword">public</span> <span class="keywordtype">int</span> ListeningPort { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">public</span> MessageType Type { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#a9acc3cf2fef93ef862dcf651c07a8eb5">   83</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#a9951b5aa2d96979f3af1a98ae49dfafa" title="Message type; ">MessageType</a> Type { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keywordtype">void</span> Accept(AntiEntropyProtocol visitor, Peer peer);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keywordtype">void</span> Accept(<a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html" title="The implementation of Anti-entropy protocol.">AntiEntropyProtocol</a> visitor, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

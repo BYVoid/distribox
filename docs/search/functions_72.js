@@ -4,5 +4,6 @@ var searchData=
   ['rename',['Rename',['../class_distribox_1_1_file_system_1_1_file_item.html#ac54688d309518b7280fe8688a65825ee',1,'Distribox.FileSystem.FileItem.Rename()'],['../class_distribox_1_1_file_system_1_1_version_list.html#a201811d73d043894908b17bb2cbf3f86',1,'Distribox.FileSystem.VersionList.Rename()']]],
   ['renamed',['Renamed',['../class_distribox_1_1_file_system_1_1_version_control.html#ab270c6f79cf7ae8cc1767ed5106e177d',1,'Distribox::FileSystem::VersionControl']]],
   ['repl',['Repl',['../class_distribox_1_1_common_lib_1_1_ruby_engine.html#a09f6971655b82281afda41fce1482e86',1,'Distribox::CommonLib::RubyEngine']]],
+  ['requestmanager',['RequestManager',['../class_distribox_1_1_network_1_1_request_manager.html#a50e2bdf4acc7ae3c5ee0ef3079dea4b9',1,'Distribox::Network::RequestManager']]],
   ['rubyengine',['RubyEngine',['../class_distribox_1_1_common_lib_1_1_ruby_engine.html#ad00069aa55fee8da4075dec9f365b1ea',1,'Distribox::CommonLib::RubyEngine']]]
 ];

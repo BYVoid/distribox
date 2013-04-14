@@ -10,6 +10,7 @@ var searchData=
   ['created',['Created',['../class_distribox_1_1_file_system_1_1_file_watcher.html#a8c4187129f95fd761abecec2515a3fc6',1,'Distribox.FileSystem.FileWatcher.Created()'],['../class_distribox_1_1_file_system_1_1_version_control.html#a04c96a1bf5c96359d91834091069104d',1,'Distribox.FileSystem.VersionControl.Created()'],['../namespace_distribox_1_1_file_system.html#ae2e0e868edaf017d26d62533a81add14a0eceeb45861f9585dd7a97a3e36f85c6',1,'Distribox.FileSystem.Created()']]],
   ['createevent',['CreateEvent',['../class_distribox_1_1_file_system_1_1_file_event.html#abd5320df0b25cb33d63b44a9c2b5f33d',1,'Distribox::FileSystem::FileEvent']]],
   ['createfilebundle',['CreateFileBundle',['../class_distribox_1_1_file_system_1_1_version_control.html#a5c122bf8ebc2fd77feb1f023adb84fb2',1,'Distribox::FileSystem::VersionControl']]],
+  ['createmessage',['CreateMessage',['../class_distribox_1_1_network_1_1_protocol_message_factory.html#a6bf32b705652ae17b052434a83a814e0',1,'Distribox::Network::ProtocolMessageFactory']]],
   ['currentname',['CurrentName',['../class_distribox_1_1_file_system_1_1_file_item.html#a011b64a8dff7511e4a8567c862c82a73',1,'Distribox::FileSystem::FileItem']]],
   ['currentparentid',['CurrentParentId',['../class_distribox_1_1_file_system_1_1_file_item.html#ae02cafc177d2fe238650127496b90431',1,'Distribox::FileSystem::FileItem']]],
   ['currentsha1',['CurrentSHA1',['../class_distribox_1_1_file_system_1_1_file_item.html#a9df7752d620943d00dfd693f5ace5202',1,'Distribox::FileSystem::FileItem']]],

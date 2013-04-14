@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.Network/AtomicMessageTunnel/AtomicMessageListener.cs Source File</title>
+<title>Distribox: src/Distribox.Network/AtomicMessageTunnel/AtomicMessageListener.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_89273e91298dd3c0d50e4e91f3866e1c.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_e62a8d260504a8f4d17ed715227fe397.html">AtomicMessageTunnel</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_44d4e22dc8a99df0fb2376c5a2be05dc.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_93e7b4b6dd4b656396b0889e0e02aecc.html">AtomicMessageTunnel</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,7 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">AtomicMessageListener.cs</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;﻿<span class="comment">//-----------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//-----------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// &lt;copyright file=&quot;AtomicMessageListener.cs&quot; company=&quot;CompanyName&quot;&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//     Copyright info.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// &lt;/copyright&gt;</span></div>
@@ -100,13 +100,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">using</span> System.Net.Sockets;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">using</span> System.Threading;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span>AtomicMessageListener</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html">   17</a></span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span><a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html" title="Listener of messages in P2P network. ">AtomicMessageListener</a></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keywordtype">int</span> BUFFERSIZE = 1000;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">private</span> TcpListener listener = null;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">public</span> AtomicMessageListener(<span class="keywordtype">int</span> port)</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html#ae2293a9d9d5eca34b8717433ac66ca5f">   33</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html" title="Listener of messages in P2P network. ">AtomicMessageListener</a>(<span class="keywordtype">int</span> port)</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            this.listener = <span class="keyword">new</span> TcpListener(IPAddress.Any, port);</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
@@ -114,9 +114,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            thread.Start();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        }</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">public</span> delegate <span class="keywordtype">void</span> OnReceiveHandler(byte[] data, Peer peerFrom);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">public</span> delegate <span class="keywordtype">void</span> OnReceiveHandler(byte[] data, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peerFrom);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">public</span> <span class="keyword">event</span> OnReceiveHandler OnReceive;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html#a730bfb34a39907b5b5790518e54a29d9">   51</a></span>&#160;        <span class="keyword">public</span> <span class="keyword">event</span> OnReceiveHandler <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html#a730bfb34a39907b5b5790518e54a29d9" title="Occurs when received data. ">OnReceive</a>;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">private</span> <span class="keywordtype">void</span> BackgroundListener()</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
@@ -133,7 +133,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            Socket client = (Socket)obj;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            IPEndPoint ipendpoint = (IPEndPoint)client.RemoteEndPoint;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            Peer peerFrom = <span class="keyword">new</span> Peer(ipendpoint.Address, ipendpoint.Port);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peerFrom = <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a>(ipendpoint.Address, ipendpoint.Port);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            List&lt;byte[]&gt; packages = <span class="keyword">new</span> List&lt;byte[]&gt;();</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordtype">int</span> total = 0;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordflow">while</span> (<span class="keyword">true</span>)</div>
@@ -179,7 +179,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

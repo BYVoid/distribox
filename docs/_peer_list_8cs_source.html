@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.Network/PeerList.cs Source File</title>
+<title>Distribox: src/Distribox.Network/PeerList.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_89273e91298dd3c0d50e4e91f3866e1c.html">Distribox.Network</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_44d4e22dc8a99df0fb2376c5a2be05dc.html">Distribox.Network</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,7 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">PeerList.cs</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;﻿<span class="comment">//-----------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//-----------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// &lt;copyright file=&quot;PeerList.cs&quot; company=&quot;CompanyName&quot;&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//     Copyright info.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// &lt;/copyright&gt;</span></div>
@@ -100,48 +100,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">using</span> System.IO;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">using</span> Distribox.CommonLib;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span>PeerList</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html">   17</a></span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keyword">private</span> Random random = <span class="keyword">new</span> Random();</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">public</span> PeerList(<span class="keywordtype">string</span> peerFileName)</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a7e3ceca2a025d1e5c259c021a7ad02f2">   28</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a>(<span class="keywordtype">string</span> peerFileName)</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            this.PeerFileName = peerFileName;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            this.Peers = <span class="keyword">new</span> HashSet&lt;Peer&gt;();</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">public</span> PeerList()</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a1c2e9b3bec7c72c0a6383a2f145bd368">   37</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a>()</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        {</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            this.Peers = <span class="keyword">new</span> HashSet&lt;Peer&gt;();</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">public</span> HashSet&lt;Peer&gt; Peers { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a92ed1403be470ce8f897ae2d118f867b">   46</a></span>&#160;        <span class="keyword">public</span> HashSet&lt;Peer&gt; Peers { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">public</span> <span class="keywordtype">string</span> PeerFileName { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#afc153dc83a11e62c7cf71f57194d1b04">   52</a></span>&#160;        <span class="keyword">public</span> <span class="keywordtype">string</span> PeerFileName { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">public</span> <span class="keyword">static</span> PeerList GetPeerList(<span class="keywordtype">string</span> peerFileName)</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a62be12d2b068d11ce484eb9b2e0a0e69">   59</a></span>&#160;        <span class="keyword">public</span> <span class="keyword">static</span> <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a> GetPeerList(<span class="keywordtype">string</span> peerFileName)</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        {</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordflow">if</span> (File.Exists(peerFileName))</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> CommonHelper.ReadObject&lt;PeerList&gt;(peerFileName);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> CommonHelper.ReadObject&lt;<a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a>&gt;(peerFileName);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">new</span> PeerList(peerFileName);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a>(peerFileName);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            }</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">public</span> <span class="keywordtype">void</span> AddPeer(Peer peer)</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#abbda13b857d012360a4b22bb661c79a3">   75</a></span>&#160;        <span class="keyword">public</span> <span class="keywordtype">void</span> AddPeer(<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        {</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            this.AddPeerVolatile(peer);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            this.FlushToDisk();</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        }</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">public</span> Peer SelectRandomPeer()</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#ac5de5cd27dff1b81f2e8d4ccef9df8fb">   85</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> SelectRandomPeer()</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        {</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="comment">// TODO efficiency improve required</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            ArrayList peers_ram = <span class="keyword">new</span> ArrayList();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">foreach</span> (Peer peer <span class="keywordflow">in</span> this.Peers)</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">foreach</span> (<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer <span class="keywordflow">in</span> this.Peers)</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            {</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                peers_ram.Add(peer);</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            }</div>
@@ -151,12 +151,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">return</span> null;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">return</span> (Peer)peers_ram[this.random.Next(peers_ram.Count)];</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">return</span> (<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a>)peers_ram[this.random.Next(peers_ram.Count)];</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">public</span> <span class="keywordtype">void</span> MergeWith(PeerList list)</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a7c8449555ffe0113b736df6038942b19">  106</a></span>&#160;        <span class="keyword">public</span> <span class="keywordtype">void</span> MergeWith(<a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a> list)</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        {</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="keywordflow">foreach</span> (Peer peer <span class="keywordflow">in</span> list.Peers)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="keywordflow">foreach</span> (<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer <span class="keywordflow">in</span> list.Peers)</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            {</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="keywordflow">if</span> (!this.Peers.Contains(peer))</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                {</div>
@@ -185,7 +185,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

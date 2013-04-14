@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.Network/AntiEntropyProtocol.cs Source File</title>
+<title>Distribox: src/Distribox.Network/AntiEntropyProtocol.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_89273e91298dd3c0d50e4e91f3866e1c.html">Distribox.Network</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_44d4e22dc8a99df0fb2376c5a2be05dc.html">Distribox.Network</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -103,17 +103,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html">   25</a></span>&#160;    <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html" title="The implementation of Anti-entropy protocol.">AntiEntropyProtocol</a></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">private</span> PeerList peers;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">private</span> <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a> peers;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">private</span> AtomicMessageListener listener;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">private</span> <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html" title="Listener of messages in P2P network. ">AtomicMessageListener</a> listener;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">private</span> <span class="keywordtype">int</span> listeningPort;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">private</span> <a class="code" href="class_distribox_1_1_file_system_1_1_version_control.html" title="Controller of creating and accepting versions. ">VersionControl</a> versionControl;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">private</span> RequestManager requestManager;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">private</span> <a class="code" href="class_distribox_1_1_network_1_1_request_manager.html" title="The manager of sending patches RequestManager will">RequestManager</a> requestManager;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">private</span> ProtocolMessageFactory messageFactory;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">private</span> <a class="code" href="class_distribox_1_1_network_1_1_protocol_message_factory.html" title="Factory to create ProtocolMessages.">ProtocolMessageFactory</a> messageFactory;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00063"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#afbe5f796fde59015a1852f884fbb5ec3">   63</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html" title="The implementation of Anti-entropy protocol.">AntiEntropyProtocol</a>(<span class="keywordtype">int</span> listeningPort, <span class="keywordtype">string</span> peerFileName, <a class="code" href="class_distribox_1_1_file_system_1_1_version_control.html" title="Controller of creating and accepting versions. ">VersionControl</a> versionControl)</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        {</div>
@@ -121,11 +121,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            this.versionControl = versionControl;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="comment">// Initialize peer list</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            this.peers = PeerList.GetPeerList(peerFileName);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            this.peers = <a class="code" href="class_distribox_1_1_network_1_1_peer_list.html" title="List of peers that ever existed in P2P network. ">PeerList</a>.<a class="code" href="class_distribox_1_1_network_1_1_peer_list.html#a62be12d2b068d11ce484eb9b2e0a0e69" title="Gets a peer list. ">GetPeerList</a>(peerFileName);</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            this.listeningPort = listeningPort;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="comment">// Initialize listener</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            this.listener = <span class="keyword">new</span> AtomicMessageListener(listeningPort);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            this.listener = <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_listener.html" title="Listener of messages in P2P network. ">AtomicMessageListener</a>(listeningPort);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            this.listener.OnReceive += this.OnReceiveMessage;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="comment">// Initialize timer to connect other peers periodically</span></div>
@@ -135,59 +135,59 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            timer.Enabled = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="comment">// Initialize request manager</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            this.requestManager = <span class="keyword">new</span> RequestManager();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            this.requestManager = <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_request_manager.html" title="The manager of sending patches RequestManager will">RequestManager</a>();</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="comment">// Initialize Protocol message factory</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            this.messageFactory = <span class="keyword">new</span> ProtocolMessageFactory();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            this.messageFactory = <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_protocol_message_factory.html" title="Factory to create ProtocolMessages.">ProtocolMessageFactory</a>();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
 <div class="line"><a name="l00093"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a2aa4ac7b6b62e44cc195ae2fda99a299">   93</a></span>&#160;        <span class="keyword">public</span> <span class="keywordtype">void</span> InvitePeer(<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            SendMessage(peer, <span class="keyword">new</span> InvitationRequest(this.listeningPort));</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            SendMessage(peer, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_invitation_request.html" title="Message of invitation request. ">InvitationRequest</a>(this.listeningPort));</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        }</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(InvitationRequest message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a368b8f934be2ba3845dc6a464bad7e21">  103</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_invitation_request.html" title="Message of invitation request. ">InvitationRequest</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        {</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="comment">// Send AcceptInvivation back</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            SendMessage(peer, <span class="keyword">new</span> InvitationAck(this.listeningPort));</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            SendMessage(peer, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_invitation_ack.html" title="Acknowledgement of invitation message. ">InvitationAck</a>(this.listeningPort));</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        }</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(InvitationAck message, Peer peer)</div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a9fa3cbeb32e690bca9b5bf80cadb7f7a">  114</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_invitation_ack.html" title="Acknowledgement of invitation message. ">InvitationAck</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        {</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="comment">// Try to sync with the newly accepted peer</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            SendMessage(peer, <span class="keyword">new</span> SyncRequest(this.listeningPort));</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            SendMessage(peer, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_sync_request.html" title="Message of sync request. ">SyncRequest</a>(this.listeningPort));</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        }</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(SyncRequest message, Peer peer)</div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a3aa2f29a07948744943c778f1fc9f9e3">  125</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_sync_request.html" title="Message of sync request. ">SyncRequest</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        {</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="comment">// Accept the sync request</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            SendMessage(peer, <span class="keyword">new</span> SyncAck(this.listeningPort));</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            SendMessage(peer, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_sync_ack.html" title="Acknowledgement of sync request. ">SyncAck</a>(this.listeningPort));</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            <span class="comment">// Send MetaData</span></div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;            this.SendMetaData(peer);</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        }</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(SyncAck message, Peer peer)</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a087ba631ba4bd924b515fd653972b561">  139</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_sync_ack.html" title="Acknowledgement of sync request. ">SyncAck</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        {</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            this.SendMetaData(peer);</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        }</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(PeerListMessage message, Peer peer)</div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#aea66a8faef5b466427eba82bcf7d05d2">  149</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_peer_list_message.html" title="Message of propagating peer list. ">PeerListMessage</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        {</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            lock (this.peers)</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            {</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                this.peers.AddPeer(peer);</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                this.peers.MergeWith(message.List);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                this.peers.MergeWith(message.<a class="code" href="class_distribox_1_1_network_1_1_peer_list_message.html#a3271538d022be8c55ea944fdd33c3efb" title="Gets or sets the list. ">List</a>);</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            }</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(VersionListMessage message, Peer peer)</div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a4878722935ede6ac114edbf26cfbd3f3">  163</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_version_list_message.html" title="Message of propagating version list. ">VersionListMessage</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        {</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            List&lt;FileEvent&gt; versionRequest;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            lock (this.versionControl.VersionList)</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            {</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                versionRequest = this.versionControl.VersionList.GetLessThan(message.List);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                Logger.Info(<span class="stringliteral">&quot;Received version list from {1}\n{0}&quot;</span>, message.List.Serialize(), peer.Serialize());</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                versionRequest = this.versionControl.VersionList.GetLessThan(message.<a class="code" href="class_distribox_1_1_network_1_1_version_list_message.html#abe46857de01058c2c3c6a522d1e53eb0" title="Gets or sets the list. ">List</a>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                Logger.Info(<span class="stringliteral">&quot;Received version list from {1}\n{0}&quot;</span>, message.<a class="code" href="class_distribox_1_1_network_1_1_version_list_message.html#abe46857de01058c2c3c6a522d1e53eb0" title="Gets or sets the list. ">List</a>.Serialize(), peer.Serialize());</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            }</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            <span class="comment">// Don&#39;t request them now, add them to a request queue first</span></div>
@@ -195,42 +195,42 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            this.TryToRequest();</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(PatchRequest message, Peer peer)</div>
+<div class="line"><a name="l00182"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a37fa7520dbd0c3fb94e79730722878b9">  182</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_patch_request.html" title="Message of patch request. ">PatchRequest</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        {</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            Logger.Info(<span class="stringliteral">&quot;Receive file request\n{0}&quot;</span>, message.Request.Serialize());</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            Logger.Info(<span class="stringliteral">&quot;Receive file request\n{0}&quot;</span>, message.<a class="code" href="class_distribox_1_1_network_1_1_patch_request.html#af1cf0a23bb8d203769a7373dec225988" title="Gets or sets the request. ">Request</a>.Serialize());</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            <span class="keywordtype">string</span> filename = null;</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            lock (this.versionControl.VersionList)</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            {</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                filename = this.versionControl.CreateFileBundle(message.Request);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                filename = this.versionControl.CreateFileBundle(message.<a class="code" href="class_distribox_1_1_network_1_1_patch_request.html#af1cf0a23bb8d203769a7373dec225988" title="Gets or sets the request. ">Request</a>);</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            }</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            byte[] data = File.ReadAllBytes(filename);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            SendMessage(peer, <span class="keyword">new</span> FileDataResponse(data, this.listeningPort), (err) =&gt; File.Delete(filename));</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            SendMessage(peer, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_network_1_1_file_data_response.html" title="Response of file data. ">FileDataResponse</a>(data, this.listeningPort), (err) =&gt; File.Delete(filename));</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        }</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(FileDataResponse message, Peer peer)</div>
+<div class="line"><a name="l00201"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a8c061be7b53a4fcf25f51737a445f5cc">  201</a></span>&#160;        <span class="keyword">internal</span> <span class="keywordtype">void</span> Process(<a class="code" href="class_distribox_1_1_network_1_1_file_data_response.html" title="Response of file data. ">FileDataResponse</a> message, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        {</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            List&lt;FileEvent&gt; patches;</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            lock (this.versionControl.VersionList)</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            {</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                patches = this.versionControl.AcceptFileBundle(message.Data);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                patches = this.versionControl.AcceptFileBundle(message.<a class="code" href="class_distribox_1_1_network_1_1_file_data_response.html#a73c2513803b4ceb0b2397d1674355809" title="Gets or sets the data. ">Data</a>);</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            }</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            this.requestManager.FinishRequests(patches);</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            this.TryToRequest();</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        }</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keywordtype">void</span> SendMessage(Peer peer, ProtocolMessage message, AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keywordtype">void</span> SendMessage(<a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer, <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html" title="Abstract message of Anti-Entropy Protocol. ">ProtocolMessage</a> message, <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html" title="Sender of messages to a specified peer. ">AtomicMessageSender</a>.<a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html#a3bcc9f5ebf696ae7e28042e5f70b406b" title="Occurs when completed. ">OnCompleteHandler</a> onCompleteHandler = null)</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        {</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            AtomicMessageSender sender = <span class="keyword">new</span> Network.AtomicMessageSender(peer);</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            <a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html" title="Sender of messages to a specified peer. ">AtomicMessageSender</a> sender = <span class="keyword">new</span> Network.<a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html#aee7d7d88efdb04d38aa96d2f921116af" title="Initializes a new instance of the Distribox.Network.AtomicMessageSender class. ">AtomicMessageSender</a>(peer);</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;            <span class="keywordflow">if</span> (onCompleteHandler != null)</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            {</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                sender.OnComplete += onCompleteHandler;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                sender.<a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html#a50507682feb404cc5c238faf978d51f0" title="Occurs when completed. ">OnComplete</a> += onCompleteHandler;</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            }</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;            byte[] bytesMessage = <span class="keyword">new</span> ProtocolMessageContainer(message).SerializeAsBytes();</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            sender.SendBytes(bytesMessage);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            sender.<a class="code" href="class_distribox_1_1_network_1_1_atomic_message_sender.html#afa40ccccfc1f22d24c0fbe3d716ea99e" title="Sends binary data to the specified peer. ">SendBytes</a>(bytesMessage);</div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            <span class="comment">// TODO on error</span></div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        }</div>
@@ -247,7 +247,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            ProtocolMessage message = this.messageFactory.CreateMessage(container);</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            <span class="comment">// ipAndPort[1] is the port of the sender socket, but we need the number of the listener port......</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            <span class="keywordtype">int</span> port = message.ListeningPort;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            <span class="keywordtype">int</span> port = message.<a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#af34a5fa51f15d44126ba0b469755edd3" title="Gets or sets the listening port. ">ListeningPort</a>;</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            Peer peer = <span class="keyword">new</span> Peer(peerFrom.IP, port);</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="comment">// Process message (visitor design pattern)</span></div>
@@ -321,7 +321,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

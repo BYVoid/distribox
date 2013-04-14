@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.Network/Message/PatchRequest.cs Source File</title>
+<title>Distribox: src/Distribox.Network/Message/PatchRequest.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_89273e91298dd3c0d50e4e91f3866e1c.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_feca2f063344c4697268e8878a985488.html">Message</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_44d4e22dc8a99df0fb2376c5a2be05dc.html">Distribox.Network</a></li><li class="navelem"><a class="el" href="dir_666e130b57cad9c412099aa608160959.html">Message</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,7 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">PatchRequest.cs</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;﻿<span class="comment">//-----------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//-----------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// &lt;copyright file=&quot;PatchRequest.cs&quot; company=&quot;CompanyName&quot;&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//     Copyright info.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// &lt;/copyright&gt;</span></div>
@@ -97,27 +97,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">using</span> System.Collections.Generic;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">using</span> Distribox.FileSystem;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span>PatchRequest : ProtocolMessage</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_patch_request.html">   14</a></span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span><a class="code" href="class_distribox_1_1_network_1_1_patch_request.html" title="Message of patch request. ">PatchRequest</a> : <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html" title="Abstract message of Anti-Entropy Protocol. ">ProtocolMessage</a></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">public</span> PatchRequest(List&lt;FileEvent&gt; request, <span class="keywordtype">int</span> myPort)</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_patch_request.html#a651407f786ba6bd15de5e6523a27b49d">   21</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="class_distribox_1_1_network_1_1_patch_request.html" title="Message of patch request. ">PatchRequest</a>(List&lt;FileEvent&gt; request, <span class="keywordtype">int</span> myPort)</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            : base(myPort)</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        {</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            this.Request = request;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            this.Type = MessageType.PatchRequest;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            this.Type = <a class="code" href="class_distribox_1_1_network_1_1_protocol_message.html#a9951b5aa2d96979f3af1a98ae49dfafa" title="Message type; ">MessageType</a>.PatchRequest;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        }</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">public</span> List&lt;FileEvent&gt; Request { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_patch_request.html#af1cf0a23bb8d203769a7373dec225988">   32</a></span>&#160;        <span class="keyword">public</span> List&lt;FileEvent&gt; Request { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">public</span> <span class="keyword">override</span> <span class="keywordtype">void</span> Accept(AntiEntropyProtocol visitor, Peer peer)</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="code" href="class_distribox_1_1_network_1_1_patch_request.html#af8c6382d97f27ed490461da9f7da6d84">   40</a></span>&#160;        <span class="keyword">public</span> <span class="keyword">override</span> <span class="keywordtype">void</span> Accept(<a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html" title="The implementation of Anti-entropy protocol.">AntiEntropyProtocol</a> visitor, <a class="code" href="class_distribox_1_1_network_1_1_peer.html" title="Peer to connect with. ">Peer</a> peer)</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            visitor.Process(<span class="keyword">this</span>, peer);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            visitor.<a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html#a368b8f934be2ba3845dc6a464bad7e21" title="Process the invitation message. ">Process</a>(<span class="keyword">this</span>, peer);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

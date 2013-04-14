@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>Distribox: Distribox/Distribox.CLI/Program.cs Source File</title>
+<title>Distribox: src/Distribox.CLI/Program.cs Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_16a3f856a78af97114f71fa0d10c3d24.html">Distribox</a></li><li class="navelem"><a class="el" href="dir_6ab9572282b19f39ebedc48e87eeee59.html">Distribox.CLI</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9a21d27f4f3fb177793eeebd0f41934c.html">Distribox.CLI</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -101,11 +101,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">using</span> Distribox.FileSystem;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">using</span> Distribox.Network;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">internal</span> <span class="keyword">class </span>Program</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="code" href="class_distribox_1_1_c_l_i_1_1_program.html">   18</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_distribox_1_1_c_l_i_1_1_program.html" title="Root of the CLI program. ">Program</a></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">private</span> <span class="keyword">static</span> <a class="code" href="class_distribox_1_1_network_1_1_anti_entropy_protocol.html" title="The implementation of Anti-entropy protocol.">AntiEntropyProtocol</a> protocol;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">void</span> Main(<span class="keywordtype">string</span>[] args)</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="code" href="class_distribox_1_1_c_l_i_1_1_program.html#a920ec98f58e4fed4b25744491ce755eb">   31</a></span>&#160;        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">void</span> Main(<span class="keywordtype">string</span>[] args)</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        {</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="comment">// Get config</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <span class="keywordtype">int</span> port = <a class="code" href="class_distribox_1_1_common_lib_1_1_config.html" title="Configuration of all properties used in runtime. ">Config</a>.<a class="code" href="class_distribox_1_1_common_lib_1_1_config.html#a1aed6afdc286c6443e7a41f32e8c2077" title="Gets the listen port. ">ListenPort</a>;</div>
@@ -118,7 +118,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;   </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="comment">// Start CLI</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="class_distribox_1_1_common_lib_1_1_ruby_engine.html" title="Ruby engine. Provide a interactive shell for user. ">RubyEngine</a> engine = <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_common_lib_1_1_ruby_engine.html" title="Ruby engine. Provide a interactive shell for user. ">RubyEngine</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            engine.<a class="code" href="class_distribox_1_1_common_lib_1_1_ruby_engine.html#a3dd7a6aac4e6ca99aa4fe7f3e957c38c" title="Sets the variable. ">SetVariable</a>(<span class="stringliteral">&quot;api&quot;</span>, <span class="keyword">new</span> API());</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            engine.<a class="code" href="class_distribox_1_1_common_lib_1_1_ruby_engine.html#a3dd7a6aac4e6ca99aa4fe7f3e957c38c" title="Sets the variable. ">SetVariable</a>(<span class="stringliteral">&quot;api&quot;</span>, <span class="keyword">new</span> <a class="code" href="class_distribox_1_1_c_l_i_1_1_program_1_1_a_p_i.html" title="Used for the ruby engine. ">API</a>());</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            engine.<a class="code" href="class_distribox_1_1_common_lib_1_1_ruby_engine.html#a09f6971655b82281afda41fce1482e86" title="Read evaluation print loop. ">Repl</a>();</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        }</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        </div>
@@ -151,7 +151,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 8 2013 16:18:11 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 14 2013 15:14:31 for Distribox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

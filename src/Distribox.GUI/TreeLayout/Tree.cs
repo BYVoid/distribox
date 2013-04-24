@@ -134,7 +134,7 @@ namespace Distribox.GUI
             foreach (var node in this.Children)
             {
                 node.Layout(x, y);
-                x = x + HORIZONTALGAP;
+                x = x + node.Width + HORIZONTALGAP;
             }
         }
 

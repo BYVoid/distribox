@@ -17,6 +17,8 @@ namespace Distribox.GUI
         private AntiEntropyProtocol protocol;
         private VersionControl vc;
 
+        private string lastVersionList = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +26,11 @@ namespace Distribox.GUI
             Start();
 
             UpdateTreeView();
+
+            Timer timer = new Timer();
+            timer.Interval = 100;
+            timer.Start();
+            timer.Tick += timer_Tick;
         }
 
         private void Start()
@@ -36,6 +43,16 @@ namespace Distribox.GUI
 
             // Start peer service
             StartPeer(port);
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            string current = vc.VersionList.Serialize();
+            if (this.lastVersionList != current)
+            {
+                this.lastVersionList = current;
+                this.UpdateTreeView();
+            }
         }
 
         private void StartPeer(int port)
@@ -54,10 +71,21 @@ namespace Distribox.GUI
             watcher.Renamed += vc.Renamed;
             watcher.Idle += vc.Flush;
         }
-        
+
         private void UpdateTreeView()
         {
+            this.treeView1.BeginUpdate();
+
             List<FileItem> list = vc.VersionList.AllFiles;
+
+            string current = null;
+            if (this.treeView1.SelectedNode != null)
+            {
+                current = this.treeView1.SelectedNode.ToolTipText;
+            }
+
+            this.treeView1.Nodes.Clear();
+
 
             Dictionary<string, TreeNode> dict = new Dictionary<string, TreeNode>();
 
@@ -83,6 +111,21 @@ namespace Distribox.GUI
                     this.treeView1.Nodes.Add(dict[item.CurrentName]);
                 }
             }
+
+            foreach (var item in dict.Values)
+            {
+                if (item.ToolTipText == current)
+                {
+                    this.treeView1.SelectedNode = item;
+
+                    string name = item.ToolTipText;
+                    FileItem fileItem = vc.VersionList.GetFileByName(name);
+                    this.visualTree1.SetTree(new Tree(fileItem));
+                    this.tabControl2.TabPages[0].Text = name;
+                }
+            }
+
+            this.treeView1.EndUpdate();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)

@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -31,6 +33,30 @@ namespace Distribox.GUI
             timer.Interval = 100;
             timer.Start();
             timer.Tick += timer_Tick;
+
+            this.visualTree1.NodeDoubleClick += visualTree1_NodeDoubleClick;
+        }
+
+        void visualTree1_NodeDoubleClick(FileEvent e)
+        {
+            AbsolutePath tmpPath = new AbsolutePath(Path.GetTempPath() + CommonHelper.GetRandomHash());
+            Directory.CreateDirectory(tmpPath);
+
+            string name = e.Name.Substring(e.Name.IndexOf("/") + 1, e.Name.Length - e.Name.IndexOf("/") - 1);
+            if (e.SHA1 == null)
+            {
+                File.WriteAllText(tmpPath.File(name), "");
+            }
+            else
+            {
+                File.Copy(Config.MetaFolderData.File(e.SHA1), tmpPath.File(name));
+            }
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.Arguments = string.Format("/c start {0}", tmpPath.File(name));
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
         }
 
         private void Start()
@@ -86,7 +112,6 @@ namespace Distribox.GUI
 
             this.treeView1.Nodes.Clear();
 
-
             Dictionary<string, TreeNode> dict = new Dictionary<string, TreeNode>();
 
             foreach (var item in list)
@@ -114,11 +139,13 @@ namespace Distribox.GUI
 
             foreach (var item in dict.Values)
             {
-                if (item.ToolTipText == current)
+                if (item.ToolTipText == current || current == null)
                 {
                     this.treeView1.SelectedNode = item;
 
                     UpdateVisualTree();
+
+                    break;
                 }
             }
 
@@ -157,6 +184,34 @@ namespace Distribox.GUI
                 this.visualTree1.SetTree(new Tree(item));
                 this.tabControl2.TabPages[0].Text = name;
             }
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            if (this.visualTree1.CurrentSelect != null)
+            {
+                string sha1 = this.visualTree1.CurrentSelect.Event.SHA1;
+
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "All Files(*.*)|*.*";
+                saveFileDialog1.Title = "Save As...";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (sha1 == null)
+                    {
+                        File.WriteAllText(saveFileDialog1.FileName, "");
+                    }
+                    else
+                    {
+                        File.Copy(Config.MetaFolderData.File(sha1), saveFileDialog1.FileName, true);
+                    }
+                }
+            }
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
         }
     }
 }

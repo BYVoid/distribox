@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using Distribox.FileSystem;
 
 namespace Distribox.GUI
 {
@@ -29,6 +30,9 @@ namespace Distribox.GUI
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.UserPaint, true);
         }
+
+        public delegate void NodeDoubleClickHandler(FileEvent e);
+        public event NodeDoubleClickHandler NodeDoubleClick;
 
         public void SetTree(Tree tree)
         {
@@ -99,6 +103,22 @@ namespace Distribox.GUI
                 this.CurrentHover = null;
                 this.Refresh();
                 tree.Select(x, y);
+            }
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (tree == null) return;
+
+            float x = e.X;
+            float y = e.Y;
+            x = (x - dx) / scale;
+            y = (y - dy) / scale;
+            Tree node = tree.Select(x, y);
+
+            if (node != null && this.NodeDoubleClick != null)
+            {
+                this.NodeDoubleClick.Invoke(node.Event);
             }
         }
     }

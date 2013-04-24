@@ -29,6 +29,9 @@ namespace Distribox.GUI
         private float dy = 50;
         private float scale = 1.2f;
 
+        private float lastX = -1;
+        private float lastY = -1;
+
         public VisualTree()
         {
             InitializeComponent();
@@ -62,11 +65,30 @@ namespace Distribox.GUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (tree == null) return;
             float x = e.X;
             float y = e.Y;
             x = (x - dx) / scale;
             y = (y - dy) / scale;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                if (lastX > 0)
+                {
+                    this.dx += (e.X - lastX) * 1;
+                    this.dy += (e.Y - lastY) * 1;
+                }
+                lastX = e.X;
+                lastY = e.Y;
+                this.Refresh();
+            }
+            else
+            {
+                lastX = -1;
+                lastY = -1;
+            }
+
+            if (tree == null) return;
+
             Tree node = tree.Select(x, y);
             if ((node == null || node.State == TreeState.Current) && this.CurrentHover != null)
             {
@@ -89,12 +111,18 @@ namespace Distribox.GUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (tree == null) return;
+            this.Focus();
 
             float x = e.X;
             float y = e.Y;
             x = (x - dx) / scale;
             y = (y - dy) / scale;
+
+            this.lastX = e.X;
+            this.lastY = e.Y;
+
+            if (tree == null) return;
+
             Tree node = tree.Select(x, y);
             if ((node == null || node.State == TreeState.Current) && this.CurrentSelect != null)
             {
@@ -143,6 +171,16 @@ namespace Distribox.GUI
             {
                 this.NodeDoubleClick.Invoke(node.Event);
             }
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            float delta = e.Delta;
+            delta = delta / 500;
+            this.scale *= 1 + delta;
+            this.dx += delta * (this.dx - e.X);
+            this.dy += delta * (this.dy - e.Y);
+            this.Refresh();
         }
     }
 }

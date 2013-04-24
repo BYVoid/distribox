@@ -36,28 +36,24 @@ namespace Distribox.GUI
             timer.Tick += timer_Tick;
 
             this.visualTree1.NodeDoubleClick += visualTree1_NodeDoubleClick;
+            this.visualTree1.NodeClick += visualTree1_NodeClick;
+        }
+
+        void visualTree1_NodeClick(FileEvent e)
+        {
+            string text = "";
+            if (e.SHA1 != null)
+            {
+                text = File.ReadAllText(Config.MetaFolderData.File(e.SHA1));
+            }
+            this.textBox1.Text = text;
         }
 
         void visualTree1_NodeDoubleClick(FileEvent e)
         {
-            AbsolutePath tmpPath = new AbsolutePath(Path.GetTempPath() + CommonHelper.GetRandomHash());
-            Directory.CreateDirectory(tmpPath);
+            string file = GetTempFile(e);
 
-            string name = e.Name.Substring(e.Name.IndexOf("/") + 1, e.Name.Length - e.Name.IndexOf("/") - 1);
-            if (e.SHA1 == null)
-            {
-                File.WriteAllText(tmpPath.File(name), "");
-            }
-            else
-            {
-                File.Copy(Config.MetaFolderData.File(e.SHA1), tmpPath.File(name));
-            }
-            Process process = new Process();
-            process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.Arguments = string.Format("/c start {0}", tmpPath.File(name));
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
+            this.Command("start", file);
         }
 
         private void Start()
@@ -221,6 +217,71 @@ namespace Distribox.GUI
                 {
                     protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), invite.Port));
                 }
+            }
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            if (this.visualTree1.CurrentSelect != null)
+            {
+                string fileA = Config.RootFolder.File(this.visualTree1.Current.Event.Name);
+                string fileB = GetTempFile(this.visualTree1.CurrentSelect.Event);
+                this.Command("kdiff3", string.Format("{0} {1}", fileA, fileB));
+            }
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            if (this.visualTree1.CurrentSelect != null)
+            {
+                string fileA = Config.RootFolder.File(this.visualTree1.Current.Event.Name);
+                string fileB = GetTempFile(this.visualTree1.CurrentSelect.Event);
+
+                Process process = new Process();
+                process.StartInfo.FileName = "cmd.exe";
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.Arguments = string.Format("/c {0} {1}", "kdiff3", string.Format("{0} {1} -o {1}", fileA, fileB));
+                process.StartInfo.CreateNoWindow = true;
+                process.Start();
+                process.WaitForExit();
+
+                if (File.Exists(fileB + ".orig"))
+                {
+                    File.WriteAllText(fileA, File.ReadAllText(fileB));
+                }
+            }
+        }
+
+        private string GetTempFile(FileEvent e)
+        {
+            AbsolutePath tmpPath = new AbsolutePath(Path.GetTempPath() + CommonHelper.GetRandomHash());
+            Directory.CreateDirectory(tmpPath);
+
+            string name = e.Name.Substring(e.Name.IndexOf("/") + 1, e.Name.Length - e.Name.IndexOf("/") - 1);
+            if (e.SHA1 == null)
+            {
+                File.WriteAllText(tmpPath.File(name), "");
+            }
+            else
+            {
+                File.Copy(Config.MetaFolderData.File(e.SHA1), tmpPath.File(name));
+            }
+
+            return tmpPath.File(name);
+        }
+
+        private void Command(string exe, string args, Action<object, EventArgs> callback = null)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.Arguments = string.Format("/c {0} {1}", exe, args);
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+
+            if (callback != null)
+            {
+                process.Exited += new EventHandler(callback);
             }
         }
     }

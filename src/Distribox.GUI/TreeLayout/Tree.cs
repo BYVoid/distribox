@@ -59,6 +59,23 @@ namespace Distribox.GUI
             this.Children = new List<Tree>();
         }
 
+        public Tree GetCurrent()
+        {
+            if (this.State == TreeState.Current)
+            {
+                return this;
+            }
+            foreach (var item in this.Children)
+            {
+                Tree node = item.GetCurrent();
+                if (node != null)
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
+
         public void Add(Tree node)
         {
             this.Children.Add(node);

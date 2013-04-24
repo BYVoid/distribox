@@ -15,6 +15,13 @@ namespace Distribox.GUI
     {
         public Tree CurrentHover { get; set; }
         public Tree CurrentSelect { get; set; }
+        public Tree Current
+        {
+            get
+            {
+                return tree.GetCurrent();
+            }
+        }
 
         private Tree tree;
 
@@ -33,6 +40,9 @@ namespace Distribox.GUI
 
         public delegate void NodeDoubleClickHandler(FileEvent e);
         public event NodeDoubleClickHandler NodeDoubleClick;
+
+        public delegate void NodeClickHandler(FileEvent e);
+        public event NodeClickHandler NodeClick;
 
         public void SetTree(Tree tree)
         {
@@ -92,17 +102,30 @@ namespace Distribox.GUI
                 this.CurrentSelect = null;
                 this.Refresh();
             }
-            if (node != null && node.State != TreeState.Current && node != this.CurrentSelect)
+            if (node != null && node != this.CurrentSelect)
             {
-                if (this.CurrentSelect != null)
+                if (node.State != TreeState.Current)
                 {
-                    this.CurrentSelect.State = TreeState.Normal;
+                    if (this.CurrentSelect != null)
+                    {
+                        this.CurrentSelect.State = TreeState.Normal;
+                    }
+                    this.CurrentSelect = node;
+                    this.CurrentSelect.State = TreeState.Selected;
+                    this.CurrentHover = null;
+                    this.Refresh();
+                    if (this.NodeClick != null)
+                    {
+                        this.NodeClick.Invoke(node.Event);
+                    }
                 }
-                this.CurrentSelect = node;
-                this.CurrentSelect.State = TreeState.Selected;
-                this.CurrentHover = null;
-                this.Refresh();
-                tree.Select(x, y);
+                else
+                {
+                    if (this.NodeClick != null)
+                    {
+                        this.NodeClick.Invoke(node.Event);
+                    }
+                }
             }
         }
 

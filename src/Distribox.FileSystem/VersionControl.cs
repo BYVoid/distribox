@@ -87,6 +87,8 @@ namespace Distribox.FileSystem
 
             file.CheckOut(eventId);
 
+            VersionList.Flush();
+
         }
 
         /// <summary>

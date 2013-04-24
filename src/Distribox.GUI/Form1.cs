@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
@@ -212,6 +213,15 @@ namespace Distribox.GUI
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
+            using (InviteDialog invite = new InviteDialog())
+            {
+                invite.ShowDialog();
+
+                if (invite.Port != -1)
+                {
+                    protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), invite.Port));
+                }
+            }
         }
     }
 }

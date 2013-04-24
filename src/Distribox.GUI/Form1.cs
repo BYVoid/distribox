@@ -87,7 +87,15 @@ namespace Distribox.GUI
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            if (this.visualTree1.CurrentSelect == null)
+            {
+                return;
+            }
 
+            string fileId = this.visualTree1.CurrentSelect.Event.FileId;
+            string eventId = this.visualTree1.CurrentSelect.Event.EventId;
+
+            vc.CheckOut(fileId, eventId);
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -95,6 +103,7 @@ namespace Distribox.GUI
             string name = e.Node.ToolTipText;
             FileItem item = vc.VersionList.GetFileByName(name);
             this.visualTree1.SetTree(new Tree(item));
+            this.tabControl2.TabPages[0].Text = name;
         }
     }
 }

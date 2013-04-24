@@ -36,19 +36,20 @@ namespace Distribox.GUI
             Dictionary<string, Tree> dict = new Dictionary<string, Tree>();
             foreach (var e in item.History)
             {
-                dict[e.EventId] = new Tree(e);
                 if (e.ParentId != null)
                 {
+                    dict[e.EventId] = new Tree(e);
                     dict[e.ParentId].Add(dict[e.EventId]);
                 }
                 else
                 {
-                    this.Event = dict[e.EventId].Event;
-                    this.Children = dict[e.EventId].Children;
+                    dict[e.EventId] = this;
+                    dict[e.EventId].Event = e;
+                    dict[e.EventId].Children = new List<Tree>();
                 }
             }
 
-            dict[item.History.Last().EventId].State = TreeState.Current;
+            dict[item.CurrentEventId].State = TreeState.Current;
             this.Layout();
         }
 

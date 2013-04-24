@@ -9,6 +9,7 @@ namespace Distribox.FileSystem
     using System.Collections.Generic;
     using System.Linq;
     using Distribox.CommonLib;
+    using System.IO;
 
     // TODO this class would be serialized for deserialized
 
@@ -87,7 +88,7 @@ namespace Distribox.FileSystem
             {
                 this.Create(name, isDirectory, when);
             }
-            
+
             if (isDirectory)
             {
                 return;
@@ -176,6 +177,19 @@ namespace Distribox.FileSystem
         public FileItem GetFileByName(string name)
         {
             return this.pathToFile[name];
+        }
+
+        /// <summary>
+        /// Gets file by Id.
+        /// </summary>
+        /// <returns>The file.</returns>
+        /// <param name="name">The name.</param>
+        public FileItem GetFileById(string fileId)
+        {
+            foreach (var item in this.AllFiles)
+                if (item.Id == fileId)
+                    return item;
+            throw new Exception("Not Find File!");
         }
 
         /// <summary>

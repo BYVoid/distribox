@@ -69,7 +69,7 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Last().Type != FileEventType.Deleted;
+                return this.History.Find(x=>x.EventId == this.CurrentEventId).Type != FileEventType.Deleted;
             }
         }
 
@@ -81,8 +81,14 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Count() == 0 ? null : this.History.Last().Name;
+                return this.CurrentEventId == null ? null : this.History.Find(x => x.EventId == this.CurrentEventId).Name;
             }
+        }
+
+        public string CurrentEventId
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -93,7 +99,7 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Count() == 0 ? null : this.History.Last().SHA1;
+                return this.CurrentEventId == null ? null : this.History.Find(x => x.EventId == this.CurrentEventId).SHA1;
             }
         }
 
@@ -105,7 +111,7 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Count() == 0 ? 0 : this.History.Last().Size;
+                return this.CurrentEventId == null ? 0 : this.History.Find(x => x.EventId == this.CurrentEventId).Size;
             }
         }
 
@@ -117,7 +123,7 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Count() == 0 ? null : this.History.Last().EventId;
+                return this.CurrentEventId == null ? null : this.History.Find(x => x.EventId == this.CurrentEventId).EventId;
             }
         }
 
@@ -197,6 +203,11 @@ namespace Distribox.FileSystem
         /// <param name="when">The when.</param>
         public void Change(string name, string sha1, DateTime when)
         {
+            if (this.CurrentSHA1 == sha1)
+            {
+                return;
+            }
+
             FileEvent vs = new FileEvent();
             vs.FileId = this.Id;
             vs.EventId = CommonHelper.GetRandomHash();
@@ -209,6 +220,29 @@ namespace Distribox.FileSystem
             vs.Type = FileEventType.Changed;
 
             this.PushHistory(vs);
+        }
+
+        public void CheckOut(string eventId)
+        {
+            foreach (var item in this.History)
+            {
+                if (item.EventId == eventId)
+                {
+                    GlobalFlag.AcceptFileEvent = false;
+                    File.Delete(Config.RootFolder.File(this.CurrentName));
+                    if (item.SHA1 == null)
+                    {
+                        File.WriteAllText(Config.RootFolder.File(item.Name), string.Empty);
+                    }
+                    else
+                    {
+                        File.Copy(Config.MetaFolderData.File(item.SHA1), Config.RootFolder.File(item.Name), true);
+                    }
+                    this.CurrentEventId = eventId;
+                    GlobalFlag.AcceptFileEvent = true;
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -346,11 +380,12 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Push the history.
         /// </summary>
-        /// <param name="vs">The event.</param>
-        private void PushHistory(FileEvent vs)
+        /// <param name="e">The event.</param>
+        private void PushHistory(FileEvent e)
         {
-            this.History.Add(vs);
+            this.History.Add(e);
             this.History.Sort((x, y) => x.When.Ticks.CompareTo(y.When.Ticks));
+            this.CurrentEventId = e.EventId;
         }
     }
 }

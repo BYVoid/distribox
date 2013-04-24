@@ -38,10 +38,10 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.visualTree1 = new Distribox.GUI.VisualTree();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.visualTree1 = new Distribox.GUI.VisualTree();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -165,18 +165,6 @@
             this.tabPage3.Text = "Graph";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // visualTree1
-            // 
-            this.visualTree1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.visualTree1.CurrentHover = null;
-            this.visualTree1.CurrentSelect = null;
-            this.visualTree1.Location = new System.Drawing.Point(-4, 0);
-            this.visualTree1.Name = "visualTree1";
-            this.visualTree1.Size = new System.Drawing.Size(602, 436);
-            this.visualTree1.TabIndex = 0;
-            // 
             // toolStrip1
             // 
             this.toolStrip1.AutoSize = false;
@@ -197,7 +185,7 @@
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(48, 48);
-            this.toolStripButton1.Text = "Restore";
+            this.toolStripButton1.Text = "CheckOut";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // statusStrip1
@@ -207,6 +195,18 @@
             this.statusStrip1.Size = new System.Drawing.Size(924, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // visualTree1
+            // 
+            this.visualTree1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.visualTree1.CurrentHover = null;
+            this.visualTree1.CurrentSelect = null;
+            this.visualTree1.Location = new System.Drawing.Point(-4, 0);
+            this.visualTree1.Name = "visualTree1";
+            this.visualTree1.Size = new System.Drawing.Size(602, 436);
+            this.visualTree1.TabIndex = 0;
             // 
             // Form1
             // 

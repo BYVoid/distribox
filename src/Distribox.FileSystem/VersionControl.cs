@@ -81,6 +81,14 @@ namespace Distribox.FileSystem
             VersionList.Flush();
         }
 
+        public void CheckOut(string fileId, string eventId)
+        {
+            FileItem file = VersionList.GetFileById(fileId);
+
+            file.CheckOut(eventId);
+
+        }
+
         /// <summary>
         /// Creates a bundle containing version list delta and all data of files.
         /// </summary>

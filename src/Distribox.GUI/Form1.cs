@@ -180,6 +180,7 @@ namespace Distribox.GUI
                 FileItem item = vc.VersionList.GetFileByName(name);
                 this.visualTree1.SetTree(new Tree(item));
                 this.tabControl2.TabPages[0].Text = name;
+                this.visualTree1_NodeClick(this.visualTree1.Current.Event);
             }
         }
 

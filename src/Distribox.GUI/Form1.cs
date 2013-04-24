@@ -37,6 +37,8 @@ namespace Distribox.GUI
 
             this.visualTree1.NodeDoubleClick += visualTree1_NodeDoubleClick;
             this.visualTree1.NodeClick += visualTree1_NodeClick;
+
+            this.Text = string.Format("Distribox - {0}", Config.RootFolder.ToString().Replace("\\", "/"));
         }
 
         void visualTree1_NodeClick(FileEvent e)

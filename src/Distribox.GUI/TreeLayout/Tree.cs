@@ -71,26 +71,29 @@ namespace Distribox.GUI
             format.LineAlignment = StringAlignment.Center;
             format.Alignment = StringAlignment.Center;
 
+            string text = this.Event.When.ToString("HH:mm:ss");
+            Font font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular);
+
             switch (this.State)
             {
                 case TreeState.Normal:
                     g.DrawRectangle(Pens.Red, rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(this.Event.Type.ToString(), new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular), new SolidBrush(Color.Black), rect, format);
+                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
                     break;
 
                 case TreeState.Selected:
                     g.FillRectangle(new SolidBrush(Color.Cyan), rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(this.Event.Type.ToString(), new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular), new SolidBrush(Color.Black), rect, format);
+                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
                     break;
 
                 case TreeState.Hover:
                     g.FillRectangle(new SolidBrush(Color.LightGreen), rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(this.Event.Type.ToString(), new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular), new SolidBrush(Color.Black), rect, format);
+                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
                     break;
 
                 case TreeState.Current:
                     g.FillRectangle(new SolidBrush(Color.Red), rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(this.Event.Type.ToString(), new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular), new SolidBrush(Color.White), rect, format);
+                    g.DrawString(text, font, new SolidBrush(Color.White), rect, format);
                     break;
 
                 default:
@@ -147,7 +150,7 @@ namespace Distribox.GUI
             {
                 node.CalculateSize();
                 this.Width = Math.Max(this.Width, x + node.Width);
-                x = x + HORIZONTALGAP;
+                x = x + node.Width + HORIZONTALGAP;
                 this.Height = Math.Max(this.Height, node.Height + VERTICALGAP);
             }
         }

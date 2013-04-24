@@ -118,10 +118,7 @@ namespace Distribox.GUI
                 {
                     this.treeView1.SelectedNode = item;
 
-                    string name = item.ToolTipText;
-                    FileItem fileItem = vc.VersionList.GetFileByName(name);
-                    this.visualTree1.SetTree(new Tree(fileItem));
-                    this.tabControl2.TabPages[0].Text = name;
+                    UpdateVisualTree();
                 }
             }
 
@@ -139,6 +136,8 @@ namespace Distribox.GUI
             string eventId = this.visualTree1.CurrentSelect.Event.EventId;
 
             vc.CheckOut(fileId, eventId);
+
+            UpdateVisualTree();
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -147,6 +146,17 @@ namespace Distribox.GUI
             FileItem item = vc.VersionList.GetFileByName(name);
             this.visualTree1.SetTree(new Tree(item));
             this.tabControl2.TabPages[0].Text = name;
+        }
+
+        private void UpdateVisualTree()
+        {
+            if (this.treeView1.SelectedNode != null)
+            {
+                string name = this.treeView1.SelectedNode.ToolTipText;
+                FileItem item = vc.VersionList.GetFileByName(name);
+                this.visualTree1.SetTree(new Tree(item));
+                this.tabControl2.TabPages[0].Text = name;
+            }
         }
     }
 }

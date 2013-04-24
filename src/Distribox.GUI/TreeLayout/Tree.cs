@@ -94,22 +94,22 @@ namespace Distribox.GUI
             switch (this.State)
             {
                 case TreeState.Normal:
-                    g.DrawRectangle(Pens.Red, rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(51, 153, 255)), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.DrawString(text, font, new SolidBrush(Color.White), rect, format);
                     break;
 
                 case TreeState.Selected:
-                    g.FillRectangle(new SolidBrush(Color.Cyan), rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(255, 51, 214)), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.DrawString(text, font, new SolidBrush(Color.White), rect, format);
                     break;
 
                 case TreeState.Hover:
-                    g.FillRectangle(new SolidBrush(Color.LightGreen), rect.X, rect.Y, rect.Width, rect.Height);
-                    g.DrawString(text, font, new SolidBrush(Color.Black), rect, format);
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(255, 153, 51)), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.DrawString(text, font, new SolidBrush(Color.White), rect, format);
                     break;
 
                 case TreeState.Current:
-                    g.FillRectangle(new SolidBrush(Color.Red), rect.X, rect.Y, rect.Width, rect.Height);
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(255, 15, 0)), rect.X, rect.Y, rect.Width, rect.Height);
                     g.DrawString(text, font, new SolidBrush(Color.White), rect, format);
                     break;
 

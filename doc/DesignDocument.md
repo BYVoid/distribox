@@ -189,18 +189,13 @@ The synchronization procedure acts as follows:
 
 1. Suppose A want to synchronize with B now, to do so, it sends a
 SyncRequest message to B. 
-
 2. Receiving SyncRequest, if number active connections does not exceed
 a given limit, B will accept this synchronization by send a SyncAck
 message. Otherwise it will do nothing to reject the message.
-
 3. B send its peer list and version list to A.
-
 4. Receiving SyncAck, A send its peer list and version list to B.
-
 5. For each peer receiving peer list, it merge the received list with
 its own.
-
 6. For each peer receving version list, it computes the files which
 remote peer has but it don't has. It computes patchRequests for these
 patches. But it acknowledge these patchRequest to a request manager,
@@ -219,7 +214,7 @@ receives these requests, it packs these patches to a zip file and send
 back. The requesting peer will store these files locally and update
 its version list.
 
-<img src="synchronization.png"/>
+![synchronization](synchronization.png)
 
 ### Request management
 The request manager maintain a list of all pending requests. There are
@@ -238,7 +233,7 @@ requesting list will be lost if a peer is offline. The requests will
 be add to request manager again when the peer is receiving version
 list from other peers.
 
-<img src="request_life_cycle.png"/>
+![request_life_cycle](request_life_cycle.png)
 
 The request manager solves lots of problems and enables lots of
 features:
@@ -262,7 +257,7 @@ an InvitationAck back to A. After received InvitationAck, A add B to
 its own peer list as well and try to synchronize with B immediately by
 sending a SyncRequest. See the flow chart below.
 
-<img src="invitation.png"/>
+![invitation](invitation.png)
 
 ### Online and Offline
 

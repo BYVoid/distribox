@@ -34,7 +34,7 @@ The first step is to implement the architecture of Distribox. The two main compo
 
 ## Download
 
-https://sourceforge.net/projects/distribox/files/
+https://sourceforge.net/projects/distribox/files/ (Not available)
 
 ## Source code
 
@@ -42,4 +42,8 @@ https://github.com/BYVoid/distribox
 
 ## Documentation for developers
 
-http://distribox.net/
+http://distribox.net/docs/
+
+## License
+
+MIT License

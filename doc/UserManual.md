@@ -1,4 +1,4 @@
-# Distribox User Manual
+# Distribox: User Manual
 
 # Introduction 
 

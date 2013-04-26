@@ -305,13 +305,8 @@ namespace Distribox.Network
             // Lock peers to support thread-safety
             lock (this.peers)
             {
-                // FIXME Judge if the randomly picked peer is itself using hash
-                // caution: dead loop
-                do
-                {
-                    peer = this.peers.SelectRandomPeer();
-                }
-                while (peer.Port == this.listeningPort);
+                // This might select itself, whatever, we'll accept it.
+                peer = this.peers.SelectRandomPeer();
             }
 
             if (peer != null)

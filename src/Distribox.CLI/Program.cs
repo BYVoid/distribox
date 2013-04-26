@@ -79,12 +79,9 @@ namespace Distribox.CLI
             /// <param name='port'>
             /// Port of the peer to be invited.
             /// </param>
-            /// <remarks>
-            /// Currently, we are only communicating on a single machine.
-            /// </remarks>
-            public void Invite(int port)
+            public void Invite(string ip, int port)
             {
-                protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), port));
+                protocol.InvitePeer(new Peer(IPAddress.Parse(ip), port));
             }
         }
     }

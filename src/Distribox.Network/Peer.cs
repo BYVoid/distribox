@@ -24,8 +24,6 @@ namespace Distribox.Network
         /// </summary>
         private int port;
 
-        // TODO add a hash member
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.Peer"/> class using default IP and port.
         /// </summary>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -34,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +51,7 @@
     <Compile Include="AntiEntropyProtocol.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
+    <Compile Include="Schedule\BandwidthEstimator.cs" />
     <Compile Include="Message\FileDataResponse.cs" />
     <Compile Include="Message\PatchRequest.cs" />
     <Compile Include="Message\PeerListMessage.cs" />
@@ -60,7 +66,8 @@
     <Compile Include="Message\SyncAck.cs" />
     <Compile Include="Message\InvitationRequest.cs" />
     <Compile Include="Peer.cs" />
-    <Compile Include="RequestManager.cs" />
+    <Compile Include="Schedule\RequestManager.cs" />
+    <Compile Include="Schedule\TransferItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Distribox.CommonLib\Distribox.CommonLib.csproj">
@@ -72,7 +79,11 @@
       <Name>Distribox.FileSystem</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

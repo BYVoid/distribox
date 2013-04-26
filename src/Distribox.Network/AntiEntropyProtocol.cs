@@ -253,11 +253,11 @@ namespace Distribox.Network
         }
 
         /// <summary>
-        /// This routine will decide if to start a new request. If so, it will get an request from RequestManager and send out the request message
+        /// Repeatly get and send new requests, until `RequestManager` don't give us any more requests. (May because       
+        /// there are no more requests or request manager thinks there are too many patches requesting now).
         /// </summary>
         private void TryToRequest()
         {
-            // TODO don't request if too many connections
             while (true)
             {
                 // Get a request from RequestManager

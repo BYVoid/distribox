@@ -66,6 +66,7 @@
     <Compile Include="Message\SyncAck.cs" />
     <Compile Include="Message\InvitationRequest.cs" />
     <Compile Include="Peer.cs" />
+    <Compile Include="Schedule\BandwidthEstimatorTest.cs" />
     <Compile Include="Schedule\RequestManager.cs" />
     <Compile Include="Schedule\TransferItem.cs" />
   </ItemGroup>

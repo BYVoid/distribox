@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Distribox.Network
 {
+    using System.IO;
     using Distribox.CommonLib;
 
     /// <summary>
@@ -56,7 +57,7 @@ namespace Distribox.Network
         {
             if (!this.ongoingTransfer.ContainsKey(hash))
             {
-                Logger.Warn("BandwidthEstimator: Not find transfer {0} in ongoingTransfer");
+                Logger.Warn("BandwidthEstimator: Not find transfer {0} in ongoingTransfer", hash);
                 return;
             }
 
@@ -65,7 +66,14 @@ namespace Distribox.Network
             this.ongoingTransfer.Remove(hash);
 
             item.endTime = DateTime.Now;
-            item.bytesPerSecond /= (item.endTime.Second - item.beginTime.Second + 1);
+            int timeInterval = item.endTime.Second - item.beginTime.Second;
+            if (timeInterval <= 0)
+            {
+                timeInterval = 1;
+            }
+
+            item.bytesPerSecond /= timeInterval;
+
             this.peerBandwidth[item.peer] = item.bytesPerSecond;
 
             this.transferQueue.Enqueue(item);
@@ -75,9 +83,16 @@ namespace Distribox.Network
             this.UpdateTotalBandwidth();            
         }
 
-        BandwidthEstimator()
+        public BandwidthEstimator()
         {
-            this.peerBandwidth = CommonHelper.ReadObject<Dictionary<Peer, int> >(Config.PeerBandwidthFilePath);
+            string PeerBandwidthPath = Config.PeerBandwidthFilePath;
+            if (!File.Exists(PeerBandwidthPath))
+            {
+                Logger.Warn("Peer bandwidth meta data not found in {0}, creating a new one...", PeerBandwidthPath);
+                (new Dictionary<Peer, int>()).WriteObject(PeerBandwidthPath);
+            }
+
+            this.peerBandwidth = CommonHelper.ReadObject<Dictionary<Peer, int> >(PeerBandwidthPath);
             this.totalBytesPerSecond = 0;
 
             this.transferQueue = new Queue<TransferItem>();
@@ -97,12 +112,14 @@ namespace Distribox.Network
             }
         }
 
-        public Dictionary<Peer, int> PeerBandwidth
+        public int GetPeerBandwidth(Peer peer)
         {
-            get
+            if (!this.peerBandwidth.ContainsKey(peer))
             {
-                return peerBandwidth;
+                return 0;
             }
+
+            return this.peerBandwidth[peer];
         }
 
         public void BeginRequest(Peer peer, int hash, int size)
@@ -113,11 +130,13 @@ namespace Distribox.Network
                 return;
             }
 
-            TransferItem transfer;
+            TransferItem transfer = new TransferItem();
             transfer.ID = hash;
             transfer.bytesPerSecond = size;      // hacky
             transfer.beginTime = DateTime.Now;
             transfer.peer = peer;
+
+            ongoingTransfer[hash] = transfer;
         }
 
         public void FinishRequest(int hash)

@@ -120,7 +120,13 @@ namespace Distribox.GUI
             foreach (var node in this.Children)
             {
                 node.Paint(g);
-                g.DrawLine(Pens.Black, this.Position.X, this.Position.Y + BOXHEIGHT / 2, node.Position.X, node.Position.Y - BOXHEIGHT / 2);
+                PointF start = new PointF(this.Position.X, this.Position.Y + BOXHEIGHT / 2);
+                PointF stop = new PointF(node.Position.X, node.Position.Y - BOXHEIGHT / 2);
+                PointF p1 = new PointF(start.X, start.Y + (VERTICALGAP - BOXHEIGHT) * 0.382f);
+                PointF p2 = new PointF(stop.X, start.Y + (VERTICALGAP - BOXHEIGHT) * 0.382f);
+                g.DrawLine(Pens.Gray, start, p1);
+                g.DrawLine(Pens.Gray, p1, p2);
+                g.DrawLine(Pens.Gray, p2, stop);
             }
         }
 
@@ -144,16 +150,21 @@ namespace Distribox.GUI
         public void Layout()
         {
             this.CalculateSize();
-            this.Layout(0, 0);
+            Tree[] list = this.GetTreeList().OrderBy(x => x.Event.When).ToArray();
+            Dictionary<Tree, float> verticalPosition = new Dictionary<Tree, float>();
+            for (int i = 0; i < list.Length; i++)
+            {
+                verticalPosition[list[i]] = i * VERTICALGAP;
+            }
+            this.Layout(0, verticalPosition);
         }
 
-        private void Layout(float x, float y)
+        private void Layout(float x, Dictionary<Tree, float> verticalPosition)
         {
-            this.Position = new PointF(x, y);
-            y = y + VERTICALGAP;
+            this.Position = new PointF(x, verticalPosition[this]);
             foreach (var node in this.Children)
             {
-                node.Layout(x, y);
+                node.Layout(x, verticalPosition);
                 x = x + node.Width + HORIZONTALGAP;
             }
         }
@@ -170,6 +181,15 @@ namespace Distribox.GUI
                 x = x + node.Width + HORIZONTALGAP;
                 this.Height = Math.Max(this.Height, node.Height + VERTICALGAP);
             }
+        }
+
+        public List<Tree> GetTreeList()
+        {
+            List<Tree> tree = new List<Tree>();
+            tree.Add(this);
+            foreach (var node in this.Children.SelectMany(x => x.GetTreeList()))
+                tree.Add(node);
+            return tree;
         }
     }
 }

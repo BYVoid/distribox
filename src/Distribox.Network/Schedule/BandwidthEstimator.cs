@@ -25,14 +25,19 @@ namespace Distribox.Network
         /// Sorted by endTime.
         /// </summary>
         private Queue<TransferItem> transferQueue;
-
         private Dictionary<int, TransferItem> ongoingTransfer;
-        private Dictionary<Peer, int> peerBandwidth;
+        private Dictionary<Peer, int> peerBandwidth;        
         private int totalBytesPerSecond;        
 
         private void Flush()
         {
-            this.peerBandwidth.WriteObject(Config.PeerBandwidthFilePath);
+            // Serializing the dictionary directly will cause trouble
+            List<KeyValuePair<Peer, int>> temp = new List<KeyValuePair<Peer,int>>();
+            foreach ( KeyValuePair<Peer, int> pair in this.peerBandwidth)
+            {
+                temp.Add(pair);
+            }
+            temp.WriteObject(Config.PeerBandwidthFilePath);
         }
 
         private void UpdateTotalBandwidth()
@@ -73,6 +78,7 @@ namespace Distribox.Network
             }
 
             item.bytesPerSecond /= timeInterval;
+            item.bytesPerSecond *= factor;
 
             this.peerBandwidth[item.peer] = item.bytesPerSecond;
 
@@ -85,18 +91,26 @@ namespace Distribox.Network
 
         public BandwidthEstimator()
         {
-            string PeerBandwidthPath = Config.PeerBandwidthFilePath;
-            if (!File.Exists(PeerBandwidthPath))
+            string peerBandwidthPath = Config.PeerBandwidthFilePath;
+            if (!File.Exists(peerBandwidthPath))
             {
-                Logger.Warn("Peer bandwidth meta data not found in {0}, creating a new one...", PeerBandwidthPath);
-                (new Dictionary<Peer, int>()).WriteObject(PeerBandwidthPath);
+                Logger.Warn("Peer bandwidth meta data not found in {0}, creating a new one...", peerBandwidthPath);
+                (new List<KeyValuePair<Peer, int>>()).WriteObject(peerBandwidthPath);
             }
 
-            this.peerBandwidth = CommonHelper.ReadObject<Dictionary<Peer, int> >(PeerBandwidthPath);
+            this.peerBandwidth = new Dictionary<Peer, int>();
             this.totalBytesPerSecond = 0;
 
             this.transferQueue = new Queue<TransferItem>();
             this.ongoingTransfer = new Dictionary<int, TransferItem>();
+
+            // Deserializing the dictionary directly will cause trouble
+            List<KeyValuePair<Peer, int>> temp;
+            temp = CommonHelper.ReadObject<List<KeyValuePair<Peer, int>>>(peerBandwidthPath);
+            foreach (KeyValuePair<Peer, int> pair in temp)
+            {
+                peerBandwidth[pair.Key] = pair.Value;
+            }
         }
 
         ~BandwidthEstimator()
@@ -141,13 +155,15 @@ namespace Distribox.Network
 
         public void FinishRequest(int hash)
         {
-            this.FinishRequest(hash, 1);  
+            this.FinishRequest(hash, 1);
+            Flush();
         }
 
         public void FailRequest(int hash)
         {
             // Byterate = 0 bytes / s
             this.FinishRequest(hash, 0);
+            Flush();
         }
     }
 }

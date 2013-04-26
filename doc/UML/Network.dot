@@ -1,0 +1,31 @@
+digraph Network {
+  rankdir=LR;
+  labelloc="b";
+  peripheries=0;
+
+  subgraph clusterUser {
+    label="User";
+    user [label="", shapefile="resources/stick.png", peripheries=0];
+  };
+
+  subgraph clusterNetwork {
+    network [label="P2P Network"];
+    edge [arrowhead="vee", style="dashed", label="<<include>>", fontsize="8"];
+    network->"Invitation"
+    network->"Peer detection"
+    network->"Synchronization"
+    edge [dir="back", arrowtail="oarrow", style="solid", label=""];
+    "Invitation"->"Local Peer Invitation"
+    "Invitation"->"Remote Peer Invitation"
+    "Synchronization"->"Version Tree Sync"
+    "Synchronization"->"Peer List Sync"
+    "Synchronization"->"File Sync"
+    edge [dir="back", arrowtail="vee", style="dashed", label="<<extend>>"];
+    "Synchronization"->"Sync on Modification"
+    "Synchronization"->"Sync on Start"
+  }
+
+  edge [arrowhead="vee"]
+  user->network
+}
+

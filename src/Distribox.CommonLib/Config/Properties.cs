@@ -106,6 +106,14 @@ namespace Distribox.CommonLib
             }
         }
 
+        public static string PeerBandwidthFile
+        {
+            get
+            {
+                return "PeerBandwidth.json";
+            }
+        }
+
         /// <summary>
         /// Gets the name of the config file.
         /// </summary>

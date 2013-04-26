@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Distribox.Network
+{
+    using Distribox.CommonLib;
+
+    /// <summary>
+    /// This class provide methods to estimate bandwidth between local machine and
+    /// peers. Upload / download asymmetry is not considered yet.    
+    /// 
+    /// Currently, peer bandwidth is measured by simply compute the max transfer size / time
+    /// ratio of single block. Blocks be transferred simutaneously between a pair of peer is
+    /// not considered.
+    /// # Thread safety
+    /// Not thread safe.
+    /// </summary>    
+    internal class BandwidthEstimator
+    {
+        /// <summary>
+        /// Queue of transferring items that is useful for computing total bandwidth.
+        /// Sorted by endTime.
+        /// </summary>
+        private Queue<TransferItem> transferQueue;
+
+        private Dictionary<int, TransferItem> ongoingTransfer;
+        private Dictionary<Peer, int> peerBandwidth;
+        private int totalBytesPerSecond;        
+
+        private void Flush()
+        {
+            this.peerBandwidth.WriteObject(Config.PeerBandwidthFilePath);
+        }
+
+        private void UpdateTotalBandwidth()
+        {
+            this.totalBytesPerSecond = 0;
+            foreach (TransferItem item in this.transferQueue)
+            {
+                // We are sure that item.endTime >= item0.beginTime
+                this.totalBytesPerSecond += item.bytesPerSecond;
+            }
+        }
+
+        private void PopQueueItems(TransferItem item0)
+        {
+            while (this.transferQueue.Peek().endTime < item0.beginTime)
+            {
+                this.transferQueue.Dequeue();
+            }
+        }
+
+        private void FinishRequest(int hash, int factor)
+        {
+            if (!this.ongoingTransfer.ContainsKey(hash))
+            {
+                Logger.Warn("BandwidthEstimator: Not find transfer {0} in ongoingTransfer");
+                return;
+            }
+
+            // Push new item
+            TransferItem item = this.ongoingTransfer[hash];
+            this.ongoingTransfer.Remove(hash);
+
+            item.endTime = DateTime.Now;
+            item.bytesPerSecond /= (item.endTime.Second - item.beginTime.Second + 1);
+            this.peerBandwidth[item.peer] = item.bytesPerSecond;
+
+            this.transferQueue.Enqueue(item);
+
+            // Update
+            this.PopQueueItems(item);
+            this.UpdateTotalBandwidth();            
+        }
+
+        BandwidthEstimator()
+        {
+            this.peerBandwidth = CommonHelper.ReadObject<Dictionary<Peer, int> >(Config.PeerBandwidthFilePath);
+            this.totalBytesPerSecond = 0;
+
+            this.transferQueue = new Queue<TransferItem>();
+            this.ongoingTransfer = new Dictionary<int, TransferItem>();
+        }
+
+        ~BandwidthEstimator()
+        {
+            this.Flush();
+        }
+
+        public int TotalBandwidth
+        {
+            get
+            {
+                return totalBytesPerSecond;
+            }
+        }
+
+        public Dictionary<Peer, int> PeerBandwidth
+        {
+            get
+            {
+                return peerBandwidth;
+            }
+        }
+
+        public void BeginRequest(Peer peer, int hash, int size)
+        {
+            if (ongoingTransfer.ContainsKey(hash))
+            {
+                Logger.Warn("BandwidthEstimator: Transfer {0} already exists ongoingTransfer");
+                return;
+            }
+
+            TransferItem transfer;
+            transfer.ID = hash;
+            transfer.bytesPerSecond = size;      // hacky
+            transfer.beginTime = DateTime.Now;
+            transfer.peer = peer;
+        }
+
+        public void FinishRequest(int hash)
+        {
+            this.FinishRequest(hash, 1);  
+        }
+
+        public void FailRequest(int hash)
+        {
+            // Byterate = 0 bytes / s
+            this.FinishRequest(hash, 0);
+        }
+    }
+}

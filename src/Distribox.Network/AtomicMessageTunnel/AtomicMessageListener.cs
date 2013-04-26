@@ -35,6 +35,7 @@ namespace Distribox.Network
             this.listener = new TcpListener(IPAddress.Any, port);
 
             Thread thread = new Thread(this.BackgroundListener);
+            thread.IsBackground = true;
             thread.Start();
         }
 
@@ -60,6 +61,7 @@ namespace Distribox.Network
             {
                 Socket client = this.listener.AcceptSocket();
                 Thread thread = new Thread(this.ReceivePackages);
+                thread.IsBackground = true;
                 thread.Start(client);
             }
         }

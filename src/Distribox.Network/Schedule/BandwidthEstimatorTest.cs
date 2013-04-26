@@ -77,5 +77,25 @@ namespace Distribox.Network.Schedule
             BandwidthEstimator estimator2 = new BandwidthEstimator();
             Assert.AreEqual(1024 * 1024, estimator2.GetPeerBandwidth(peer1));
         }
+
+        [Test]
+        public void MultiPeer()
+        {
+            if (File.Exists(Config.PeerBandwidthFilePath))
+            {
+                File.Delete(Config.PeerBandwidthFilePath);
+            }
+
+            BandwidthEstimator estimator = new BandwidthEstimator();
+            Peer peer1 = new Peer("127.0.0.1", 1111);
+            Peer peer2 = new Peer("127.0.0.1", 1111);
+
+            estimator.BeginRequest(peer1, 0x1234, 1024 * 1024);
+            estimator.BeginRequest(peer2, 0x1235, 2048 * 1024);
+            estimator.FinishRequest(0x1234);
+            Assert.AreEqual(1024 * 1024, estimator.TotalBandwidth);
+            estimator.FinishRequest(0x1235);
+            Assert.AreEqual(3072 * 1024, estimator.TotalBandwidth);
+        }
     }
 }

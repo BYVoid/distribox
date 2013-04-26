@@ -22,6 +22,8 @@ namespace Distribox.CommonLib
         /// <value>The listen port.</value>
         public int ListenPort { get; set; }
 
+        public int DefaultBandwidth { get; set; }
+
         /// <summary>
         /// Gets or sets the connect period millisecond.
         /// </summary>

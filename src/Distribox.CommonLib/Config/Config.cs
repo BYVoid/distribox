@@ -98,7 +98,7 @@ namespace Distribox.CommonLib
                 EnsureInitialized();
                 return MetaFolder.File(Properties.PeerBandwidthFile);
             }
-        }
+        }        
 
         /// <summary>
         /// Gets the peer list file path.
@@ -110,6 +110,15 @@ namespace Distribox.CommonLib
             {
                 EnsureInitialized();
                 return MetaFolder.File(Properties.PeerListFile);
+            }
+        }
+
+        public static int DefaultBandwidth
+        {
+            get
+            {
+                EnsureInitialized();
+                return configData.DefaultBandwidth;
             }
         }
 

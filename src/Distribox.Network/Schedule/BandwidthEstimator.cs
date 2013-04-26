@@ -99,7 +99,7 @@ namespace Distribox.Network
             }
 
             this.peerBandwidth = new Dictionary<Peer, int>();
-            this.totalBytesPerSecond = 0;
+            this.totalBytesPerSecond = Config.DefaultBandwidth;
 
             this.transferQueue = new Queue<TransferItem>();
             this.ongoingTransfer = new Dictionary<int, TransferItem>();

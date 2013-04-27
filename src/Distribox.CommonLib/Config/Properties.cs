@@ -149,6 +149,14 @@ namespace Distribox.CommonLib
             }
         }
 
+        public static int DefaultDelay
+        {
+            get
+            {
+                return 3;
+            }
+        }
+
         /// <summary>
         /// My default connection speed with a peer.
         /// </summary>

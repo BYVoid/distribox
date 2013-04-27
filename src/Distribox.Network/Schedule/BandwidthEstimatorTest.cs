@@ -25,7 +25,7 @@ namespace Distribox.Network
             Peer peer1 = new Peer("127.0.0.1", 1111);
 
             // Invalid peer
-            Assert.AreEqual(0, estimator.GetPeerBandwidth(peer1));
+            Assert.AreEqual(Properties.DefaultConnectionSpeed, estimator.GetPeerBandwidth(peer1));
 
             // Do a task
             estimator.BeginRequest(peer1, 0x1234, 1024 * 1024);

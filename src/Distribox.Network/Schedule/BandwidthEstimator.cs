@@ -8,6 +8,8 @@ namespace Distribox.Network
     using System.IO;
     using Distribox.CommonLib;
 
+    // TODO improve this with Bayesian methods
+
     /// <summary>
     /// This class provide methods to estimate bandwidth between local machine and
     /// peers. Upload / download asymmetry is not considered yet.    
@@ -140,7 +142,7 @@ namespace Distribox.Network
         {
             if (!this.peerBandwidth.ContainsKey(peer))
             {
-                return 0;
+                return Properties.DefaultConnectionSpeed;
             }
 
             return this.peerBandwidth[peer];
@@ -150,7 +152,7 @@ namespace Distribox.Network
         {
             if (ongoingTransfer.ContainsKey(hash))
             {
-                Logger.Warn("BandwidthEstimator: Transfer {0} already exists ongoingTransfer");
+                Logger.Warn("BandwidthEstimator: Transfer {0} already exists ongoingTransfer", hash);
                 return;
             }
 

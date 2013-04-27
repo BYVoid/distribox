@@ -70,6 +70,7 @@
     <Compile Include="Schedule\DoingQueueFileItem.cs" />
     <Compile Include="Schedule\DoingQueueItem.cs" />
     <Compile Include="Schedule\RequestManager.cs" />
+    <Compile Include="Schedule\RequestManagerTest.cs" />
     <Compile Include="Schedule\TransferItem.cs" />
   </ItemGroup>
   <ItemGroup>

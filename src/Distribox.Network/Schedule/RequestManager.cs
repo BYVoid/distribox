@@ -11,6 +11,8 @@ namespace Distribox.Network
     using Distribox.CommonLib;
     using Distribox.FileSystem;
 
+    // TODO use max number of connections instead of max "bandwidth"
+
     /// <summary>
     /// The manager of sending patches
     /// RequestManager will
@@ -85,6 +87,7 @@ namespace Distribox.Network
         /// </returns>
         public Tuple<List<FileEvent>, Peer> GetRequests()
         {
+            CheckForRequestExpire();
             lock (this)
             {
                 // No requests
@@ -140,10 +143,15 @@ namespace Distribox.Network
                         bestSize = currentSize;
                     }
                 }
-
+                
                 // Do we have enough bandwidth ?
                 int needBandwidth = this.estimator.GetPeerBandwidth(bestPeer);
-                if (usedBandwidth + needBandwidth > Config.DefaultBandwidth)
+                if (needBandwidth == 0)
+                {
+                    needBandwidth = Properties.DefaultConnectionSpeed;
+                }
+
+                if (usedBandwidth + needBandwidth > Properties.DefaultBandwidth)
                 {
                     return null;
                 }
@@ -153,8 +161,7 @@ namespace Distribox.Network
 
                 DoingQueueItem dqItem = new DoingQueueItem();
                 dqItem.bandWidth = needBandwidth;
-                dqItem.expireDate = DateTime.Now.AddSeconds(bestSize / needBandwidth 
-                    * Properties.ExpireSlackCoefficient);
+                dqItem.expireDate = DateTime.Now.AddSeconds(bestSize * Properties.ExpireSlackCoefficient / needBandwidth + Properties.DefaultDelay);                
                 dqItem.files = new List<DoingQueueFileItem>();
 
                 foreach (FileEvent file in bestCollection)
@@ -176,10 +183,9 @@ namespace Distribox.Network
                 }
 
                 // Add it
+                dqItem.filesHash = CommonHelper.GetHashCode(bestCollection);
                 this.doing.Add(dqItem);
-                int hash = CommonHelper.GetHashCode(bestCollection);
-                dqItem.filesHash = hash;
-                this.estimator.BeginRequest(bestPeer, hash, (int)bestSize);
+                this.estimator.BeginRequest(bestPeer, dqItem.filesHash, (int)bestSize);
 
                 // return success
                 return new Tuple<List<FileEvent>,Peer>(bestCollection, bestPeer);
@@ -202,13 +208,18 @@ namespace Distribox.Network
                 // Add them back to todo (merge)
                 foreach (DoingQueueFileItem fileItem in item.files)
                 {
+                    if (!this.todoFileToPeer.ContainsKey(fileItem.file))
+                    {
+                        this.todoFileToPeer[fileItem.file] = new List<Peer>();
+                    }
+
                     foreach (Peer peer in fileItem.whoHaveMe)
                     {
                         // Maintain Peer->File
                         if (this.todoPeerToFile[peer].IndexOf(fileItem.file) == -1)
                             this.todoPeerToFile[peer].Add(fileItem.file);
-
-                        // Maintain File->Peer    
+                        
+                        // Maintain File->Peer
                         if (this.todoFileToPeer[fileItem.file].IndexOf(peer) == -1)
                             this.todoFileToPeer[fileItem.file].Add(peer);
                     }
@@ -262,7 +273,7 @@ namespace Distribox.Network
                 List<DoingQueueItem> expired = new List<DoingQueueItem>();
 
                 foreach (DoingQueueItem item in this.doing)
-                { 
+                {
                     if (now > item.expireDate)
                     {
                         expired.Add(item);

@@ -218,7 +218,7 @@ namespace Distribox.GUI
 
                 if (invite.Port != -1)
                 {
-                    protocol.InvitePeer(new Peer(IPAddress.Parse("127.0.0.1"), invite.Port));
+                    protocol.InvitePeer(new Peer(IPAddress.Parse(invite.IP), invite.Port));
                 }
             }
         }

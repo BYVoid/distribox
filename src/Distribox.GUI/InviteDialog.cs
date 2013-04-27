@@ -11,6 +11,7 @@ namespace Distribox.GUI
 {
     public partial class InviteDialog : Form
     {
+        public string IP { get; set; }
         public int Port { get; set; }
 
         public InviteDialog()
@@ -25,6 +26,7 @@ namespace Distribox.GUI
             try
             {
                 this.Port = int.Parse(this.textBox1.Text);
+                this.IP = this.textBox2.Text;
                 this.Close();
             }
             catch

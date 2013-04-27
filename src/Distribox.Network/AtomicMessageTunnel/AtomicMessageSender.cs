@@ -54,6 +54,7 @@ namespace Distribox.Network
         public void SendBytes(byte[] bytes)
         {
             Thread thread = new Thread(this.SendBytes);
+            thread.IsBackground = true;
             thread.Start(bytes);
         }
 

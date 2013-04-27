@@ -1,0 +1,26 @@
+digraph Filesystem {
+  rankdir=LR
+  labelloc="b"
+  peripheries=0
+
+  subgraph clusterUser {
+    label="User"
+    user [label="", shapefile="resources/stick.png", peripheries=0]
+  }
+
+  subgraph clusterFilesystem {
+    filesystem [label="Filesystem Monitoring"]
+    edge [arrowhead="vee", style="dashed", label="<<include>>", fontsize="8"]
+    filesystem->"Change Event"
+    filesystem->"Create Event"
+    filesystem->"Rename Event"
+    filesystem->"Delete Event"
+    edge [dir="back", arrowtail="oarrow", style="solid", label=""]
+    "Change Event"->"Change"
+    "Change Event"->"Delete and Create"
+  }
+
+  edge [arrowhead="vee"]
+  user->filesystem
+}
+

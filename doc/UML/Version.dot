@@ -1,0 +1,30 @@
+digraph Version {
+  rankdir=LR
+  labelloc="b"
+  peripheries=0
+
+  subgraph clusterUser {
+    label="User"
+    user [label="", shapefile="resources/stick.png", peripheries=0]
+  }
+
+  subgraph clusterVersion {
+    versionManage [label="Version Management"]
+    edge [arrowhead="vee", style="dashed", label="<<include>>", fontsize="8"]
+    versionManage->"Conflict Resolution"
+    versionManage->"Version Creation"
+    versionManage->"Version Browser"
+    "Version Browser"->"Version Export"
+    "Version Browser"->"Version View"
+    edge [dir="back", arrowtail="oarrow", style="solid", label=""]
+    "Version Creation"->"Local Filesystem Event"
+    "Version Creation"->"Synchronization"
+    edge [dir="back", arrowtail="vee", style="dashed", label="<<extend>>"]
+    "Conflict Resolution"->"Manual Resolution"
+    "Conflict Resolution"->"Automatic Resolution"
+  }
+
+  edge [arrowhead="vee"]
+  user->versionManage
+}
+

@@ -104,35 +104,28 @@ namespace Distribox.Network
                 // For each peer
                 foreach (KeyValuePair<Peer, List<FileEvent>> ppf in this.todoPeerToFile)
                 {
-                    Peer peer = ppf.Key;
-
-                    // Compute uniqueness for each file
-                    List<UniquenessFileEventPair> slist = new List<UniquenessFileEventPair>();
-
-                    foreach (FileEvent f in ppf.Value)
-                    {
-                        UniquenessFileEventPair p = new UniquenessFileEventPair();
-                        p.uniqueness = 1.0 / this.todoFileToPeer[f].Count();
-                        p.fileEvent = f;
-                        slist.Add(p);
-                    }
-
-                    slist.Sort();
+                    Peer peer = ppf.Key;                    
+                    var slist = ppf.Value.OrderBy(x => x.When.Ticks).ToList();
 
                     // Find file collections
                     double score = Properties.RMBandwidthWeight * this.estimator.GetPeerBandwidth(peer);
 
                     long currentSize = 0;
                     List<FileEvent> currentCollection = new List<FileEvent>();
-                    foreach (UniquenessFileEventPair uf in slist)
+                    foreach (FileEvent f in slist)
                     {
-                        if (currentSize + uf.fileEvent.Size < Properties.MaxRequestSize)
+                        if (currentSize + f.Size <= Properties.MaxRequestSize)
                         {
-                            currentSize += uf.fileEvent.Size;
-                            currentCollection.Add(uf.fileEvent);
+                            currentSize += f.Size;
+                            currentCollection.Add(f);
 
-                            score += Properties.RMUniquenessWeight * uf.uniqueness;
-                        }                    
+                            double uniqueness = 1.0 / this.todoFileToPeer[f].Count();
+                            score += Properties.RMUniquenessWeight * uniqueness;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     score += Properties.RMSizeWeight * currentSize;
 

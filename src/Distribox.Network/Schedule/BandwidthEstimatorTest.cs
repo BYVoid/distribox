@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Distribox.Network.Schedule
+namespace Distribox.Network
 {
     using System.IO;
     using System.Threading;

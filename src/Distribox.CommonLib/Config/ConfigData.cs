@@ -24,6 +24,8 @@ namespace Distribox.CommonLib
 
         public int DefaultBandwidth { get; set; }
 
+        public int DefaultConnectionSpeed { get; set; }
+
         /// <summary>
         /// Gets or sets the connect period millisecond.
         /// </summary>
@@ -55,6 +57,9 @@ namespace Distribox.CommonLib
             this.ConnectPeriodMs = Properties.DefaultConnectPeriodMs;
 
             this.FileWatcherTimeIntervalMs = Properties.DefaultFileWatcherTimeIntervalMs;
+
+            this.DefaultBandwidth = Properties.DefaultBandwidth;
+            this.DefaultConnectionSpeed = Properties.DefaultConnectionSpeed;
 
             CommonHelper.WriteObject(this, Properties.ConfigFileName);
         }

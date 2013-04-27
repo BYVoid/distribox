@@ -139,6 +139,28 @@ namespace Distribox.CommonLib
         }
 
         /// <summary>
+        /// My default bandwidth.
+        /// </summary>
+        public static int DefaultBandwidth
+        {
+            get
+            {
+                return 10 * 1024 * 1024;
+            }
+        }
+
+        /// <summary>
+        /// My default connection speed with a peer.
+        /// </summary>
+        public static int DefaultConnectionSpeed
+        {
+            get
+            {
+                return 20 * 1024;
+            }
+        }
+
+        /// <summary>
         /// Gets the default root folder.
         /// </summary>
         /// <value>The default root folder.</value>
@@ -184,6 +206,38 @@ namespace Distribox.CommonLib
             {
                 return 4 * 1024 * 1024;
             }       
+        }
+
+        public static double RMBandwidthWeight
+        {
+            get
+            {
+                return 1e-5;
+            }
+        }
+
+        public static double RMUniquenessWeight
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
+        public static double RMSizeWeight
+        {
+            get
+            {
+                return 5e-7;
+            }
+        }
+
+        public static int ExpireSlackCoefficient
+        {
+            get
+            {
+                return 4;
+            }
         }
     }
 }

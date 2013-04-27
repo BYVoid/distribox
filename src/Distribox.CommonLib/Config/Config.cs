@@ -122,6 +122,15 @@ namespace Distribox.CommonLib
             }
         }
 
+        public static int DefaultConnectionSpeed
+        {
+            get
+            {
+                EnsureInitialized();
+                return configData.DefaultConnectionSpeed;
+            }
+        }
+
         /// <summary>
         /// Gets the listen port.
         /// </summary>

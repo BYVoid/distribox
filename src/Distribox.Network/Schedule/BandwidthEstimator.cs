@@ -27,7 +27,8 @@ namespace Distribox.Network
         private Queue<TransferItem> transferQueue;
         private Dictionary<int, TransferItem> ongoingTransfer;
         private Dictionary<Peer, int> peerBandwidth;        
-        private int totalBytesPerSecond;        
+        private int totalBytesPerSecond;
+        private int currentBandwidth;
 
         private void Flush()
         {
@@ -100,6 +101,7 @@ namespace Distribox.Network
 
             this.peerBandwidth = new Dictionary<Peer, int>();
             this.totalBytesPerSecond = Config.DefaultBandwidth;
+            this.currentBandwidth = 0;
 
             this.transferQueue = new Queue<TransferItem>();
             this.ongoingTransfer = new Dictionary<int, TransferItem>();
@@ -123,6 +125,14 @@ namespace Distribox.Network
             get
             {
                 return totalBytesPerSecond;
+            }
+        }
+
+        public int CurrentBandwidth
+        {
+            get
+            {
+                return currentBandwidth;
             }
         }
 

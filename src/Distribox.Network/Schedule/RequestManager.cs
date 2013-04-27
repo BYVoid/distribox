@@ -27,23 +27,26 @@ namespace Distribox.Network
     /// </remarks>
     internal class RequestManager
     {
-        /// <summary>
-        /// The patch requesting.
-        /// </summary>
-        private Dictionary<FileEvent, HashSet<Peer>> patchRequesting;
+        private Dictionary<FileEvent, List<Peer>> todoFileToPeer;
 
-        /// <summary>
-        /// The patch to request.
-        /// </summary>
-        private Dictionary<FileEvent, HashSet<Peer>> patchToRequest;
+        private Dictionary<Peer, List<FileEvent>> todoPeerToFile;
+
+        private List<DoingQueueItem> doing;
+
+        private BandwidthEstimator estimator;
+
+        private int usedBandwidth;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.RequestManager"/> class.
         /// </summary>
         public RequestManager()
         {
-            this.patchRequesting = new Dictionary<FileEvent, HashSet<Peer>>();
-            this.patchToRequest = new Dictionary<FileEvent, HashSet<Peer>>();
+            this.todoFileToPeer = new Dictionary<FileEvent, List<Peer>>();
+            this.todoPeerToFile = new Dictionary<Peer,List<FileEvent>>();
+            this.doing = new List<DoingQueueItem>();
+            this.estimator = new BandwidthEstimator();
+            this.usedBandwidth = 0;
         }
   
         /// <summary>
@@ -59,22 +62,17 @@ namespace Distribox.Network
         {
             lock (this)
             {
+                if (!todoPeerToFile.ContainsKey(peerHaveThese))
+                    todoPeerToFile[peerHaveThese] = new List<FileEvent>();
+
+                todoPeerToFile[peerHaveThese].AddRange(requests);
+
                 foreach (FileEvent patch in requests)
                 {
-                    if (this.patchRequesting.ContainsKey(patch))
-                    {
-                        this.patchRequesting[patch].Add(peerHaveThese);
-                    }
-                    else if (this.patchToRequest.ContainsKey(patch))
-                    {
-                        this.patchToRequest[patch].Add(peerHaveThese);
-                    }
-                    else
-                    {
-                        var peers = new HashSet<Peer>();
-                        peers.Add(peerHaveThese);
-                        this.patchToRequest.Add(patch, peers);
-                    }
+                    if (!todoFileToPeer.ContainsKey(patch))
+                        todoFileToPeer[patch] = new List<Peer>();
+
+                    todoFileToPeer[patch].Add(peerHaveThese);
                 }
             }
         }
@@ -89,71 +87,153 @@ namespace Distribox.Network
         {
             lock (this)
             {
-                // Check this only at here should be enough
-                this.CheckForRequestExpire();
-
-                // Find a not requested patch
-                FileEvent seedPatch = null;
-                Peer peer = null;
-                if (this.patchToRequest.Count > 0)
-                {
-                    KeyValuePair<FileEvent, HashSet<Peer>> kvp = this.patchToRequest.First<KeyValuePair<FileEvent, HashSet<Peer>>>();
-                    seedPatch = kvp.Key;
-                    peer = kvp.Value.First<Peer>();
-                }
-
-                if (seedPatch == null)
+                // No requests
+                if (this.todoFileToPeer.Count() == 0)
                 {
                     return null;
                 }
 
-                // See if any other patches can be requested from the same peer
-                HashSet<FileEvent> patches = new HashSet<FileEvent>();
-                long requestSize = seedPatch.Size;
+                Peer bestPeer = new Peer();
+                List<FileEvent> bestCollection = new List<FileEvent>();
+                double bestScore = 0;
+                long bestSize = 0;
 
-                // TODO improve time efficiency
-                foreach (KeyValuePair<FileEvent, HashSet<Peer>> kvp in this.patchToRequest)
+                // For each peer
+                foreach (KeyValuePair<Peer, List<FileEvent>> ppf in this.todoPeerToFile)
                 {
-                    if (kvp.Value.Contains(peer))
-                    {
-                        if (requestSize + kvp.Key.Size > Properties.MaxRequestSize)
-                        {
-                            break;
-                        }
+                    Peer peer = ppf.Key;
 
-                        requestSize += kvp.Key.Size;
-                        patches.Add(kvp.Key);
+                    // Compute uniqueness for each file
+                    SortedList<double, FileEvent> slist = new SortedList<double, FileEvent>();
+
+                    foreach (FileEvent f in ppf.Value)
+                    {
+                        // Negative value to make it sort in large->small
+                        double uniqueness = - 1.0 / this.todoFileToPeer[f].Count();
+                        slist.Add(uniqueness, f);
+                    }
+
+                    // Find file collections
+                    double score = Properties.RMBandwidthWeight * this.estimator.GetPeerBandwidth(peer) ;
+
+                    long currentSize = 0;
+                    List<FileEvent> currentCollection = new List<FileEvent>();
+                    foreach (KeyValuePair<double, FileEvent> uf in slist)
+                    {
+                        if (currentSize + uf.Value.Size < Properties.MaxRequestSize)
+                        {
+                            currentSize += uf.Value.Size;
+                            currentCollection.Add(uf.Value);
+
+                            // UniquenessWeight should be positive 
+                            score += - Properties.RMUniquenessWeight * uf.Key;
+                        }
+                    }
+                    score += Properties.RMSizeWeight * currentSize;
+
+                    // Update best solution
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestPeer = peer;
+                        bestCollection = currentCollection;
+                        bestSize = currentSize;
                     }
                 }
 
-                // Move them to requesting set
-                foreach (FileEvent patch in patches)
+                // Do we have enough bandwidth ?
+                int needBandwidth = this.estimator.GetPeerBandwidth(bestPeer);
+                if (usedBandwidth + needBandwidth > Config.DefaultBandwidth)
                 {
-                    // TODO: ugly!!!
-                    this.patchRequesting.Add(patch, this.patchToRequest[patch]);
-                    this.patchToRequest.Remove(patch);
+                    return null;
                 }
 
-                // Return
-                return Tuple.Create<List<FileEvent>, Peer>(patches.ToList(), peer);
+                // Do this!
+                usedBandwidth += needBandwidth;
+
+                DoingQueueItem dqItem = new DoingQueueItem();
+                dqItem.bandWidth = needBandwidth;
+                dqItem.expireDate = DateTime.Now.AddSeconds(bestSize / needBandwidth 
+                    * Properties.ExpireSlackCoefficient);
+                dqItem.files = new List<DoingQueueFileItem>();
+
+                foreach (FileEvent file in bestCollection)
+                {
+                    DoingQueueFileItem fileItem = new DoingQueueFileItem();
+                    fileItem.file = file;
+                    fileItem.whoHaveMe = this.todoFileToPeer[file];
+
+                    // Remove File->Peer
+                    this.todoFileToPeer.Remove(file);
+
+                    // Remove Peer->File
+                    foreach (Peer peer in fileItem.whoHaveMe)
+                    {
+                        this.todoPeerToFile[peer].Remove(file);
+                    }
+
+                    dqItem.files.Add(fileItem);
+                }
+
+                // Add it
+                this.doing.Add(dqItem);
+                int hash = CommonHelper.GetHashCode(bestCollection);
+                dqItem.filesHash = hash;
+                this.estimator.BeginRequest(bestPeer, hash, (int)bestSize);
+
+                // return success
+                return new Tuple<List<FileEvent>,Peer>(bestCollection, bestPeer);
             }
         }
-  
+
         /// <summary>
-        /// Finish the requests when response of these requests are received.
+        /// Remove item from doing queue, if not success, insert them back to the
+        /// todo queue.
         /// </summary>
-        /// <param name='requests'>
-        /// Requests to be finished.
-        /// </param>
+        /// <param name="item"></param>
+        /// <param name="success"></param>
+        public void FinishRequests(DoingQueueItem item, bool success)
+        {            
+            this.usedBandwidth -= item.bandWidth;
+            this.doing.Remove(item);
+
+            if (!success)
+            {
+                // Add them back to todo (merge)
+                foreach (DoingQueueFileItem fileItem in item.files)
+                {
+                    foreach (Peer peer in fileItem.whoHaveMe)
+                    {
+                        // Maintain Peer->File
+                        if (this.todoPeerToFile[peer].IndexOf(fileItem.file) == -1)
+                            this.todoPeerToFile[peer].Add(fileItem.file);
+
+                        // Maintain File->Peer    
+                        if (this.todoFileToPeer[fileItem.file].IndexOf(peer) == -1)
+                            this.todoFileToPeer[fileItem.file].Add(peer);
+                    }
+                }
+            }
+        }
+
         public void FinishRequests(List<FileEvent> requests)
         {
-            // Remove them from _patchRequesting
+            int hash = CommonHelper.GetHashCode(requests);
+
+            this.estimator.FinishRequest(hash);
             lock (this)
             {
-                foreach (FileEvent patch in requests)
+                foreach (DoingQueueItem item in this.doing)
                 {
-                    this.patchRequesting.Remove(patch);
+                    if (item.filesHash == hash)
+                    {
+                        this.estimator.FinishRequest(item.filesHash);
+                        FinishRequests(item, true);
+                        break;
+                    }
                 }
+
+                Logger.Warn("Finishing not existing requests.");                
             }
         }
         
@@ -176,7 +256,25 @@ namespace Distribox.Network
         /// </summary>
         private void CheckForRequestExpire()
         {
-            // TODO expire requests
+            lock (this)
+            {
+                DateTime now = DateTime.Now;
+                List<DoingQueueItem> expired = new List<DoingQueueItem>();
+
+                foreach (DoingQueueItem item in this.doing)
+                { 
+                    if (now > item.expireDate)
+                    {
+                        expired.Add(item);
+                    }
+                }
+
+                foreach (DoingQueueItem item in expired)
+                {
+                    this.estimator.FailRequest(item.filesHash);
+                    FinishRequests(item, false);
+                }
+            }
         }
     }
 }

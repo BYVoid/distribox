@@ -235,5 +235,18 @@ namespace Distribox.CommonLib
             stream.CopyTo(ms);
             return ms.ToArray();
         }
+
+        public static int GetHashCode<T>(IEnumerable<T> list)
+        {
+            unchecked
+            {
+                int hash = 0;
+                foreach (var item in list)
+                {
+                    hash = 31 * hash + item.GetHashCode();
+                }
+                return hash;
+            }
+        }
     }
 }

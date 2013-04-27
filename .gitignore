@@ -2,14 +2,15 @@
 *.suo
 StyleCop.Cache
 
-Distribox/Distribox.FileSystem/bin
-Distribox/Distribox.FileSystem/obj
-Distribox/Distribox.CommonLib/bin
-Distribox/Distribox.CommonLib/obj
-Distribox/Distribox.Network/bin
-Distribox/Distribox.Network/obj
-Distribox/Distribox.CLI/bin
-Distribox/Distribox.CLI/obj
+src/packages
+src/Distribox.FileSystem/bin
+src/Distribox.FileSystem/obj
+src/Distribox.CommonLib/bin
+src/Distribox.CommonLib/obj
+src/Distribox.Network/bin
+src/Distribox.Network/obj
+src/Distribox.CLI/bin
+src/Distribox.CLI/obj
 
 doc/html
 

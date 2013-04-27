@@ -1,0 +1,16 @@
+digraph Overall {
+  rankdir=LR;
+  labelloc="b";
+  peripheries=0;
+
+  subgraph clusterUser {
+    label="User";
+    user [label="", shapefile="resources/stick.png", peripheries=0];
+  };
+
+  edge [arrowhead=vee]
+  user->"P2P Network Connection"
+  user->"File System Monitoring"
+  user->"Version Management"
+}
+

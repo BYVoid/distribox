@@ -107,29 +107,31 @@ namespace Distribox.Network
                     Peer peer = ppf.Key;
 
                     // Compute uniqueness for each file
-                    SortedList<double, FileEvent> slist = new SortedList<double, FileEvent>();
+                    List<UniquenessFileEventPair> slist = new List<UniquenessFileEventPair>();
 
                     foreach (FileEvent f in ppf.Value)
                     {
-                        // Negative value to make it sort in large->small
-                        double uniqueness = - 1.0 / this.todoFileToPeer[f].Count();
-                        slist.Add(uniqueness, f);
+                        UniquenessFileEventPair p = new UniquenessFileEventPair();
+                        p.uniqueness = 1.0 / this.todoFileToPeer[f].Count();
+                        p.fileEvent = f;
+                        slist.Add(p);
                     }
+
+                    slist.Sort();
 
                     // Find file collections
                     double score = Properties.RMBandwidthWeight * this.estimator.GetPeerBandwidth(peer);
 
                     long currentSize = 0;
                     List<FileEvent> currentCollection = new List<FileEvent>();
-                    foreach (KeyValuePair<double, FileEvent> uf in slist)
+                    foreach (UniquenessFileEventPair uf in slist)
                     {
-                        if (currentSize + uf.Value.Size < Properties.MaxRequestSize)
+                        if (currentSize + uf.fileEvent.Size < Properties.MaxRequestSize)
                         {
-                            currentSize += uf.Value.Size;
-                            currentCollection.Add(uf.Value);
+                            currentSize += uf.fileEvent.Size;
+                            currentCollection.Add(uf.fileEvent);
 
-                            // UniquenessWeight should be positive 
-                            score += - Properties.RMUniquenessWeight * uf.Key;
+                            score += Properties.RMUniquenessWeight * uf.uniqueness;
                         }                    
                     }
                     score += Properties.RMSizeWeight * currentSize;
@@ -157,6 +159,7 @@ namespace Distribox.Network
                 }
 
                 // Do this!
+                Console.WriteLine("Request");
                 usedBandwidth += needBandwidth;
 
                 DoingQueueItem dqItem = new DoingQueueItem();
@@ -199,7 +202,8 @@ namespace Distribox.Network
         /// <param name="item"></param>
         /// <param name="success"></param>
         public void FinishRequests(DoingQueueItem item, bool success)
-        {            
+        {
+            Console.WriteLine("Finish {0}", success);
             this.usedBandwidth -= item.bandWidth;
             this.doing.Remove(item);
 

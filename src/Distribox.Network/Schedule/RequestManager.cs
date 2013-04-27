@@ -117,7 +117,7 @@ namespace Distribox.Network
                     }
 
                     // Find file collections
-                    double score = Properties.RMBandwidthWeight * this.estimator.GetPeerBandwidth(peer) ;
+                    double score = Properties.RMBandwidthWeight * this.estimator.GetPeerBandwidth(peer);
 
                     long currentSize = 0;
                     List<FileEvent> currentCollection = new List<FileEvent>();
@@ -130,7 +130,7 @@ namespace Distribox.Network
 
                             // UniquenessWeight should be positive 
                             score += - Properties.RMUniquenessWeight * uf.Key;
-                        }
+                        }                    
                     }
                     score += Properties.RMSizeWeight * currentSize;
 

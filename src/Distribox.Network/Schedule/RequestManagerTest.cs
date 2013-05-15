@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Distribox.Network.Schedule
+﻿namespace Distribox.Network.Schedule
 {
     using System.Threading;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using Distribox.CommonLib;
     using Distribox.FileSystem;
     using NUnit.Framework;

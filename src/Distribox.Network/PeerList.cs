@@ -32,14 +32,6 @@ namespace Distribox.Network
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Distribox.Network.PeerList"/> class.
-        /// </summary>
-        public PeerList()
-        {
-            this.Peers = new HashSet<Peer>();
-        }
-
-        /// <summary>
         /// Gets or sets the peers.
         /// </summary>
         /// <value>The peers.</value>

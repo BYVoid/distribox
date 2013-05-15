@@ -49,6 +49,6 @@
             Assert.IsFalse(peer2.Equals(peer3));
             Assert.IsFalse(peer3.Equals(peer2));
             Assert.AreNotEqual(peer2.GetHashCode(), peer3.GetHashCode());
-        }
+        }        
     }
 }

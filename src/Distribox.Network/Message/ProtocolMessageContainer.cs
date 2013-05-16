@@ -15,6 +15,9 @@ namespace Distribox.Network
     /// </summary>
     internal class ProtocolMessageContainer
     {
+        /// <summary>
+        /// For serializer.
+        /// </summary>
         public ProtocolMessageContainer()
         {
         }

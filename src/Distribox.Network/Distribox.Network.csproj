@@ -51,6 +51,7 @@
     <Compile Include="AntiEntropyProtocol.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
+    <Compile Include="AtomicMessageTunnel\AtomicMessageTest.cs" />
     <Compile Include="Message\ProtocolMessageContainerTest.cs" />
     <Compile Include="Message\ProtocolMessageFactoryTest.cs" />
     <Compile Include="PeerListTest.cs" />

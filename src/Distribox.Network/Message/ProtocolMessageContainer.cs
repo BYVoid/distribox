@@ -7,13 +7,14 @@ namespace Distribox.Network
 {
     using System;
     using Distribox.CommonLib;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Contains the type and serialized data of a derived class of ProtocolMessage.
 	/// 
     /// Type is for determination of how to deserialize the contained ProtocolMessage.
     /// </summary>
-    internal class ProtocolMessageContainer
+    public class ProtocolMessageContainer
     {
         /// <summary>
         /// For serializer.

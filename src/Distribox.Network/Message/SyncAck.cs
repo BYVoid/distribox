@@ -8,7 +8,7 @@ namespace Distribox.Network
     /// <summary>
     /// Acknowledgement of sync request.
     /// </summary>
-    internal class SyncAck : ProtocolMessage
+    public class SyncAck : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.SyncAck"/> class.

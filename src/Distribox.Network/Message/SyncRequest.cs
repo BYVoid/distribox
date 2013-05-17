@@ -3,12 +3,13 @@
 //     Copyright info.
 // </copyright>
 //-----------------------------------------------------------------------
+using System.Runtime.CompilerServices;
 namespace Distribox.Network
 {
     /// <summary>
     /// Message of sync request.
     /// </summary>
-    internal class SyncRequest : ProtocolMessage
+    public class SyncRequest : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.SyncRequest"/> class.

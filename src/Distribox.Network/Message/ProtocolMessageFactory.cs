@@ -7,13 +7,14 @@ namespace Distribox.Network
 {
     using System;
     using Distribox.CommonLib;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Factory to create ProtocolMessages. 
     /// <para />
     /// Currently, it is used only for converting ProtocolMessageContainer to ProtocolMessage.
     /// </summary>
-    internal class ProtocolMessageFactory
+    public class ProtocolMessageFactory
     {
         /// <summary>
         /// Convert <paramref name="container"/> to ProtocolMessage.

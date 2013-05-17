@@ -27,7 +27,7 @@ namespace Distribox.Network
     /// <remarks>
     /// <para />
     /// </remarks>
-    internal class RequestManager
+    public class RequestManager
     {
         private Dictionary<FileEvent, List<Peer>> todoFileToPeer;
 

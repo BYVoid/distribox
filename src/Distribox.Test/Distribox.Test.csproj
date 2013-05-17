@@ -48,15 +48,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileEventTest.cs" />
-    <Compile Include="FileItemTest.cs" />
-    <Compile Include="GlobalFlagTest.cs" />
-    <Compile Include="CommonLibTest.cs" />
-    <Compile Include="MultipleNodeTest.cs" />
-    <Compile Include="PeerListTest.cs" />
-    <Compile Include="PeerTest.cs" />
+    <Compile Include="FileSystem\VersionControlTest.cs" />
+    <Compile Include="Network\AtomicMessageTest.cs" />
+    <Compile Include="Network\BandwidthEstimatorTest.cs" />
+    <Compile Include="FileSystem\FileEventTest.cs" />
+    <Compile Include="FileSystem\FileItemTest.cs" />
+    <Compile Include="CommonLib\GlobalFlagTest.cs" />
+    <Compile Include="CommonLib\CommonLibTest.cs" />
+    <Compile Include="Network\PeerListTest.cs" />
+    <Compile Include="Network\PeerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingleNodeTest.cs" />
+    <Compile Include="Network\ProtocolMessageContainerTest.cs" />
+    <Compile Include="Network\ProtocolMessageFactoryTest.cs" />
+    <Compile Include="Network\RequestManagerTest.cs" />
+    <Compile Include="FileSystem\SingleNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

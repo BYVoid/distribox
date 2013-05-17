@@ -6,11 +6,12 @@
 namespace Distribox.Network
 {
     using System;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Abstract message of Anti-Entropy Protocol.
     /// </summary>
-    internal abstract class ProtocolMessage
+    public abstract class ProtocolMessage
     {
         // FIXME: Use a factory and make this class abstract
         // FIXME: I set all of these public for JSON serialize
@@ -27,6 +28,7 @@ namespace Distribox.Network
         /// <summary>
         /// Message type;
         /// </summary>
+        [assembly: InternalsVisibleTo("Distribox.Test")]
         public enum MessageType
         {
             /// <summary>

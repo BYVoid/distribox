@@ -172,28 +172,6 @@ namespace Distribox.CommonLib
         }
 
         /// <summary>
-        /// Compress the specified <paramref name="sourceDirectory"/> into <paramref name="zipFileName"/>.
-        /// </summary>
-        /// <param name="zipFileName">Zip file name.</param>
-        /// <param name="sourceDirectory">Source directory.</param>
-        public static void Zip(string zipFileName, string sourceDirectory)
-        {
-            FastZip zip = new FastZip();
-            zip.CreateZip(zipFileName, sourceDirectory, true, null);
-        }
-
-        /// <summary>
-        /// Decompress the <paramref name="zipFileName"/> into <paramref name="targetDirectory"/>.
-        /// </summary>
-        /// <param name="zipFileName">Zip file name.</param>
-        /// <param name="targetDirectory">Target directory.</param>
-        public static void UnZip(string zipFileName, string targetDirectory)
-        {
-            FastZip zip = new FastZip();
-            zip.ExtractZip(zipFileName, targetDirectory, null);
-        }
-
-        /// <summary>
         /// Initialize all the folders and files in monitored file.
         /// </summary>
         public static void InitializeFolder()

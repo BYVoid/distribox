@@ -11,7 +11,7 @@ namespace Distribox.Network
     /// <summary>
     /// Message of patch request.
     /// </summary>
-    internal class PatchRequest : ProtocolMessage
+    public class PatchRequest : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.PatchRequest"/> class.

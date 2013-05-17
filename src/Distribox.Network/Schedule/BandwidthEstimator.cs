@@ -20,7 +20,7 @@ namespace Distribox.Network
     /// # Thread safety
     /// Not thread safe.
     /// </summary>    
-    internal class BandwidthEstimator
+    public class BandwidthEstimator
     {
         /// <summary>
         /// Queue of transferring items that is useful for computing total bandwidth.

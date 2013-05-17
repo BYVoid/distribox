@@ -12,7 +12,7 @@ using System.Threading;
 namespace Distribox.Test
 {
     [TestFixture]
-    class SingleNodeTest
+    public class SingleNodeTest
     {
         private AntiEntropyProtocol protocol;
 
@@ -30,10 +30,6 @@ namespace Distribox.Test
             if (Directory.Exists("Dir"))
             {
                 Directory.Delete("Dir", true);
-            }
-            if (Directory.Exists(".Distribox"))
-            {
-                Directory.Delete(".Distribox", true);
             }
 
             // Get config
@@ -60,9 +56,17 @@ namespace Distribox.Test
             File.Delete("XX");
 
             // Create Directory
-            Directory.CreateDirectory("Dir");
+            Directory.CreateDirectory("dd");
+
+            // Rename Directory
+            Directory.Move("dd", "Dir");
 
             Thread.Sleep(1000);
+        }
+
+        private void StartServer()
+        {
+
         }
 
         private void StartPeer(int port)

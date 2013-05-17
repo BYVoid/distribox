@@ -285,7 +285,7 @@ namespace Distribox.FileSystem
                             else
                             {
                                 GlobalFlag.AcceptFileEvent = false;
-                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name));
+                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name), true);
                                 GlobalFlag.AcceptFileEvent = true;
                             }
 
@@ -342,7 +342,7 @@ namespace Distribox.FileSystem
                             else
                             {
                                 GlobalFlag.AcceptFileEvent = false;
-                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name));
+                                File.Copy(Config.MetaFolderData.File(vs.SHA1), Config.RootFolder.File(vs.Name), true);
                                 GlobalFlag.AcceptFileEvent = true;
                             }
 

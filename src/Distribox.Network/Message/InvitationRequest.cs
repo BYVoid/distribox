@@ -8,7 +8,7 @@ namespace Distribox.Network
     /// <summary>
     /// Message of invitation request.
     /// </summary>
-    internal class InvitationRequest : ProtocolMessage
+    public class InvitationRequest : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.InvitationRequest"/> class.

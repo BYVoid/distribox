@@ -8,7 +8,7 @@ namespace Distribox.Network
     /// <summary>
     /// Acknowledgement of invitation message.
     /// </summary>
-    internal class InvitationAck : ProtocolMessage
+    public class InvitationAck : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.InvitationAck"/> class.

@@ -8,7 +8,7 @@ namespace Distribox.Network
     /// <summary>
     /// Message of propagating peer list.
     /// </summary>
-    internal class PeerListMessage : ProtocolMessage
+    public class PeerListMessage : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.PeerListMessage"/> class.

@@ -14,7 +14,7 @@ namespace Distribox.Network
     /// <summary>
     /// Sender of messages to a specified peer.
     /// </summary>
-    internal class AtomicMessageSender
+    public class AtomicMessageSender
     {
         /// <summary>
         /// The client.

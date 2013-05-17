@@ -1,4 +1,4 @@
-﻿namespace Distribox.Network.AtomicMessageTunnel
+﻿namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
@@ -7,9 +7,10 @@
     using System.Threading;
     using Distribox.CommonLib;
     using NUnit.Framework;
+    using Distribox.Network;
 
     [TestFixture]
-    class AtomicMessageTest
+    public class AtomicMessageTest
     {
         private byte[] lastData;
         private Peer lastPeerFrom;

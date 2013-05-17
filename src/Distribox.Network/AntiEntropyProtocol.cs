@@ -211,6 +211,8 @@ namespace Distribox.Network
         /// <param name="onCompleteHandler">On complete handler.</param>
         private static void SendMessage(Peer peer, ProtocolMessage message, AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
         {
+            if (peer == null) return;
+
             AtomicMessageSender sender = new Network.AtomicMessageSender(peer);
             if (onCompleteHandler != null)
             {

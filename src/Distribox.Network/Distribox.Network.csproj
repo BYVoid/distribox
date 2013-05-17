@@ -51,9 +51,6 @@
     <Compile Include="AntiEntropyProtocol.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageListener.cs" />
     <Compile Include="AtomicMessageTunnel\AtomicMessageSender.cs" />
-    <Compile Include="AtomicMessageTunnel\AtomicMessageTest.cs" />
-    <Compile Include="Message\ProtocolMessageContainerTest.cs" />
-    <Compile Include="Message\ProtocolMessageFactoryTest.cs" />
     <Compile Include="Schedule\BandwidthEstimator.cs" />
     <Compile Include="Message\FileDataResponse.cs" />
     <Compile Include="Message\PatchRequest.cs" />
@@ -69,11 +66,9 @@
     <Compile Include="Message\SyncAck.cs" />
     <Compile Include="Message\InvitationRequest.cs" />
     <Compile Include="Peer.cs" />
-    <Compile Include="Schedule\BandwidthEstimatorTest.cs" />
     <Compile Include="Schedule\DoingQueueFileItem.cs" />
     <Compile Include="Schedule\DoingQueueItem.cs" />
     <Compile Include="Schedule\RequestManager.cs" />
-    <Compile Include="Schedule\RequestManagerTest.cs" />
     <Compile Include="Schedule\TransferItem.cs" />
   </ItemGroup>
   <ItemGroup>

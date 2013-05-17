@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -57,6 +58,36 @@ namespace Distribox.Test
             Assert.AreEqual(Properties.RMUniquenessWeight, 1);
             Assert.AreEqual(Properties.RMSizeWeight, 5e-7);
             Assert.AreEqual(Properties.ExpireSlackCoefficient, 4);
+        }
+
+        [Test]
+        public void ConfigDataTest()
+        {
+            ConfigData data = new ConfigData();
+            data.SetDefault();
+        }
+
+        [Test]
+        public void StreamTest()
+        {
+            MemoryStream stream = new MemoryStream();
+            stream.WriteAllBytes(CommonHelper.StringToByte("Hello"));
+            stream.Position = 0;
+            var bytes = stream.ReadAllBytes();
+            Assert.AreEqual(CommonHelper.ByteToString(bytes), "Hello");
+        }
+
+        [Test]
+        public void GetHashCodeTest()
+        {
+            List<int> list = new List<int> { 1, 2, 3 };
+            int code = CommonHelper.GetHashCode(list);
+        }
+
+        [Test]
+        public void DefaultConnectionSpeedTest()
+        {
+            Assert.IsTrue(Config.DefaultConnectionSpeed >= 0);
         }
     }
 }

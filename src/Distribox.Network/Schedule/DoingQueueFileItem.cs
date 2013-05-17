@@ -7,7 +7,7 @@ namespace Distribox.Network
 {
     using Distribox.FileSystem;
 
-    struct DoingQueueFileItem
+    public struct DoingQueueFileItem
     {
         public FileEvent file;
         public List<Peer> whoHaveMe;

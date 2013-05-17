@@ -6,11 +6,12 @@
 namespace Distribox.Network
 {
     using Distribox.FileSystem;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Message of propagating version list.
     /// </summary>
-    internal class VersionListMessage : ProtocolMessage
+    public class VersionListMessage : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.VersionListMessage"/> class.

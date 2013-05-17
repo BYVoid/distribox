@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Distribox.Network
 {
-    struct DoingQueueItem
+    public struct DoingQueueItem
     {
         public List<DoingQueueFileItem> files;
         public int filesHash;

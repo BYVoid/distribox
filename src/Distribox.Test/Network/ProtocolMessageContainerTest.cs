@@ -1,4 +1,4 @@
-﻿namespace Distribox.Network.Message
+﻿namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
@@ -6,6 +6,7 @@
     using System.Text;
     using Distribox.CommonLib;
     using NUnit.Framework;
+    using Distribox.Network;
 
     [TestFixture]
     class ProtocolMessageContainerTest

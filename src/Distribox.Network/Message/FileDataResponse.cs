@@ -8,7 +8,7 @@ namespace Distribox.Network
     /// <summary>
     /// Response of file data.
     /// </summary>
-    internal class FileDataResponse : ProtocolMessage
+    public class FileDataResponse : ProtocolMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Distribox.Network.FileDataResponse"/> class.

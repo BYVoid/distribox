@@ -14,7 +14,7 @@ namespace Distribox.Network
     /// <summary>
     /// List of peers that ever existed in P2P network. 
     /// </summary>
-    internal class PeerList
+    public class PeerList
     {
         /// <summary>
         /// The random.

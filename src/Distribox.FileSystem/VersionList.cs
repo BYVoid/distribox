@@ -70,7 +70,7 @@ namespace Distribox.FileSystem
 
             this.AllFiles.Add(item);
 
-            this.pathToFile[name] = item;
+            this.pathToFile.Add(name, item);
 
             return item;
         }

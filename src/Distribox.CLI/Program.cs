@@ -11,6 +11,7 @@ namespace Distribox.CLI
     using Distribox.CommonLib;
     using Distribox.FileSystem;
     using Distribox.Network;
+    using System.Threading;
 
     /// <summary>
     /// Root of the CLI program.
@@ -32,7 +33,7 @@ namespace Distribox.CLI
         {
             // Get config
             int port = Config.ListenPort;
-            
+
             // Initialize folder
             CommonHelper.InitializeFolder();
             
@@ -44,7 +45,7 @@ namespace Distribox.CLI
             engine.SetVariable("api", new API());
             engine.Repl();
         }
-        
+
         /// <summary>
         /// Starts the peer service.
         /// </summary>

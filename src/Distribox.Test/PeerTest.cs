@@ -1,4 +1,4 @@
-﻿namespace Distribox.Network
+﻿namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +6,10 @@
     using System.Net;
     using System.Text;
     using NUnit.Framework;
+    using Distribox.Network;
 
     [TestFixture]
-    class PeerTest
+    public class PeerTest
     {
         [Test]
         public void Test()

@@ -1,4 +1,4 @@
-﻿namespace Distribox.Network
+﻿namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +6,10 @@
     using System.Linq;
     using System.Text;
     using NUnit.Framework;
+    using Distribox.Network;
 
     [TestFixture]
-    class PeerListTest
+    public class PeerListTest
     {
         [Test]
         public void TestOperation()
@@ -31,7 +32,7 @@
             Assert.AreEqual(1, pList.Peers.Count);
             Assert.IsTrue(pList.Peers.Contains(peer1));
             Assert.IsFalse(pList.Peers.Contains(peer2));
-            
+
             // Test FileOperation
             PeerList pList2 = PeerList.GetPeerList(fileName);
             Assert.AreEqual(1, pList.Peers.Count);

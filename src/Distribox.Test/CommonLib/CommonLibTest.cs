@@ -1,16 +1,27 @@
-﻿using Distribox.CommonLib;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="CommonLibTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using Distribox.CommonLib;
+    using NUnit.Framework;
+    
+    /// <summary>
+    /// Test entry for CommonLib.
+    /// </summary>
     [TestFixture]
     public class CommonLibTest
     {
+        /// <summary>
+        /// Test logger.
+        /// </summary>
         [Test]
         public void LoggerTest()
         {
@@ -21,6 +32,9 @@ namespace Distribox.Test
             Logger.Fatal("Fatal");
         }
 
+        /// <summary>
+        /// Test serialization.
+        /// </summary>
         [Test]
         public void SerializeTest()
         {
@@ -33,6 +47,9 @@ namespace Distribox.Test
             bytes.Deserialize<Dictionary<string, string>>();
         }
 
+        /// <summary>
+        /// Test properties.
+        /// </summary>
         [Test]
         public void PropertiesTest()
         {
@@ -60,6 +77,9 @@ namespace Distribox.Test
             Assert.AreEqual(Properties.ExpireSlackCoefficient, 4);
         }
 
+        /// <summary>
+        /// Test config.
+        /// </summary>
         [Test]
         public void ConfigDataTest()
         {
@@ -67,6 +87,9 @@ namespace Distribox.Test
             data.SetDefault();
         }
 
+        /// <summary>
+        /// Test stream.
+        /// </summary>
         [Test]
         public void StreamTest()
         {
@@ -77,6 +100,9 @@ namespace Distribox.Test
             Assert.AreEqual(CommonHelper.ByteToString(bytes), "Hello");
         }
 
+        /// <summary>
+        /// Test hash.
+        /// </summary>
         [Test]
         public void GetHashCodeTest()
         {
@@ -84,6 +110,9 @@ namespace Distribox.Test
             int code = CommonHelper.GetHashCode(list);
         }
 
+        /// <summary>
+        /// Test default connection speed.
+        /// </summary>
         [Test]
         public void DefaultConnectionSpeedTest()
         {

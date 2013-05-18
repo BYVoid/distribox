@@ -5,8 +5,8 @@
 //-----------------------------------------------------------------------
 namespace Distribox.Network
 {
-    using Distribox.FileSystem;
     using System.Runtime.CompilerServices;
+    using Distribox.FileSystem;    
 
     /// <summary>
     /// Message of propagating version list.

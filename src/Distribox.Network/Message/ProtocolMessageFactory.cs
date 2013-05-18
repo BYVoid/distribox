@@ -5,9 +5,9 @@
 //-----------------------------------------------------------------------
 namespace Distribox.Network
 {
-    using System;
-    using Distribox.CommonLib;
+    using System;    
     using System.Runtime.CompilerServices;
+    using Distribox.CommonLib;
 
     /// <summary>
     /// Factory to create ProtocolMessages. 

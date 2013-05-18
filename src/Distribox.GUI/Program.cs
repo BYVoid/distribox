@@ -1,17 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.GUI
 {
-    static class Program
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+
+    /// <summary>
+    /// Main entry.
+    /// </summary>
+    public static class Program
     {
         /// <summary>
-        /// 应用程序的主入口点。
+        /// Main entry.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

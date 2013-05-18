@@ -211,7 +211,10 @@ namespace Distribox.Network
         /// <param name="onCompleteHandler">On complete handler.</param>
         private static void SendMessage(Peer peer, ProtocolMessage message, AtomicMessageSender.OnCompleteHandler onCompleteHandler = null)
         {
-            if (peer == null) return;
+            if (peer == null)
+            {
+                return;
+            }
 
             AtomicMessageSender sender = new Network.AtomicMessageSender(peer);
             if (onCompleteHandler != null)
@@ -255,7 +258,7 @@ namespace Distribox.Network
         }
 
         /// <summary>
-        /// Repeatly get and send new requests, until `RequestManager` don't give us any more requests. (May because       
+        /// Repeatedly get and send new requests, until `RequestManager` don't give us any more requests. (May because       
         /// there are no more requests or request manager thinks there are too many patches requesting now).
         /// </summary>
         private void TryToRequest()

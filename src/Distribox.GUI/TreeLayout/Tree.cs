@@ -1,17 +1,28 @@
-﻿using Distribox.FileSystem;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Tree.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.GUI
-{
+{  
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
+    using System.Text;
+    using Distribox.FileSystem;
+
+    /// <summary>
+    /// State of the tree.
+    /// </summary>
     public enum TreeState
     {
         Normal, Selected, Hover, Current
     }
 
+    /// <summary>
+    /// The tree class.
+    /// </summary>
     public class Tree
     {
         public FileEvent Event { get; set; }

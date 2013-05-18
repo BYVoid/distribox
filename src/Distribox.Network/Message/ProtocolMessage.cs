@@ -26,7 +26,7 @@ namespace Distribox.Network
         }
         
         /// <summary>
-        /// Message type;
+        /// Message type.
         /// </summary>
         [assembly: InternalsVisibleTo("Distribox.Test")]
         public enum MessageType

@@ -3,9 +3,10 @@
 //     Copyright info.
 // </copyright>
 //-----------------------------------------------------------------------
-using System.Runtime.CompilerServices;
 namespace Distribox.Network
 {
+    using System.Runtime.CompilerServices;
+
     /// <summary>
     /// Message of sync request.
     /// </summary>

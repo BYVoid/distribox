@@ -287,5 +287,10 @@ namespace Distribox.GUI
                 process.Exited += new EventHandler(callback);
             }
         }
+
+        private void visualTree1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

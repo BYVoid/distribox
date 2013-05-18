@@ -155,7 +155,7 @@
             this.tabPage4.Controls.Add(this.textBox1);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(403, 661);
+            this.tabPage4.Size = new System.Drawing.Size(403, 660);
             this.tabPage4.TabIndex = 2;
             this.tabPage4.Text = "Quick View";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -267,6 +267,7 @@
             this.visualTree1.Name = "visualTree1";
             this.visualTree1.Size = new System.Drawing.Size(584, 664);
             this.visualTree1.TabIndex = 0;
+            this.visualTree1.Load += new System.EventHandler(this.visualTree1_Load);
             // 
             // Form1
             // 

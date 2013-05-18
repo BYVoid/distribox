@@ -5,19 +5,18 @@
 //-----------------------------------------------------------------------
 namespace Distribox.Network
 {
-    using System;
-    using Distribox.CommonLib;
+    using System;    
     using System.Runtime.CompilerServices;
+    using Distribox.CommonLib;
 
     /// <summary>
     /// Contains the type and serialized data of a derived class of ProtocolMessage.
-	/// 
     /// Type is for determination of how to deserialize the contained ProtocolMessage.
     /// </summary>
     public class ProtocolMessageContainer
     {
         /// <summary>
-        /// For serializer.
+        /// Initializes a new instance of the <see cref="ProtocolMessageContainer" /> class.
         /// </summary>
         public ProtocolMessageContainer()
         {

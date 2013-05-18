@@ -69,7 +69,7 @@ namespace Distribox.FileSystem
         {
             get
             {
-                return this.History.Find(x=>x.EventId == this.CurrentEventId).Type != FileEventType.Deleted;
+                return this.History.Find(x => x.EventId == this.CurrentEventId).Type != FileEventType.Deleted;
             }
         }
 
@@ -85,6 +85,9 @@ namespace Distribox.FileSystem
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current event id.
+        /// </summary>
         public string CurrentEventId
         {
             get;
@@ -222,6 +225,10 @@ namespace Distribox.FileSystem
             this.PushHistory(vs);
         }
 
+        /// <summary>
+        /// Checkout file.
+        /// </summary>
+        /// <param name="eventId">The event id.</param>
         public void CheckOut(string eventId)
         {
             foreach (var item in this.History)
@@ -238,6 +245,7 @@ namespace Distribox.FileSystem
                     {
                         File.Copy(Config.MetaFolderData.File(item.SHA1), Config.RootFolder.File(item.Name), true);
                     }
+
                     this.CurrentEventId = eventId;
                     GlobalFlag.AcceptFileEvent = true;
                     break;

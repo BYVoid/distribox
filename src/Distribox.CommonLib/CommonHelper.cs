@@ -202,11 +202,21 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Write all bytes to a stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="bytes">The bytes.</param>
         public static void WriteAllBytes(this Stream stream, byte[] bytes)
         {
             stream.Write(bytes, 0, bytes.Length);
         }
 
+        /// <summary>
+        /// Read all bytes from a stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns>The bytes.</returns>
         public static byte[] ReadAllBytes(this Stream stream)
         {
             MemoryStream ms = new MemoryStream();
@@ -214,6 +224,12 @@ namespace Distribox.CommonLib
             return ms.ToArray();
         }
 
+        /// <summary>
+        /// Get hash code of a list.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>The hash code.</returns>
         public static int GetHashCode<T>(IEnumerable<T> list)
         {
             unchecked
@@ -221,8 +237,9 @@ namespace Distribox.CommonLib
                 int hash = 0;
                 foreach (var item in list)
                 {
-                    hash = 31 * hash + item.GetHashCode();
+                    hash = (31 * hash) + item.GetHashCode();
                 }
+
                 return hash;
             }
         }

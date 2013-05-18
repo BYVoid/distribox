@@ -22,8 +22,14 @@ namespace Distribox.CommonLib
         /// <value>The listen port.</value>
         public int ListenPort { get; set; }
 
+        /// <summary>
+        /// Gets or sets the default bandwidth.
+        /// </summary>
         public int DefaultBandwidth { get; set; }
 
+        /// <summary>
+        /// Gets or sets the default connection speed.
+        /// </summary>
         public int DefaultConnectionSpeed { get; set; }
 
         /// <summary>

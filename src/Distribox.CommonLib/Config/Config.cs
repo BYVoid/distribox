@@ -91,6 +91,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the peer bandwidth file path.
+        /// </summary>
         public static string PeerBandwidthFilePath
         {
             get
@@ -113,6 +116,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the default bandwidth.
+        /// </summary>
         public static int DefaultBandwidth
         {
             get
@@ -122,6 +128,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the default connection speed.
+        /// </summary>
         public static int DefaultConnectionSpeed
         {
             get

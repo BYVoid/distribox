@@ -8,15 +8,15 @@ namespace Distribox.CLI
     using System;
     using System.IO;
     using System.Net;
+    using System.Threading;
     using Distribox.CommonLib;
     using Distribox.FileSystem;
-    using Distribox.Network;
-    using System.Threading;
+    using Distribox.Network;    
 
     /// <summary>
     /// Root of the CLI program.
     /// </summary>
-    class Program
+    public class Program
     {
         /// <summary>
         /// The protocol.
@@ -77,9 +77,8 @@ namespace Distribox.CLI
             /// <summary>
             /// Invite the specified peer at <paramref name="port"/>.
             /// </summary>
-            /// <param name='port'>
-            /// Port of the peer to be invited.
-            /// </param>
+            /// <param name="ip">The ip.</param>
+            /// <param name="port">The port.</param>
             public void Invite(string ip, int port)
             {
                 protocol.InvitePeer(new Peer(IPAddress.Parse(ip), port));

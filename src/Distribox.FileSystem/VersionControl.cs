@@ -32,6 +32,37 @@ namespace Distribox.FileSystem
         public VersionList VersionList { get; set; }
 
         /// <summary>
+        /// Creates a bundle containing version list delta and all data of files.
+        /// </summary>
+        /// <returns>The binary bundle.</returns>
+        /// <param name="list">List needed to transferred.</param>
+        public static byte[] CreateFileBundle(List<FileEvent> list)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (ZipOutputStream zip = new ZipOutputStream(ms))
+            {
+                ZipEntry block = new ZipEntry("vs");
+                zip.PutNextEntry(block);
+                zip.WriteAllBytes(list.SerializeAsBytes());
+                zip.CloseEntry();
+
+                foreach (var sha1 in list.Where(x => x.SHA1 != null).Select(x => x.SHA1).Distinct())
+                {
+                    block = new ZipEntry(sha1);
+                    zip.PutNextEntry(block);
+                    zip.WriteAllBytes(File.ReadAllBytes(Config.MetaFolderData.File(sha1)));
+                    zip.CloseEntry();
+                }
+
+                zip.Finish();
+                ms.Flush();
+                ms.Position = 0;
+
+                return ms.ToArray();
+            }
+        }
+
+        /// <summary>
         /// File created.
         /// </summary>
         /// <param name="e">The event.</param>
@@ -81,6 +112,11 @@ namespace Distribox.FileSystem
             VersionList.Flush();
         }
 
+        /// <summary>
+        /// Check out a file.
+        /// </summary>
+        /// <param name="fileId">The file ID.</param>
+        /// <param name="eventId">The event ID.</param>
         public void CheckOut(string fileId, string eventId)
         {
             FileItem file = VersionList.GetFileById(fileId);
@@ -88,38 +124,6 @@ namespace Distribox.FileSystem
             file.CheckOut(eventId);
 
             VersionList.Flush();
-
-        }
-
-        /// <summary>
-        /// Creates a bundle containing version list delta and all data of files.
-        /// </summary>
-        /// <returns>The binary bundle.</returns>
-        /// <param name="list">List needed to transferred.</param>
-        public static byte[] CreateFileBundle(List<FileEvent> list)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            using (ZipOutputStream zip = new ZipOutputStream(ms))
-            {
-                ZipEntry block = new ZipEntry("vs");
-                zip.PutNextEntry(block);
-                zip.WriteAllBytes(list.SerializeAsBytes());
-                zip.CloseEntry();
-
-                foreach (var sha1 in list.Where(x => x.SHA1 != null).Select(x => x.SHA1).Distinct())
-                {
-                    block = new ZipEntry(sha1);
-                    zip.PutNextEntry(block);
-                    zip.WriteAllBytes(File.ReadAllBytes(Config.MetaFolderData.File(sha1)));
-                    zip.CloseEntry();
-                }
-
-                zip.Finish();
-                ms.Flush();
-                ms.Position = 0;
-
-                return ms.ToArray();
-            }
         }
 
         /// <summary>
@@ -138,7 +142,11 @@ namespace Distribox.FileSystem
                 while (true)
                 {
                     block = zip.GetNextEntry();
-                    if (block == null) break;
+                    if (block == null)
+                    {
+                        break;
+                    }
+
                     File.WriteAllBytes(Config.MetaFolderData.File(block.Name), zip.ReadAllBytes());
                 }
 

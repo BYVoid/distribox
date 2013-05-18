@@ -106,6 +106,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the peer bandwidth.
+        /// </summary>
         public static string PeerBandwidthFile
         {
             get
@@ -139,7 +142,7 @@ namespace Distribox.CommonLib
         }
 
         /// <summary>
-        /// My default bandwidth.
+        /// Gets the default bandwidth.
         /// </summary>
         public static int DefaultBandwidth
         {
@@ -149,6 +152,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the default delay.
+        /// </summary>
         public static int DefaultDelay
         {
             get
@@ -158,7 +164,7 @@ namespace Distribox.CommonLib
         }
 
         /// <summary>
-        /// My default connection speed with a peer.
+        /// Gets the default connection speed with a peer.
         /// </summary>
         public static int DefaultConnectionSpeed
         {
@@ -216,6 +222,9 @@ namespace Distribox.CommonLib
             }       
         }
 
+        /// <summary>
+        /// Gets the weight of bandwidth.
+        /// </summary>
         public static double RMBandwidthWeight
         {
             get
@@ -224,6 +233,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the weight of uniqueness.
+        /// </summary>
         public static double RMUniquenessWeight
         {
             get
@@ -232,6 +244,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the weight for size.
+        /// </summary>
         public static double RMSizeWeight
         {
             get
@@ -240,6 +255,9 @@ namespace Distribox.CommonLib
             }
         }
 
+        /// <summary>
+        /// Gets the coefficient for expire.
+        /// </summary>
         public static int ExpireSlackCoefficient
         {
             get

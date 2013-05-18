@@ -7,9 +7,9 @@ namespace Distribox.FileSystem
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Distribox.CommonLib;
     using System.IO;
+    using System.Linq;
+    using Distribox.CommonLib;    
 
     // TODO this class would be serialized for deserialized
 
@@ -182,13 +182,18 @@ namespace Distribox.FileSystem
         /// <summary>
         /// Gets file by Id.
         /// </summary>
-        /// <returns>The file.</returns>
-        /// <param name="name">The name.</param>
+        /// <param name="fileId">The file ID.</param>
+        /// <returns>The file item.</returns>
         public FileItem GetFileById(string fileId)
         {
             foreach (var item in this.AllFiles)
+            {
                 if (item.Id == fileId)
+                {
                     return item;
+                }
+            }
+
             throw new Exception("Not Find File!");
         }
 

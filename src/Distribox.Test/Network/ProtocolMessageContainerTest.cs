@@ -1,16 +1,27 @@
-﻿namespace Distribox.Test
+﻿//-----------------------------------------------------------------------
+// <copyright file="ProtocolMessageContainerTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//---------------------------------------------------------------------
+namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Distribox.CommonLib;
-    using NUnit.Framework;
+    using Distribox.CommonLib;    
     using Distribox.Network;
+    using NUnit.Framework;
 
+    /// <summary>
+    /// Test entry for ProtocolMessageContainer.
+    /// </summary>
     [TestFixture]
-    class ProtocolMessageContainerTest
+    public class ProtocolMessageContainerTest
     {
+        /// <summary>
+        /// Test the encoding.
+        /// </summary>
         [Test]
         public void Test()
         {

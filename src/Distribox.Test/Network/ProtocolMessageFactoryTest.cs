@@ -1,19 +1,30 @@
-﻿namespace Distribox.Test
+﻿//-----------------------------------------------------------------------
+// <copyright file="ProtocolMessageFactoryTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Distribox.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading;        
     using Distribox.CommonLib;
     using Distribox.FileSystem;
-    using NUnit.Framework;
     using Distribox.Network;
-    using System.Threading;
-    using System.IO;    
+    using NUnit.Framework;       
 
+    /// <summary>
+    /// Test entry for ProtocolMessageFactory.
+    /// </summary>
     [TestFixture]
     public class ProtocolMessageFactoryTest
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProtocolMessageFactoryTest" /> class.
+        /// </summary>
         public ProtocolMessageFactoryTest()
         {
             if (!Directory.Exists(".Distribox"))
@@ -22,13 +33,19 @@
             }
         }
 
+        /// <summary>
+        /// Test the factory.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public void TestFactory(ProtocolMessage message)
         {
             ProtocolMessageFactory factory = new ProtocolMessageFactory();
             ProtocolMessage message2 = factory.CreateMessage(new ProtocolMessageContainer(message));
-            //Assert.AreEqual(message.SerializeInline(), message2.SerializeInline());
         }
 
+        /// <summary>
+        /// Test factory. Encode then decode the ProtocolMessages.
+        /// </summary>
         [Test, Timeout(100000)]
         public void Test()
         {
@@ -38,7 +55,7 @@
             InvitationAck ack = new InvitationAck(2222);
             this.TestFactory(ack);
 
-            byte[] data = {12, 34, 56};
+            byte[] data = { 12, 34, 56 };
             FileDataResponse dataResponse = new FileDataResponse(data, 3333);
             this.TestFactory(dataResponse);
 
@@ -46,12 +63,12 @@
             e1.Name = "1234";
             List<FileEvent> lf = new List<FileEvent>();
             lf.Add(e1);
-            PatchRequest pRequest = new PatchRequest(lf, 4444);
-            this.TestFactory(pRequest);
+            PatchRequest patchRequest = new PatchRequest(lf, 4444);
+            this.TestFactory(patchRequest);
 
-            PeerList pList = PeerList.GetPeerList("abc");
-            pList.AddPeer(new Peer("127.0.0.1", 5555));
-            PeerListMessage pm = new PeerListMessage(pList, 6666);
+            PeerList peerList = PeerList.GetPeerList("abc");
+            peerList.AddPeer(new Peer("127.0.0.1", 5555));
+            PeerListMessage pm = new PeerListMessage(peerList, 6666);
             this.TestFactory(pm);
 
             SyncAck syncAck = new SyncAck(7777);

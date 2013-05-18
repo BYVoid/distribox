@@ -156,15 +156,15 @@ namespace Distribox.GUI
             {
                 verticalPosition[list[i]] = i * VERTICALGAP;
             }
-            this.Layout(0, verticalPosition);
+            this.Layout(0, 0);
         }
 
-        private void Layout(float x, Dictionary<Tree, float> verticalPosition)
+        private void Layout(float x, float y)
         {
-            this.Position = new PointF(x, verticalPosition[this]);
+            this.Position = new PointF(x, y);
             foreach (var node in this.Children)
             {
-                node.Layout(x, verticalPosition);
+                node.Layout(x, y + VERTICALGAP);
                 x = x + node.Width + HORIZONTALGAP;
             }
         }

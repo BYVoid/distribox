@@ -1,21 +1,35 @@
-﻿using Distribox.CommonLib;
-using Distribox.FileSystem;
-using Distribox.Network;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="SingleNodeTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Test
-{
+{    
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading;
+    using Distribox.CommonLib;
+    using Distribox.FileSystem;
+    using Distribox.Network;
+    using NUnit.Framework;
+
+    /// <summary>
+    /// Test class of single node case.
+    /// </summary>
     [TestFixture]
     public class SingleNodeTest
     {
+        /// <summary>
+        /// The protocol to be tested.
+        /// </summary>
         private AntiEntropyProtocol protocol;
 
+        /// <summary>
+        /// Test it.
+        /// </summary>
         [Test]
         public void Test()
         {
@@ -23,10 +37,12 @@ namespace Distribox.Test
             {
                 File.Delete("config.json");
             }
+
             if (File.Exists("Haha"))
             {
                 File.Delete("Haha");
             }
+
             if (Directory.Exists("Dir"))
             {
                 Directory.Delete("Dir", true);
@@ -38,7 +54,7 @@ namespace Distribox.Test
             // Initialize folder
             CommonHelper.InitializeFolder();
 
-            StartPeer(7777);
+            this.StartPeer(7777);
 
             // Create File
             File.WriteAllText("Haha", "test");
@@ -64,11 +80,10 @@ namespace Distribox.Test
             Thread.Sleep(1000);
         }
 
-        private void StartServer()
-        {
-
-        }
-
+        /// <summary>
+        /// Start a peer.
+        /// </summary>
+        /// <param name="port">The port of the peer.</param>
         private void StartPeer(int port)
         {
             string peerListName = Config.PeerListFilePath;

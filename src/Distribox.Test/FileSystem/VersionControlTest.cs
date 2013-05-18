@@ -1,27 +1,44 @@
-﻿using Distribox.FileSystem;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="VersionControlTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using Distribox.FileSystem;
+    using NUnit.Framework;    
+
+    /// <summary>
+    /// Test class for VersionControl.
+    /// </summary>
     [TestFixture]
     public class VersionControlTest
     {
+        /// <summary>
+        /// A list of FileItems.
+        /// </summary>
         private List<FileItem> list = new List<FileItem>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VersionControlTest" /> class.
+        /// </summary>
         public VersionControlTest()
         {
+            // Initialize
             if (!Directory.Exists(".Distribox"))
             {
                 Directory.CreateDirectory(".Distribox");
             }
+
             if (!Directory.Exists(".Distribox/data"))
             {
                 Directory.CreateDirectory(".Distribox/data");
+            
             }
             if (Directory.Exists("Dir"))
             {
@@ -94,6 +111,9 @@ namespace Distribox.Test
             this.list.Add(item3);
         }
 
+        /// <summary>
+        /// Test entry of GetLessThan.
+        /// </summary>
         [Test]
         public void GetLessThanTest()
         {
@@ -104,6 +124,9 @@ namespace Distribox.Test
             vl2.GetLessThan(vl1);
         }
 
+        /// <summary>
+        /// Test entry of receive.
+        /// </summary>
         [Test]
         public void Test()
         {
@@ -114,6 +137,9 @@ namespace Distribox.Test
             List<FileEvent> receive = vc.AcceptFileBundle(bytes);
         }
 
+        /// <summary>
+        /// Test entry of GetFileByName.
+        /// </summary>
         [Test]
         public void GetFileByNameTest()
         {
@@ -125,6 +151,9 @@ namespace Distribox.Test
             vc.VersionList.RemoveFileByName("TT");
         }
 
+        /// <summary>
+        /// Test entry of Checkout.
+        /// </summary>
         [Test]
         public void CheckOutTest()
         {

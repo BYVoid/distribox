@@ -1,38 +1,56 @@
-﻿using Distribox.FileSystem;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Distribox.CommonLib;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="FileItemTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Test
-{
+{    
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using Distribox.CommonLib;
+    using Distribox.FileSystem;
+    using NUnit.Framework;
+
+    /// <summary>
+    /// The test class of FileItem.
+    /// </summary>
     [TestFixture]
     public class FileItemTest
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileItemTest" /> class.
+        /// </summary>
         public FileItemTest()
         {
             if (!Directory.Exists(".Distribox"))
             {
                 Directory.CreateDirectory(".Distribox");
             }
+
             if (!Directory.Exists(".Distribox/data"))
             {
                 Directory.CreateDirectory(".Distribox/data");
             }
+
             if (Directory.Exists("dir"))
             {
                 Directory.Delete("dir");
             }
+
             if (Directory.Exists("dir2"))
             {
                 Directory.Delete("dir2");
             }
+
             File.WriteAllText(".Distribox/data/11", "haha");
         }
 
+        /// <summary>
+        /// Test if the order is correct.
+        /// </summary>
         [Test]
         public void TestOrder()
         {
@@ -46,7 +64,7 @@ namespace Distribox.Test
             try
             {
                 FileItem item = new FileItem();
-                File.WriteAllText("Haha", "");
+                File.WriteAllText("Haha", string.Empty);
                 item.Create("Haha", DateTime.FromFileTimeUtc(1));
                 File.WriteAllText("Haha", "haha");
                 File.Copy("Haha", ".Distribox\\data\\" + CommonHelper.GetSHA1Hash("Haha"));
@@ -59,6 +77,9 @@ namespace Distribox.Test
             }
         }
 
+        /// <summary>
+        /// Test if we can merge the history of file successfully.
+        /// </summary>
         [Test]
         public void MergeTest()
         {

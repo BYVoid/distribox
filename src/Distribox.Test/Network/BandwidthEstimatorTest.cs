@@ -1,19 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="BandwidthEstimatorTest.cs" company="CompanyName">
+//     Copyright info.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace Distribox.Test
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
-    using System.Threading;
-    using NUnit.Framework;
+    using System.Linq;
+    using System.Text;    
+    using System.Threading;    
     using Distribox.CommonLib;
     using Distribox.Network;
+    using NUnit.Framework;
 
+    /// <summary>
+    /// Test class for BandwidthEstimator.
+    /// </summary>
     [TestFixture]
     public class BandwidthEstimatorTest
     {
+        /// <summary>
+        /// Test single peer case.
+        /// </summary>
         [Test, Timeout(100000)]
         public void SinglePeer()
         {
@@ -57,9 +67,11 @@ namespace Distribox.Test
             // Fail a task
             estimator.BeginRequest(peer1, 0x1234, 1024 * 1024);
             estimator.FailRequest(0x1234);
-            //Assert.AreEqual(0 * 1024, estimator.GetPeerBandwidth(peer1));
         }
 
+        /// <summary>
+        /// Test if we can restore.
+        /// </summary>
         [Test, Timeout(100000)]
         public void Restore()
         {
@@ -79,6 +91,9 @@ namespace Distribox.Test
             Assert.AreEqual(1024 * 1024, estimator2.GetPeerBandwidth(peer1));
         }
 
+        /// <summary>
+        /// Test multi peer case.
+        /// </summary>
         [Test, Timeout(100000)]
         public void MultiPeer()
         {

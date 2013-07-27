@@ -267,7 +267,6 @@
             this.visualTree1.Name = "visualTree1";
             this.visualTree1.Size = new System.Drawing.Size(584, 664);
             this.visualTree1.TabIndex = 0;
-            this.visualTree1.Load += new System.EventHandler(this.visualTree1_Load);
             // 
             // Form1
             // 
